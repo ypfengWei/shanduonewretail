@@ -15,6 +15,8 @@ import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.shanduo.newretail.consts.ConfigConsts;
+
 
 
 /**
@@ -61,7 +63,7 @@ public class WxFileUtils {
             		InputStream is = response.getEntity().getContent();
             		String fileName = UUIDGenerator.getUUID()+".jpg";
             		BufferedInputStream bis = new BufferedInputStream(is);
-            		FileOutputStream fos = new FileOutputStream(new File("C:\\Users\\admin\\Desktop\\外卖商户平台", fileName));
+            		FileOutputStream fos = new FileOutputStream(new File(ConfigConsts.IMAGE_PATH, fileName));
             		byte[] buf = new byte[1024];
             		int size = 0;
             		while ((size = bis.read(buf)) != -1) {

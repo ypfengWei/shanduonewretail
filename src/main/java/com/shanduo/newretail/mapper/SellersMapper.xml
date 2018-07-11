@@ -14,11 +14,13 @@
     <result column="business_sign" jdbcType="CHAR" property="businessSign" />
     <result column="money" jdbcType="DECIMAL" property="money" />
     <result column="parent_id" jdbcType="VARCHAR" property="parentId" />
+    <result column="lat" jdbcType="DECIMAL" property="lat" />
+    <result column="lon" jdbcType="DECIMAL" property="lon" />
     <result column="jurisdictions" jdbcType="CHAR" property="jurisdictions" />
   </resultMap>
   <sql id="Base_Column_List">
     id, user_name, password, seller_picture, notice, phone, seller_type, start_date, 
-    end_date, business_sign, money, parent_id, jurisdictions
+    end_date, business_sign, money, parent_id, lat, lon, jurisdictions
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
     select 
@@ -35,12 +37,14 @@
       seller_picture, notice, phone, 
       seller_type, start_date, end_date, 
       business_sign, money, parent_id, 
-      jurisdictions)
+      lat, lon, jurisdictions
+      )
     values (#{id,jdbcType=VARCHAR}, #{userName,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, 
       #{sellerPicture,jdbcType=VARCHAR}, #{notice,jdbcType=VARCHAR}, #{phone,jdbcType=VARCHAR}, 
       #{sellerType,jdbcType=CHAR}, #{startDate,jdbcType=TIMESTAMP}, #{endDate,jdbcType=TIMESTAMP}, 
       #{businessSign,jdbcType=CHAR}, #{money,jdbcType=DECIMAL}, #{parentId,jdbcType=VARCHAR}, 
-      #{jurisdictions,jdbcType=CHAR})
+      #{lat,jdbcType=DECIMAL}, #{lon,jdbcType=DECIMAL}, #{jurisdictions,jdbcType=CHAR}
+      )
   </insert>
   <insert id="insertSelective" parameterType="com.shanduo.newretail.entity.Sellers">
     insert into sellers
@@ -80,6 +84,12 @@
       </if>
       <if test="parentId != null">
         parent_id,
+      </if>
+      <if test="lat != null">
+        lat,
+      </if>
+      <if test="lon != null">
+        lon,
       </if>
       <if test="jurisdictions != null">
         jurisdictions,
@@ -122,6 +132,12 @@
       <if test="parentId != null">
         #{parentId,jdbcType=VARCHAR},
       </if>
+      <if test="lat != null">
+        #{lat,jdbcType=DECIMAL},
+      </if>
+      <if test="lon != null">
+        #{lon,jdbcType=DECIMAL},
+      </if>
       <if test="jurisdictions != null">
         #{jurisdictions,jdbcType=CHAR},
       </if>
@@ -163,6 +179,12 @@
       <if test="parentId != null">
         parent_id = #{parentId,jdbcType=VARCHAR},
       </if>
+      <if test="lat != null">
+        lat = #{lat,jdbcType=DECIMAL},
+      </if>
+      <if test="lon != null">
+        lon = #{lon,jdbcType=DECIMAL},
+      </if>
       <if test="jurisdictions != null">
         jurisdictions = #{jurisdictions,jdbcType=CHAR},
       </if>
@@ -182,6 +204,8 @@
       business_sign = #{businessSign,jdbcType=CHAR},
       money = #{money,jdbcType=DECIMAL},
       parent_id = #{parentId,jdbcType=VARCHAR},
+      lat = #{lat,jdbcType=DECIMAL},
+      lon = #{lon,jdbcType=DECIMAL},
       jurisdictions = #{jurisdictions,jdbcType=CHAR}
     where id = #{id,jdbcType=VARCHAR}
   </update>

@@ -43,7 +43,7 @@ public class JsApiTicket {
         this.expiresIn = expiresIn;
     }
 
-    public Long setCreateDate() {
+    public Long getCreateDate() {
         return createDate;
     }
 

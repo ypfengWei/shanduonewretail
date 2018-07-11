@@ -28,6 +28,10 @@ public class Sellers {
 
     private String parentId;
 
+    private BigDecimal lat;
+
+    private BigDecimal lon;
+
     private String jurisdictions;
 
     public String getId() {
@@ -124,6 +128,22 @@ public class Sellers {
 
     public void setParentId(String parentId) {
         this.parentId = parentId == null ? null : parentId.trim();
+    }
+
+    public BigDecimal getLat() {
+        return lat;
+    }
+
+    public void setLat(BigDecimal lat) {
+        this.lat = lat;
+    }
+
+    public BigDecimal getLon() {
+        return lon;
+    }
+
+    public void setLon(BigDecimal lon) {
+        this.lon = lon;
     }
 
     public String getJurisdictions() {

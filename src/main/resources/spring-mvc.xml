@@ -43,16 +43,8 @@
 	<!-- 拦截器拦截路径 -->
 	<mvc:interceptors>
 		<mvc:interceptor>
-		
 	 		<!-- 上传图片接口拦截 -->
 	 		<mvc:mapping path="/file/**"/>
-	 		<!-- 用户操作接口拦截 -->
-	 		<mvc:mapping path="/juser/updatephone"/>
-	 		<mvc:mapping path="/juser/updateuser"/>
-	 		<mvc:mapping path="/juser/details"/>
-	 		<mvc:mapping path="/juser/checktoken"/>
-	 		
-	 		
 	 		<bean class="com.shanduo.newretail.interceptor.TokenInterceptor"/>
 		</mvc:interceptor>
  	</mvc:interceptors>
