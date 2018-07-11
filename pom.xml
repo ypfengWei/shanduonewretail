@@ -2,7 +2,7 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>com</groupId>
-  <artifactId>shanduo.party</artifactId>
+  <artifactId>shanduonewretail</artifactId>
   <packaging>war</packaging>
   <version>0.0.1-SNAPSHOT</version>
   <name>shanduo Maven Webapp</name>
@@ -361,25 +361,6 @@
 			<version>5.4.1</version>
 			<type>jar</type>
 		</dependency>
-		<!-- 腾讯云sig签名使用jar -->
-		<!-- https://mvnrepository.com/artifact/org.bouncycastle/bcpkix-jdk15on -->
-		<dependency>
-		    <groupId>org.bouncycastle</groupId>
-		    <artifactId>bcpkix-jdk15on</artifactId>
-		    <version>1.52</version>
-		</dependency>
-		<!-- https://mvnrepository.com/artifact/org.bouncycastle/bcprov-jdk15on -->
-		<dependency>
-		    <groupId>org.bouncycastle</groupId>
-		    <artifactId>bcprov-jdk15on</artifactId>
-		    <version>1.52</version>
-		</dependency>
-		<!-- https://mvnrepository.com/artifact/com.alibaba/fastjson -->
-		<dependency>
-		    <groupId>com.alibaba</groupId>
-		    <artifactId>fastjson</artifactId>
-		    <version>1.2.2</version>
-		</dependency>
 		<!-- 阿里云发送短信jar -->
 		<dependency>
 			<groupId>com.aliyun</groupId>
@@ -391,18 +372,8 @@
 			<artifactId>aliyun-java-sdk-dysmsapi</artifactId>
 			<version>1.0.0</version>
 		</dependency>
-		<!-- 腾讯推送jar -->
-		<dependency>
-			<groupId>com.tencent.xinge</groupId>
-			<artifactId>Xg-Push-SDK-JAVA</artifactId>
-			<version>1.1.8</version>
-		</dependency>
-		<!-- 支付宝支付jar -->
-		<dependency>
-   	 		<groupId>com.alipay.sdk</groupId>
-    		<artifactId>alipay-sdk-java</artifactId>
-    		<version>3.0.1</version>
-		</dependency>
+		
+		
 		<!-- HTTP客户端 -->
 		<dependency>
 		    <groupId>org.apache.httpcomponents</groupId>
