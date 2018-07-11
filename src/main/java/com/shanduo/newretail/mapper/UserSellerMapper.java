@@ -1,5 +1,8 @@
 package com.shanduo.newretail.mapper;
 
+import java.util.List;
+import java.util.Map;
+
 import com.shanduo.newretail.entity.UserSeller;
 
 public interface UserSellerMapper {
@@ -14,4 +17,6 @@ public interface UserSellerMapper {
     int updateByPrimaryKeySelective(UserSeller record);
 
     int updateByPrimaryKey(UserSeller record);
+    
+    List<Object> selectNearbySeller(Map<String, Object> params);
 }
