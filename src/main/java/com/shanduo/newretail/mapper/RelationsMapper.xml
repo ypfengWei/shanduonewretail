@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.shanduo.newretail.mapper.RelationsMapper">
+  <resultMap id="BaseResultMap" type="com.shanduo.newretail.entity.Relations">
+    <id column="commodity_id" jdbcType="VARCHAR" property="commodityId" />
+    <id column="category_id" jdbcType="INTEGER" property="categoryId" />
+    <result column="user_id" jdbcType="VARCHAR" property="userId" />
+    <result column="stock" jdbcType="INTEGER" property="stock" />
+    <result column="sales_volume" jdbcType="INTEGER" property="salesVolume" />
+    <result column="visible" jdbcType="INTEGER" property="visible" />
+    <result column="del_flag" jdbcType="CHAR" property="delFlag" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    commodity_id, category_id, user_id, stock, sales_volume, visible, del_flag
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="com.shanduo.newretail.entity.RelationsKey" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from relations
+    where commodity_id = #{commodityId,jdbcType=VARCHAR}
+      and category_id = #{categoryId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="com.shanduo.newretail.entity.RelationsKey">
+    delete from relations
+    where commodity_id = #{commodityId,jdbcType=VARCHAR}
+      and category_id = #{categoryId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.shanduo.newretail.entity.Relations">
+    insert into relations (commodity_id, category_id, user_id, 
+      stock, sales_volume, visible, 
+      del_flag)
+    values (#{commodityId,jdbcType=VARCHAR}, #{categoryId,jdbcType=INTEGER}, #{userId,jdbcType=VARCHAR}, 
+      #{stock,jdbcType=INTEGER}, #{salesVolume,jdbcType=INTEGER}, #{visible,jdbcType=INTEGER}, 
+      #{delFlag,jdbcType=CHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.shanduo.newretail.entity.Relations">
+    insert into relations
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="commodityId != null">
+        commodity_id,
+      </if>
+      <if test="categoryId != null">
+        category_id,
+      </if>
+      <if test="userId != null">
+        user_id,
+      </if>
+      <if test="stock != null">
+        stock,
+      </if>
+      <if test="salesVolume != null">
+        sales_volume,
+      </if>
+      <if test="visible != null">
+        visible,
+      </if>
+      <if test="delFlag != null">
+        del_flag,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="commodityId != null">
+        #{commodityId,jdbcType=VARCHAR},
+      </if>
+      <if test="categoryId != null">
+        #{categoryId,jdbcType=INTEGER},
+      </if>
+      <if test="userId != null">
+        #{userId,jdbcType=VARCHAR},
+      </if>
+      <if test="stock != null">
+        #{stock,jdbcType=INTEGER},
+      </if>
+      <if test="salesVolume != null">
+        #{salesVolume,jdbcType=INTEGER},
+      </if>
+      <if test="visible != null">
+        #{visible,jdbcType=INTEGER},
+      </if>
+      <if test="delFlag != null">
+        #{delFlag,jdbcType=CHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.shanduo.newretail.entity.Relations">
+    update relations
+    <set>
+      <if test="userId != null">
+        user_id = #{userId,jdbcType=VARCHAR},
+      </if>
+      <if test="stock != null">
+        stock = #{stock,jdbcType=INTEGER},
+      </if>
+      <if test="salesVolume != null">
+        sales_volume = #{salesVolume,jdbcType=INTEGER},
+      </if>
+      <if test="visible != null">
+        visible = #{visible,jdbcType=INTEGER},
+      </if>
+      <if test="delFlag != null">
+        del_flag = #{delFlag,jdbcType=CHAR},
+      </if>
+    </set>
+    where commodity_id = #{commodityId,jdbcType=VARCHAR}
+      and category_id = #{categoryId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.shanduo.newretail.entity.Relations">
+    update relations
+    set user_id = #{userId,jdbcType=VARCHAR},
+      stock = #{stock,jdbcType=INTEGER},
+      sales_volume = #{salesVolume,jdbcType=INTEGER},
+      visible = #{visible,jdbcType=INTEGER},
+      del_flag = #{delFlag,jdbcType=CHAR}
+    where commodity_id = #{commodityId,jdbcType=VARCHAR}
+      and category_id = #{categoryId,jdbcType=INTEGER}
+  </update>
+</mapper>
