@@ -14,4 +14,8 @@ public interface PhoneVerifyCodeMapper {
     int updateByPrimaryKeySelective(PhoneVerifyCode record);
 
     int updateByPrimaryKey(PhoneVerifyCode record);
+    
+    PhoneVerifyCode getCode(String phone,String codes,String codeType,String createDate);
+    
+    PhoneVerifyCode getCodes(String phone,String codeType,String createDate);
 }

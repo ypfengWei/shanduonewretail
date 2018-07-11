@@ -103,4 +103,22 @@
       gmt_modified = #{gmtModified,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=VARCHAR}
   </update>
+  
+  <select id="getCode" resultMap="BaseResultMap">
+    select
+    id, phone, code, code_type
+    from phone_verify_code
+    where phone = #{0}
+    and code = #{1}
+    and code_type = #{2}
+    and gmt_create >= #{3}
+  </select>
+  <select id="getCodes" resultMap="BaseResultMap">
+    select
+    id, phone, code, code_type
+    from phone_verify_code
+    where phone = #{0}
+    and code_type = #{1}
+    and gmt_create >= #{2}
+  </select>
 </mapper>

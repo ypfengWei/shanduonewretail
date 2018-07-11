@@ -2,8 +2,23 @@ package com.shanduo.newretail.consts;
 
 public class ErrorConsts {
 
-	public static final Integer A_10001 = 10001;
-	public static final Integer A_10002 = 10002;
-	public static final Integer A_10003 = 10003;
+	/**
+	 * 登录失效
+	 */
+	public static final Integer CODE_10001 = 10001;
 	
+	/**
+	 * 参数错误
+	 */
+	public static final Integer CODE_10002 = 10002;
+	
+	/**
+	 * 用户操作错误
+	 */
+	public static final Integer CODE_10003 = 10003;
+	
+	/**
+	 * 后台错误
+	 */
+	public static final Integer CODE_10004 = 10004;
 }
