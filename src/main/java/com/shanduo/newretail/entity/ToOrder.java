@@ -3,7 +3,7 @@ package com.shanduo.newretail.entity;
 import java.math.BigDecimal;
 import java.util.Date;
 
-public class Orders {
+public class ToOrder {
     private String id;
 
     private String openid;

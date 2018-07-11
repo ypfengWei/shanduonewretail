@@ -8,10 +8,10 @@
     <result column="stock" jdbcType="INTEGER" property="stock" />
     <result column="sales_volume" jdbcType="INTEGER" property="salesVolume" />
     <result column="visible" jdbcType="INTEGER" property="visible" />
-    <result column="del_flag" jdbcType="CHAR" property="delFlag" />
+    <result column="is_deleted" jdbcType="BIT" property="isDeleted" />
   </resultMap>
   <sql id="Base_Column_List">
-    commodity_id, category_id, user_id, stock, sales_volume, visible, del_flag
+    commodity_id, category_id, user_id, stock, sales_volume, visible, is_deleted
   </sql>
   <select id="selectByPrimaryKey" parameterType="com.shanduo.newretail.entity.RelationsKey" resultMap="BaseResultMap">
     select 
@@ -28,10 +28,10 @@
   <insert id="insert" parameterType="com.shanduo.newretail.entity.Relations">
     insert into relations (commodity_id, category_id, user_id, 
       stock, sales_volume, visible, 
-      del_flag)
+      is_deleted)
     values (#{commodityId,jdbcType=VARCHAR}, #{categoryId,jdbcType=INTEGER}, #{userId,jdbcType=VARCHAR}, 
       #{stock,jdbcType=INTEGER}, #{salesVolume,jdbcType=INTEGER}, #{visible,jdbcType=INTEGER}, 
-      #{delFlag,jdbcType=CHAR})
+      #{isDeleted,jdbcType=BIT})
   </insert>
   <insert id="insertSelective" parameterType="com.shanduo.newretail.entity.Relations">
     insert into relations
@@ -54,8 +54,8 @@
       <if test="visible != null">
         visible,
       </if>
-      <if test="delFlag != null">
-        del_flag,
+      <if test="isDeleted != null">
+        is_deleted,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -77,8 +77,8 @@
       <if test="visible != null">
         #{visible,jdbcType=INTEGER},
       </if>
-      <if test="delFlag != null">
-        #{delFlag,jdbcType=CHAR},
+      <if test="isDeleted != null">
+        #{isDeleted,jdbcType=BIT},
       </if>
     </trim>
   </insert>
@@ -97,8 +97,8 @@
       <if test="visible != null">
         visible = #{visible,jdbcType=INTEGER},
       </if>
-      <if test="delFlag != null">
-        del_flag = #{delFlag,jdbcType=CHAR},
+      <if test="isDeleted != null">
+        is_deleted = #{isDeleted,jdbcType=BIT},
       </if>
     </set>
     where commodity_id = #{commodityId,jdbcType=VARCHAR}
@@ -110,7 +110,7 @@
       stock = #{stock,jdbcType=INTEGER},
       sales_volume = #{salesVolume,jdbcType=INTEGER},
       visible = #{visible,jdbcType=INTEGER},
-      del_flag = #{delFlag,jdbcType=CHAR}
+      is_deleted = #{isDeleted,jdbcType=BIT}
     where commodity_id = #{commodityId,jdbcType=VARCHAR}
       and category_id = #{categoryId,jdbcType=INTEGER}
   </update>

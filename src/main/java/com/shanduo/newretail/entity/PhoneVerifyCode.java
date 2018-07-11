@@ -9,7 +9,7 @@ public class PhoneVerifyCode {
 
     private String code;
 
-    private Boolean codeType;
+    private String codeType;
 
     private Date gmtCreate;
 
@@ -39,12 +39,12 @@ public class PhoneVerifyCode {
         this.code = code == null ? null : code.trim();
     }
 
-    public Boolean getCodeType() {
+    public String getCodeType() {
         return codeType;
     }
 
-    public void setCodeType(Boolean codeType) {
-        this.codeType = codeType;
+    public void setCodeType(String codeType) {
+        this.codeType = codeType == null ? null : codeType.trim();
     }
 
     public Date getGmtCreate() {

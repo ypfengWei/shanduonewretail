@@ -5,7 +5,7 @@
     <id column="id" jdbcType="VARCHAR" property="id" />
     <result column="phone" jdbcType="VARCHAR" property="phone" />
     <result column="code" jdbcType="VARCHAR" property="code" />
-    <result column="code_type" jdbcType="BIT" property="codeType" />
+    <result column="code_type" jdbcType="CHAR" property="codeType" />
     <result column="gmt_create" jdbcType="TIMESTAMP" property="gmtCreate" />
     <result column="gmt_modified" jdbcType="TIMESTAMP" property="gmtModified" />
   </resultMap>
@@ -27,7 +27,7 @@
       code_type, gmt_create, gmt_modified
       )
     values (#{id,jdbcType=VARCHAR}, #{phone,jdbcType=VARCHAR}, #{code,jdbcType=VARCHAR}, 
-      #{codeType,jdbcType=BIT}, #{gmtCreate,jdbcType=TIMESTAMP}, #{gmtModified,jdbcType=TIMESTAMP}
+      #{codeType,jdbcType=CHAR}, #{gmtCreate,jdbcType=TIMESTAMP}, #{gmtModified,jdbcType=TIMESTAMP}
       )
   </insert>
   <insert id="insertSelective" parameterType="com.shanduo.newretail.entity.PhoneVerifyCode">
@@ -63,7 +63,7 @@
         #{code,jdbcType=VARCHAR},
       </if>
       <if test="codeType != null">
-        #{codeType,jdbcType=BIT},
+        #{codeType,jdbcType=CHAR},
       </if>
       <if test="gmtCreate != null">
         #{gmtCreate,jdbcType=TIMESTAMP},
@@ -83,7 +83,7 @@
         code = #{code,jdbcType=VARCHAR},
       </if>
       <if test="codeType != null">
-        code_type = #{codeType,jdbcType=BIT},
+        code_type = #{codeType,jdbcType=CHAR},
       </if>
       <if test="gmtCreate != null">
         gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
@@ -98,7 +98,7 @@
     update phone_verify_code
     set phone = #{phone,jdbcType=VARCHAR},
       code = #{code,jdbcType=VARCHAR},
-      code_type = #{codeType,jdbcType=BIT},
+      code_type = #{codeType,jdbcType=CHAR},
       gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
       gmt_modified = #{gmtModified,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=VARCHAR}

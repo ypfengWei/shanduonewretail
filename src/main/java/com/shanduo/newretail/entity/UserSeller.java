@@ -3,12 +3,10 @@ package com.shanduo.newretail.entity;
 import java.math.BigDecimal;
 import java.util.Date;
 
-public class Sellers {
+public class UserSeller {
     private String id;
 
-    private String userName;
-
-    private String password;
+    private String sellerName;
 
     private String sellerPicture;
 
@@ -32,7 +30,9 @@ public class Sellers {
 
     private BigDecimal lon;
 
-    private String jurisdictions;
+    private Date gmtCreate;
+
+    private Date gmtModified;
 
     public String getId() {
         return id;
@@ -42,20 +42,12 @@ public class Sellers {
         this.id = id == null ? null : id.trim();
     }
 
-    public String getUserName() {
-        return userName;
+    public String getSellerName() {
+        return sellerName;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName == null ? null : userName.trim();
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password == null ? null : password.trim();
+    public void setSellerName(String sellerName) {
+        this.sellerName = sellerName == null ? null : sellerName.trim();
     }
 
     public String getSellerPicture() {
@@ -146,11 +138,19 @@ public class Sellers {
         this.lon = lon;
     }
 
-    public String getJurisdictions() {
-        return jurisdictions;
+    public Date getGmtCreate() {
+        return gmtCreate;
     }
 
-    public void setJurisdictions(String jurisdictions) {
-        this.jurisdictions = jurisdictions == null ? null : jurisdictions.trim();
+    public void setGmtCreate(Date gmtCreate) {
+        this.gmtCreate = gmtCreate;
+    }
+
+    public Date getGmtModified() {
+        return gmtModified;
+    }
+
+    public void setGmtModified(Date gmtModified) {
+        this.gmtModified = gmtModified;
     }
 }

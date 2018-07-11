@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.shanduo.newretail.mapper.OrderDetailsMapper">
-  <resultMap id="BaseResultMap" type="com.shanduo.newretail.entity.OrderDetails">
+<mapper namespace="com.shanduo.newretail.mapper.ToOrderDetailsMapper">
+  <resultMap id="BaseResultMap" type="com.shanduo.newretail.entity.ToOrderDetails">
     <id column="id" jdbcType="INTEGER" property="id" />
     <result column="order_id" jdbcType="VARCHAR" property="orderId" />
     <result column="commodity_id" jdbcType="VARCHAR" property="commodityId" />
@@ -15,23 +15,23 @@
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
-    from order_details
+    from to_order_details
     where id = #{id,jdbcType=INTEGER}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
-    delete from order_details
+    delete from to_order_details
     where id = #{id,jdbcType=INTEGER}
   </delete>
-  <insert id="insert" parameterType="com.shanduo.newretail.entity.OrderDetails">
-    insert into order_details (id, order_id, commodity_id, 
+  <insert id="insert" parameterType="com.shanduo.newretail.entity.ToOrderDetails">
+    insert into to_order_details (id, order_id, commodity_id, 
       commodity_name, commodity_number, price
       )
     values (#{id,jdbcType=INTEGER}, #{orderId,jdbcType=VARCHAR}, #{commodityId,jdbcType=VARCHAR}, 
       #{commodityName,jdbcType=VARCHAR}, #{commodityNumber,jdbcType=INTEGER}, #{price,jdbcType=DECIMAL}
       )
   </insert>
-  <insert id="insertSelective" parameterType="com.shanduo.newretail.entity.OrderDetails">
-    insert into order_details
+  <insert id="insertSelective" parameterType="com.shanduo.newretail.entity.ToOrderDetails">
+    insert into to_order_details
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
         id,
@@ -73,8 +73,8 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.shanduo.newretail.entity.OrderDetails">
-    update order_details
+  <update id="updateByPrimaryKeySelective" parameterType="com.shanduo.newretail.entity.ToOrderDetails">
+    update to_order_details
     <set>
       <if test="orderId != null">
         order_id = #{orderId,jdbcType=VARCHAR},
@@ -94,8 +94,8 @@
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.shanduo.newretail.entity.OrderDetails">
-    update order_details
+  <update id="updateByPrimaryKey" parameterType="com.shanduo.newretail.entity.ToOrderDetails">
+    update to_order_details
     set order_id = #{orderId,jdbcType=VARCHAR},
       commodity_id = #{commodityId,jdbcType=VARCHAR},
       commodity_name = #{commodityName,jdbcType=VARCHAR},

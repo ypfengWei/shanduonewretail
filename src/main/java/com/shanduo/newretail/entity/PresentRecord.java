@@ -6,7 +6,7 @@ import java.util.Date;
 public class PresentRecord {
     private String id;
 
-    private String sellerId;
+    private String userId;
 
     private Date presentTime;
 
@@ -26,12 +26,12 @@ public class PresentRecord {
         this.id = id == null ? null : id.trim();
     }
 
-    public String getSellerId() {
-        return sellerId;
+    public String getUserId() {
+        return userId;
     }
 
-    public void setSellerId(String sellerId) {
-        this.sellerId = sellerId == null ? null : sellerId.trim();
+    public void setUserId(String userId) {
+        this.userId = userId == null ? null : userId.trim();
     }
 
     public Date getPresentTime() {

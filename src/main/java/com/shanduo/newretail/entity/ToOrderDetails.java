@@ -2,7 +2,7 @@ package com.shanduo.newretail.entity;
 
 import java.math.BigDecimal;
 
-public class OrderDetails {
+public class ToOrderDetails {
     private Integer id;
 
     private String orderId;

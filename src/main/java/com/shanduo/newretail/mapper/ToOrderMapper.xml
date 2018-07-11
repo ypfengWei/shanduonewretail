@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.shanduo.newretail.mapper.OrdersMapper">
-  <resultMap id="BaseResultMap" type="com.shanduo.newretail.entity.Orders">
+<mapper namespace="com.shanduo.newretail.mapper.ToOrderMapper">
+  <resultMap id="BaseResultMap" type="com.shanduo.newretail.entity.ToOrder">
     <id column="id" jdbcType="VARCHAR" property="id" />
     <result column="openid" jdbcType="VARCHAR" property="openid" />
     <result column="seller_id" jdbcType="VARCHAR" property="sellerId" />
@@ -23,15 +23,15 @@
   <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
-    from orders
+    from to_order
     where id = #{id,jdbcType=VARCHAR}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
-    delete from orders
+    delete from to_order
     where id = #{id,jdbcType=VARCHAR}
   </delete>
-  <insert id="insert" parameterType="com.shanduo.newretail.entity.Orders">
-    insert into orders (id, openid, seller_id, 
+  <insert id="insert" parameterType="com.shanduo.newretail.entity.ToOrder">
+    insert into to_order (id, openid, seller_id, 
       total_price, user_name, user_phone, 
       user_address, state, remarks, 
       payment_time, gmt_create, gmt_modified, 
@@ -42,8 +42,8 @@
       #{paymentTime,jdbcType=TIMESTAMP}, #{gmtCreate,jdbcType=TIMESTAMP}, #{gmtModified,jdbcType=TIMESTAMP}, 
       #{isDeleted,jdbcType=BIT})
   </insert>
-  <insert id="insertSelective" parameterType="com.shanduo.newretail.entity.Orders">
-    insert into orders
+  <insert id="insertSelective" parameterType="com.shanduo.newretail.entity.ToOrder">
+    insert into to_order
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
         id,
@@ -127,8 +127,8 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.shanduo.newretail.entity.Orders">
-    update orders
+  <update id="updateByPrimaryKeySelective" parameterType="com.shanduo.newretail.entity.ToOrder">
+    update to_order
     <set>
       <if test="openid != null">
         openid = #{openid,jdbcType=VARCHAR},
@@ -169,8 +169,8 @@
     </set>
     where id = #{id,jdbcType=VARCHAR}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.shanduo.newretail.entity.Orders">
-    update orders
+  <update id="updateByPrimaryKey" parameterType="com.shanduo.newretail.entity.ToOrder">
+    update to_order
     set openid = #{openid,jdbcType=VARCHAR},
       seller_id = #{sellerId,jdbcType=VARCHAR},
       total_price = #{totalPrice,jdbcType=DECIMAL},

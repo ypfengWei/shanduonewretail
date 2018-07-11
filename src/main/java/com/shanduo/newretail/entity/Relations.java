@@ -9,7 +9,7 @@ public class Relations extends RelationsKey {
 
     private Integer visible;
 
-    private String delFlag;
+    private Boolean isDeleted;
 
     public String getUserId() {
         return userId;
@@ -43,11 +43,11 @@ public class Relations extends RelationsKey {
         this.visible = visible;
     }
 
-    public String getDelFlag() {
-        return delFlag;
+    public Boolean getIsDeleted() {
+        return isDeleted;
     }
 
-    public void setDelFlag(String delFlag) {
-        this.delFlag = delFlag == null ? null : delFlag.trim();
+    public void setIsDeleted(Boolean isDeleted) {
+        this.isDeleted = isDeleted;
     }
 }

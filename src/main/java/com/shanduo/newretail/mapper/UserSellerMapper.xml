@@ -1,62 +1,59 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.shanduo.newretail.mapper.SellersMapper">
-  <resultMap id="BaseResultMap" type="com.shanduo.newretail.entity.Sellers">
+<mapper namespace="com.shanduo.newretail.mapper.UserSellerMapper">
+  <resultMap id="BaseResultMap" type="com.shanduo.newretail.entity.UserSeller">
     <id column="id" jdbcType="VARCHAR" property="id" />
-    <result column="user_name" jdbcType="VARCHAR" property="userName" />
-    <result column="password" jdbcType="VARCHAR" property="password" />
+    <result column="seller_name" jdbcType="VARCHAR" property="sellerName" />
     <result column="seller_picture" jdbcType="VARCHAR" property="sellerPicture" />
     <result column="notice" jdbcType="VARCHAR" property="notice" />
     <result column="phone" jdbcType="VARCHAR" property="phone" />
     <result column="seller_type" jdbcType="CHAR" property="sellerType" />
-    <result column="start_date" jdbcType="TIMESTAMP" property="startDate" />
-    <result column="end_date" jdbcType="TIMESTAMP" property="endDate" />
+    <result column="start_date" jdbcType="TIME" property="startDate" />
+    <result column="end_date" jdbcType="TIME" property="endDate" />
     <result column="business_sign" jdbcType="CHAR" property="businessSign" />
     <result column="money" jdbcType="DECIMAL" property="money" />
     <result column="parent_id" jdbcType="VARCHAR" property="parentId" />
     <result column="lat" jdbcType="DECIMAL" property="lat" />
     <result column="lon" jdbcType="DECIMAL" property="lon" />
-    <result column="jurisdictions" jdbcType="CHAR" property="jurisdictions" />
+    <result column="gmt_create" jdbcType="TIMESTAMP" property="gmtCreate" />
+    <result column="gmt_modified" jdbcType="TIMESTAMP" property="gmtModified" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, user_name, password, seller_picture, notice, phone, seller_type, start_date, 
-    end_date, business_sign, money, parent_id, lat, lon, jurisdictions
+    id, seller_name, seller_picture, notice, phone, seller_type, start_date, end_date, 
+    business_sign, money, parent_id, lat, lon, gmt_create, gmt_modified
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
-    from sellers
+    from user_seller
     where id = #{id,jdbcType=VARCHAR}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
-    delete from sellers
+    delete from user_seller
     where id = #{id,jdbcType=VARCHAR}
   </delete>
-  <insert id="insert" parameterType="com.shanduo.newretail.entity.Sellers">
-    insert into sellers (id, user_name, password, 
-      seller_picture, notice, phone, 
-      seller_type, start_date, end_date, 
-      business_sign, money, parent_id, 
-      lat, lon, jurisdictions
+  <insert id="insert" parameterType="com.shanduo.newretail.entity.UserSeller">
+    insert into user_seller (id, seller_name, seller_picture, 
+      notice, phone, seller_type, 
+      start_date, end_date, business_sign, 
+      money, parent_id, lat, 
+      lon, gmt_create, gmt_modified
       )
-    values (#{id,jdbcType=VARCHAR}, #{userName,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, 
-      #{sellerPicture,jdbcType=VARCHAR}, #{notice,jdbcType=VARCHAR}, #{phone,jdbcType=VARCHAR}, 
-      #{sellerType,jdbcType=CHAR}, #{startDate,jdbcType=TIMESTAMP}, #{endDate,jdbcType=TIMESTAMP}, 
-      #{businessSign,jdbcType=CHAR}, #{money,jdbcType=DECIMAL}, #{parentId,jdbcType=VARCHAR}, 
-      #{lat,jdbcType=DECIMAL}, #{lon,jdbcType=DECIMAL}, #{jurisdictions,jdbcType=CHAR}
+    values (#{id,jdbcType=VARCHAR}, #{sellerName,jdbcType=VARCHAR}, #{sellerPicture,jdbcType=VARCHAR}, 
+      #{notice,jdbcType=VARCHAR}, #{phone,jdbcType=VARCHAR}, #{sellerType,jdbcType=CHAR}, 
+      #{startDate,jdbcType=TIME}, #{endDate,jdbcType=TIME}, #{businessSign,jdbcType=CHAR}, 
+      #{money,jdbcType=DECIMAL}, #{parentId,jdbcType=VARCHAR}, #{lat,jdbcType=DECIMAL}, 
+      #{lon,jdbcType=DECIMAL}, #{gmtCreate,jdbcType=TIMESTAMP}, #{gmtModified,jdbcType=TIMESTAMP}
       )
   </insert>
-  <insert id="insertSelective" parameterType="com.shanduo.newretail.entity.Sellers">
-    insert into sellers
+  <insert id="insertSelective" parameterType="com.shanduo.newretail.entity.UserSeller">
+    insert into user_seller
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
         id,
       </if>
-      <if test="userName != null">
-        user_name,
-      </if>
-      <if test="password != null">
-        password,
+      <if test="sellerName != null">
+        seller_name,
       </if>
       <if test="sellerPicture != null">
         seller_picture,
@@ -91,19 +88,19 @@
       <if test="lon != null">
         lon,
       </if>
-      <if test="jurisdictions != null">
-        jurisdictions,
+      <if test="gmtCreate != null">
+        gmt_create,
+      </if>
+      <if test="gmtModified != null">
+        gmt_modified,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
         #{id,jdbcType=VARCHAR},
       </if>
-      <if test="userName != null">
-        #{userName,jdbcType=VARCHAR},
-      </if>
-      <if test="password != null">
-        #{password,jdbcType=VARCHAR},
+      <if test="sellerName != null">
+        #{sellerName,jdbcType=VARCHAR},
       </if>
       <if test="sellerPicture != null">
         #{sellerPicture,jdbcType=VARCHAR},
@@ -118,10 +115,10 @@
         #{sellerType,jdbcType=CHAR},
       </if>
       <if test="startDate != null">
-        #{startDate,jdbcType=TIMESTAMP},
+        #{startDate,jdbcType=TIME},
       </if>
       <if test="endDate != null">
-        #{endDate,jdbcType=TIMESTAMP},
+        #{endDate,jdbcType=TIME},
       </if>
       <if test="businessSign != null">
         #{businessSign,jdbcType=CHAR},
@@ -138,19 +135,19 @@
       <if test="lon != null">
         #{lon,jdbcType=DECIMAL},
       </if>
-      <if test="jurisdictions != null">
-        #{jurisdictions,jdbcType=CHAR},
+      <if test="gmtCreate != null">
+        #{gmtCreate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="gmtModified != null">
+        #{gmtModified,jdbcType=TIMESTAMP},
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.shanduo.newretail.entity.Sellers">
-    update sellers
+  <update id="updateByPrimaryKeySelective" parameterType="com.shanduo.newretail.entity.UserSeller">
+    update user_seller
     <set>
-      <if test="userName != null">
-        user_name = #{userName,jdbcType=VARCHAR},
-      </if>
-      <if test="password != null">
-        password = #{password,jdbcType=VARCHAR},
+      <if test="sellerName != null">
+        seller_name = #{sellerName,jdbcType=VARCHAR},
       </if>
       <if test="sellerPicture != null">
         seller_picture = #{sellerPicture,jdbcType=VARCHAR},
@@ -165,10 +162,10 @@
         seller_type = #{sellerType,jdbcType=CHAR},
       </if>
       <if test="startDate != null">
-        start_date = #{startDate,jdbcType=TIMESTAMP},
+        start_date = #{startDate,jdbcType=TIME},
       </if>
       <if test="endDate != null">
-        end_date = #{endDate,jdbcType=TIMESTAMP},
+        end_date = #{endDate,jdbcType=TIME},
       </if>
       <if test="businessSign != null">
         business_sign = #{businessSign,jdbcType=CHAR},
@@ -185,28 +182,31 @@
       <if test="lon != null">
         lon = #{lon,jdbcType=DECIMAL},
       </if>
-      <if test="jurisdictions != null">
-        jurisdictions = #{jurisdictions,jdbcType=CHAR},
+      <if test="gmtCreate != null">
+        gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="gmtModified != null">
+        gmt_modified = #{gmtModified,jdbcType=TIMESTAMP},
       </if>
     </set>
     where id = #{id,jdbcType=VARCHAR}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.shanduo.newretail.entity.Sellers">
-    update sellers
-    set user_name = #{userName,jdbcType=VARCHAR},
-      password = #{password,jdbcType=VARCHAR},
+  <update id="updateByPrimaryKey" parameterType="com.shanduo.newretail.entity.UserSeller">
+    update user_seller
+    set seller_name = #{sellerName,jdbcType=VARCHAR},
       seller_picture = #{sellerPicture,jdbcType=VARCHAR},
       notice = #{notice,jdbcType=VARCHAR},
       phone = #{phone,jdbcType=VARCHAR},
       seller_type = #{sellerType,jdbcType=CHAR},
-      start_date = #{startDate,jdbcType=TIMESTAMP},
-      end_date = #{endDate,jdbcType=TIMESTAMP},
+      start_date = #{startDate,jdbcType=TIME},
+      end_date = #{endDate,jdbcType=TIME},
       business_sign = #{businessSign,jdbcType=CHAR},
       money = #{money,jdbcType=DECIMAL},
       parent_id = #{parentId,jdbcType=VARCHAR},
       lat = #{lat,jdbcType=DECIMAL},
       lon = #{lon,jdbcType=DECIMAL},
-      jurisdictions = #{jurisdictions,jdbcType=CHAR}
+      gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
+      gmt_modified = #{gmtModified,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=VARCHAR}
   </update>
 </mapper>

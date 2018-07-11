@@ -3,7 +3,7 @@
 <mapper namespace="com.shanduo.newretail.mapper.PresentRecordMapper">
   <resultMap id="BaseResultMap" type="com.shanduo.newretail.entity.PresentRecord">
     <id column="id" jdbcType="VARCHAR" property="id" />
-    <result column="seller_id" jdbcType="VARCHAR" property="sellerId" />
+    <result column="user_id" jdbcType="VARCHAR" property="userId" />
     <result column="present_time" jdbcType="TIMESTAMP" property="presentTime" />
     <result column="amount_cash" jdbcType="DECIMAL" property="amountCash" />
     <result column="state" jdbcType="CHAR" property="state" />
@@ -11,7 +11,7 @@
     <result column="gmt_modified" jdbcType="TIMESTAMP" property="gmtModified" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, seller_id, present_time, amount_cash, state, gmt_create, gmt_modified
+    id, user_id, present_time, amount_cash, state, gmt_create, gmt_modified
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
     select 
@@ -24,10 +24,10 @@
     where id = #{id,jdbcType=VARCHAR}
   </delete>
   <insert id="insert" parameterType="com.shanduo.newretail.entity.PresentRecord">
-    insert into present_record (id, seller_id, present_time, 
+    insert into present_record (id, user_id, present_time, 
       amount_cash, state, gmt_create, 
       gmt_modified)
-    values (#{id,jdbcType=VARCHAR}, #{sellerId,jdbcType=VARCHAR}, #{presentTime,jdbcType=TIMESTAMP}, 
+    values (#{id,jdbcType=VARCHAR}, #{userId,jdbcType=VARCHAR}, #{presentTime,jdbcType=TIMESTAMP}, 
       #{amountCash,jdbcType=DECIMAL}, #{state,jdbcType=CHAR}, #{gmtCreate,jdbcType=TIMESTAMP}, 
       #{gmtModified,jdbcType=TIMESTAMP})
   </insert>
@@ -37,8 +37,8 @@
       <if test="id != null">
         id,
       </if>
-      <if test="sellerId != null">
-        seller_id,
+      <if test="userId != null">
+        user_id,
       </if>
       <if test="presentTime != null">
         present_time,
@@ -60,8 +60,8 @@
       <if test="id != null">
         #{id,jdbcType=VARCHAR},
       </if>
-      <if test="sellerId != null">
-        #{sellerId,jdbcType=VARCHAR},
+      <if test="userId != null">
+        #{userId,jdbcType=VARCHAR},
       </if>
       <if test="presentTime != null">
         #{presentTime,jdbcType=TIMESTAMP},
@@ -83,8 +83,8 @@
   <update id="updateByPrimaryKeySelective" parameterType="com.shanduo.newretail.entity.PresentRecord">
     update present_record
     <set>
-      <if test="sellerId != null">
-        seller_id = #{sellerId,jdbcType=VARCHAR},
+      <if test="userId != null">
+        user_id = #{userId,jdbcType=VARCHAR},
       </if>
       <if test="presentTime != null">
         present_time = #{presentTime,jdbcType=TIMESTAMP},
@@ -106,7 +106,7 @@
   </update>
   <update id="updateByPrimaryKey" parameterType="com.shanduo.newretail.entity.PresentRecord">
     update present_record
-    set seller_id = #{sellerId,jdbcType=VARCHAR},
+    set user_id = #{userId,jdbcType=VARCHAR},
       present_time = #{presentTime,jdbcType=TIMESTAMP},
       amount_cash = #{amountCash,jdbcType=DECIMAL},
       state = #{state,jdbcType=CHAR},
