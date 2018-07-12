@@ -125,4 +125,10 @@
       is_deleted = #{isDeleted,jdbcType=BIT}
     where id = #{id,jdbcType=VARCHAR}
   </update>
+  <select id="getUserByPhone" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    id, name, mobile_phone, password, jurisdiction
+    from to_user
+    where mobile_phone = #{mobilePhone,jdbcType=VARCHAR}
+  </select>
 </mapper>

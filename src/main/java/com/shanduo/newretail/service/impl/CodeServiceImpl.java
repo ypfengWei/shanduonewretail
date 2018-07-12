@@ -23,7 +23,6 @@ import com.shanduo.newretail.util.UUIDGenerator;
  *
  */
 @Service
-@Transactional(rollbackFor = Exception.class)
 public class CodeServiceImpl implements CodeService {
 
 	private static final Logger log = LoggerFactory.getLogger(CodeServiceImpl.class);
@@ -32,6 +31,7 @@ public class CodeServiceImpl implements CodeService {
 	private PhoneVerifyCodeMapper codeMapper;
 
 	@Override
+	@Transactional(rollbackFor = Exception.class)
 	public int saveCode(String phone, String codes, String codeType) {
 		PhoneVerifyCode code = new PhoneVerifyCode();
 		code.setId(UUIDGenerator.getUUID());
@@ -48,10 +48,7 @@ public class CodeServiceImpl implements CodeService {
 
 	@Override
 	public boolean checkCode(String phone, String codes, String codeType) {
-		long time = System.currentTimeMillis();
-		Format format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		String createDate = format.format(time - 1000 * 60 * 10);
-		PhoneVerifyCode code = codeMapper.getCode(phone, codes, codeType, createDate);
+		PhoneVerifyCode code = codeMapper.getCode(phone, codes, codeType, getDate(10));
 		if(code == null) {
 			log.warn("code is error waith phone:{} and code:{}", phone, codes);
 			return true;
@@ -61,15 +58,17 @@ public class CodeServiceImpl implements CodeService {
 
 	@Override
 	public boolean checkSend(String phone, String codeType) {
-		long time = System.currentTimeMillis();
-		Format format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		String createDate = format.format(time - 1000 * 60);
-		PhoneVerifyCode code = codeMapper.getCodes(phone, codeType, createDate);
+		PhoneVerifyCode code = codeMapper.getCodes(phone, codeType, getDate(1));
 		if(code != null) {
-			log.warn("code is count waith phone:{}", phone);
+			log.warn("code is restrict waith phone:{}", phone);
 			return true;
 		}
 		return false;
 	}
 	
+	public String getDate(int minute) {
+		long time = System.currentTimeMillis();
+		Format format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		return format.format(time - 1000 * 60 * minute);
+	}
 }

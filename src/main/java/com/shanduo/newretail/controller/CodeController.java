@@ -19,6 +19,7 @@ import com.shanduo.newretail.entity.common.ErrorBean;
 import com.shanduo.newretail.entity.common.ResultBean;
 import com.shanduo.newretail.entity.common.SuccessBean;
 import com.shanduo.newretail.service.CodeService;
+import com.shanduo.newretail.service.UserService;
 import com.shanduo.newretail.util.PatternUtils;
 import com.shanduo.newretail.util.StringUtils;
 import com.shanduo.newretail.util.SmsUtils;
@@ -31,6 +32,8 @@ public class CodeController {
 	
 	@Autowired
 	private CodeService codeService;
+	@Autowired
+	private UserService userService;
 	
 	@RequestMapping(value = "envoyer",method={RequestMethod.POST,RequestMethod.GET})
 	@ResponseBody
@@ -42,6 +45,9 @@ public class CodeController {
 		if(StringUtils.isNull(typeId) || !typeId.matches("^[1]$")) {
 			log.warn("类型错误");
 			return new ErrorBean(ErrorConsts.CODE_10002, "类型错误");
+		}
+		if("1".equals(typeId) && userService.chackPhone(phone)) {
+			return new ErrorBean(ErrorConsts.CODE_10003, "账号已存在");
 		}
 		if(codeService.checkSend(phone, typeId)) {
 			return new ErrorBean(ErrorConsts.CODE_10003, "发送频率受限");

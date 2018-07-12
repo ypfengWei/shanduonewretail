@@ -14,4 +14,6 @@ public interface ToUserMapper {
     int updateByPrimaryKeySelective(ToUser record);
 
     int updateByPrimaryKey(ToUser record);
+    
+    ToUser getUserByPhone(String mobilePhone);
 }
