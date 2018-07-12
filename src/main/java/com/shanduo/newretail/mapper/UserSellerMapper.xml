@@ -213,11 +213,16 @@
     select 
     <include refid="Base_Column_List" />
     from user_seller
+<<<<<<< HEAD
     where (((#{lon,jdbcType=DECIMAL}-lon)*100)*((#{lon,jdbcType=DECIMAL}-lon)*100)+((#{lat,jdbcType=DECIMAL}-lat)*100)*((#{lat,jdbcType=DECIMAL}-lat)*100)) &lt; 1
      and seller_type in 
                  <foreach collection="list" item = "sellerType" separator="," open="(" close=")">
                   #{sellerType}
              </foreach> 
     order by (((#{lon,jdbcType=DECIMAL}-lon)*100)*((#{lon,jdbcType=DECIMAL}-lon)*100)+((#{lat,jdbcType=DECIMAL}-lat)*100)*((#{lat,jdbcType=DECIMAL}-lat)*100)) 
+=======
+    where (((#{0}-lon)*100)*((#{0}-lon)*100)+((#{1}-lat)*100)*((#{1}-lat)*100)) &lt; 1
+    order by (((#{0}-lon)*100)*((#{0}-lon)*100)+((#{1}-lat)*100)*((#{1}-lat)*100)) 
+>>>>>>> 354341fb34a556905b47185ed34514df4587b7e0
   </select>
 </mapper>
