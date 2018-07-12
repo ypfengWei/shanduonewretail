@@ -9,6 +9,8 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.shanduo.newretail.entity.SellerInfo;
 import com.shanduo.newretail.entity.UserSeller;
 import com.shanduo.newretail.mapper.UserSellerMapper;
@@ -21,7 +23,7 @@ public class SellerServiceImpl implements SellerService {
 	private UserSellerMapper userSellerMapper;
 
 	@Override
-	public List<List<SellerInfo>> selectNearbySeller(double lon, double lat) {
+	public List<Object> selectNearbySeller(double lon, double lat) {
 		List<Object> sellerList = new ArrayList<Object>();
 		List<List<SellerInfo>>  sellerInfoList= new ArrayList<List<SellerInfo>>();
 		List<String> sellerType = new ArrayList<String>();
@@ -33,7 +35,8 @@ public class SellerServiceImpl implements SellerService {
 		params.put("lat", lat);
 		params.put("list", sellerType);
 		sellerList = userSellerMapper.selectNearbySeller(params);
-		for(int i=0;i<sellerList.size();i++){
+		return sellerList;
+	/*	for(int i=0;i<sellerList.size();i++){
 			List<UserSeller> sellerLists =(List<UserSeller>) sellerList.get(i);
 			List<SellerInfo> sellerInfoLists = new ArrayList<SellerInfo>();
 			for(int j=0;j<sellerLists.size();j++){
@@ -67,7 +70,14 @@ public class SellerServiceImpl implements SellerService {
 			sellerInfoList.add(sellerInfoLists);
 		}
 		
-		return sellerInfoList;
+		return sellerInfoList;*/
+	}
+
+	@Override
+	@Transactional(rollbackFor = Exception.class)
+	public int insertSeller(String id, String sellerName, String phone) {
+		
+		return userSellerMapper.insertSeller(id, sellerName, phone);
 	}
 
 }

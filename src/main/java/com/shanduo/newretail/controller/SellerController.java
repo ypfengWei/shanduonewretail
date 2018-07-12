@@ -43,11 +43,14 @@ public class SellerController {
 		}
 		List<List<SellerInfo>> sellerInfoList = new ArrayList<List<SellerInfo>>();
 		try {
-			sellerInfoList = sellerService.selectNearbySeller(new Double(lon), new Double(lat));
+			List<Object>	sellerInfoLists = sellerService.selectNearbySeller(new Double(lon), new Double(lat));
+			return new SuccessBean(sellerInfoLists);
 		} catch (Exception e) {
 			return new ErrorBean(ErrorConsts.CODE_10004,"查询失败");
 		}
 		
-		return new SuccessBean(sellerInfoList);
+	//	return new SuccessBean(sellerInfoList);
 	}
+	
+	
 }

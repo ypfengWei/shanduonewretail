@@ -7,6 +7,7 @@ import com.shanduo.newretail.entity.SellerInfo;
 
 public interface SellerService {
 	
-	List<List<SellerInfo>> selectNearbySeller(double lon,double lat);
-
+	List<Object> selectNearbySeller(double lon,double lat);
+	
+	int insertSeller(String id,String sellerName,String phone);
 }

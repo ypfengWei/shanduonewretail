@@ -209,6 +209,11 @@
       gmt_modified = #{gmtModified,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=VARCHAR}
   </update>
+  <insert id="insertSeller" >
+    insert into user_seller (id, seller_name,  phone)
+    values (#{0}, #{1},  #{2} 
+      )
+  </insert>
   <select id="selectNearbySeller" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
