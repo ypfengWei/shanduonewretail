@@ -1,13 +1,16 @@
 package com.shanduo.newretail.service;
 
 import java.util.List;
+import java.util.Map;
 
-import com.shanduo.newretail.entity.SellerInfo;
+import com.shanduo.newretail.entity.serice.SellerInfo;
 
 
 public interface SellerService {
 	
-	List<Object> selectNearbySeller(double lon,double lat);
+	List<Map<String, List<SellerInfo>>> selectNearbySeller(double lon,double lat,List<String> sellerType);
 	
-	int insertSeller(String id,String sellerName,String phone);
+	List<String> selectNearbySellerType(double lon,double lat);
+	
+	int insertSeller(String id,String sellerName,String phone,String parentId);
 }

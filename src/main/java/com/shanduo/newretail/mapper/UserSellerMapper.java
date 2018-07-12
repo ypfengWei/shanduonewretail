@@ -17,8 +17,10 @@ public interface UserSellerMapper {
 
     int updateByPrimaryKey(UserSeller record);
     
-    int insertSeller(String id,String sellerName,String phone);
+    int insertSeller(String id,String sellerName,String phone,String parentId);
     
-    List<Object> selectNearbySeller(Map<String, Object> params);
+    List<String> selectNearbySellerType(double lon,double lat);
+    
+    List<UserSeller> selectNearbySeller(Map<String, Object> params);
 
 }

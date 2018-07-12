@@ -11,8 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.shanduo.newretail.entity.SellerInfo;
 import com.shanduo.newretail.entity.UserSeller;
+import com.shanduo.newretail.entity.serice.SellerInfo;
 import com.shanduo.newretail.mapper.UserSellerMapper;
 import com.shanduo.newretail.service.SellerService;
 import com.shanduo.newretail.util.DateUtils;
@@ -23,26 +23,30 @@ public class SellerServiceImpl implements SellerService {
 	private UserSellerMapper userSellerMapper;
 
 	@Override
-	public List<Object> selectNearbySeller(double lon, double lat) {
-		List<Object> sellerList = new ArrayList<Object>();
-		List<List<SellerInfo>>  sellerInfoList= new ArrayList<List<SellerInfo>>();
-		List<String> sellerType = new ArrayList<String>();
-		sellerType.add("0");
-		sellerType.add("1");
-		sellerType.add("2");
+	public List<Map<String, List<SellerInfo>>> selectNearbySeller(double lon, double lat,List<String> sellerType) {
+		List<Map<String, List<SellerInfo>>> sellerInfoList = new ArrayList<Map<String, List<SellerInfo>>>();
+		for(int i=0;i<sellerType.size();i++){
+			Map<String, List<SellerInfo>> sellerInfoMap = new HashMap<String, List<SellerInfo>>();
+			sellerInfoMap = selectNearbySellerOneType(lon,lat,sellerType.get(i));
+			sellerInfoList.add(sellerInfoMap);
+		}
+		return sellerInfoList;
+	}
+	/*
+	 * 查询单个店铺种类下的附近所有店铺
+	 */
+	public Map<String, List<SellerInfo>> selectNearbySellerOneType(double lon, double lat,String sellerType) {
+		List<UserSeller> sellerList = new ArrayList<UserSeller>();
+		List<SellerInfo>  sellerInfoList= new ArrayList<SellerInfo>();
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("lon", lon);
 		params.put("lat", lat);
-		params.put("list", sellerType);
+		params.put("sellerType", sellerType);
 		sellerList = userSellerMapper.selectNearbySeller(params);
-		return sellerList;
-	/*	for(int i=0;i<sellerList.size();i++){
-			List<UserSeller> sellerLists =(List<UserSeller>) sellerList.get(i);
-			List<SellerInfo> sellerInfoLists = new ArrayList<SellerInfo>();
-			for(int j=0;j<sellerLists.size();j++){
+		for(int i=0;i<sellerList.size();i++){
 				SellerInfo seller = new SellerInfo();
 				UserSeller userSeller = new UserSeller();
-				userSeller = sellerLists.get(j);
+				userSeller = sellerList.get(i);
 				seller.setId(userSeller.getId());
 				seller.setSellerName(userSeller.getSellerName());
 				seller.setSellerPicture(userSeller.getSellerPicture());
@@ -50,7 +54,7 @@ public class SellerServiceImpl implements SellerService {
 				//计算店铺与顾客的距离
 				seller.setDistance(LocationUtils.getDistance(lon, lat, userSeller.getLon().doubleValue(), userSeller.getLat().doubleValue())+"");
 				//判断当前时间店铺是否营业
-				if("0".equals(userSeller.getBusinessSign())){
+				if("0".equals(userSeller.getBusinessSign())&&null!=userSeller.getStartDate()&&null!=userSeller.getEndDate()){
 					SimpleDateFormat df = new SimpleDateFormat("HH:mm");//设置日期格式
 				    Date now =null;
 				    Date beginTime = userSeller.getStartDate();
@@ -65,19 +69,26 @@ public class SellerServiceImpl implements SellerService {
 				}else {
 					seller.setBusinessSign(false);
 				}
-				sellerInfoLists.add(seller);
-			}
-			sellerInfoList.add(sellerInfoLists);
+				sellerInfoList.add(seller);
+			
 		}
-		
-		return sellerInfoList;*/
+		Map<String, List<SellerInfo>> sellerInfoMap = new HashMap<String, List<SellerInfo>>();
+		sellerInfoMap.put(sellerType, sellerInfoList);
+		return sellerInfoMap;
 	}
+
 
 	@Override
 	@Transactional(rollbackFor = Exception.class)
-	public int insertSeller(String id, String sellerName, String phone) {
+	public int insertSeller(String id, String sellerName, String phone,String parentId) {
 		
-		return userSellerMapper.insertSeller(id, sellerName, phone);
+		return userSellerMapper.insertSeller(id, sellerName, phone,parentId);
+	}
+
+	@Override
+	public List<String> selectNearbySellerType(double lon, double lat) {
+		
+		return userSellerMapper.selectNearbySellerType(lon, lat);
 	}
 
 }

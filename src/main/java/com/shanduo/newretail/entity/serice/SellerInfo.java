@@ -1,4 +1,4 @@
-package com.shanduo.newretail.entity;
+package com.shanduo.newretail.entity.serice;
 
 
 public class SellerInfo {
