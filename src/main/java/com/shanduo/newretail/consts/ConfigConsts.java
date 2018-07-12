@@ -10,14 +10,8 @@ package com.shanduo.newretail.consts;
  */
 public class ConfigConsts {
 	
-	/**
-	 * 
-	 */
 	public static final String API_URL = "https://yapinkeji.com/shanduonewretail";
-	
-	/**
-	 * 图片保存目录
-	 */
+	//图片保存目录
 	public static final String IMAGE_PATH = "/www/wechat/picture/";
 	
 	public static final String IMAGE_URL = "/picture/";

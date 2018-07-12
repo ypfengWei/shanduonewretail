@@ -38,7 +38,7 @@ public class CodeServiceImpl implements CodeService {
 		code.setPhone(phone);
 		code.setCode(codes);
 		code.setCodeType(codeType);
-		int i = codeMapper.insert(code);
+		int i = codeMapper.insertSelective(code);
 		if(i < 0) {
 			log.error("录入验证码失败");
 			throw new RuntimeException();

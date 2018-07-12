@@ -31,5 +31,5 @@ public interface BaseService {
 	 * @return boolean
 	 * @throws
 	 */
-	boolean checkUserRole(String userId,String role);
+	boolean checkUserRole(String userId, String role);
 }

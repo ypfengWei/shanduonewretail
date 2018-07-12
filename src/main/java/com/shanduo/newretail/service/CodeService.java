@@ -21,7 +21,7 @@ public interface CodeService {
 	 * @return int
 	 * @throws
 	 */
-	int saveCode(String phone,String codes,String codeType);
+	int saveCode(String phone, String codes, String codeType);
 	
 	/**
 	 * 效验验证码
@@ -34,7 +34,7 @@ public interface CodeService {
 	 * @return boolean
 	 * @throws
 	 */
-	boolean checkCode(String phone,String codes,String codeType);
+	boolean checkCode(String phone, String codes, String codeType);
 	
 	/**
 	 * 效验发送频率

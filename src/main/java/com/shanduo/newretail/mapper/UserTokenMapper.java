@@ -14,4 +14,6 @@ public interface UserTokenMapper {
     int updateByPrimaryKeySelective(UserToken record);
 
     int updateByPrimaryKey(UserToken record);
+    
+    int saveToken(String token,String userId);
 }

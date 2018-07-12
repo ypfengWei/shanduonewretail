@@ -15,5 +15,7 @@ public interface ToUserMapper {
 
     int updateByPrimaryKey(ToUser record);
     
-    ToUser getUserByPhone(String mobilePhone);
+    ToUser getPhone(String mobilePhone);
+    
+    ToUser getLogin(String mobilePhone,String password);
 }
