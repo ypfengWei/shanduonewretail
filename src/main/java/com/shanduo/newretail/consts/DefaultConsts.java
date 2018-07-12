@@ -29,4 +29,8 @@ public class DefaultConsts {
 	
 	//注册短信
 	public static final String CODE_REGISTER = "1";
+	//换手机号
+	public static final String CODE_PHONE = "2";
+	//修改密码
+	public static final String CODE_PASSWORD = "3";
 }

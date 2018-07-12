@@ -50,7 +50,7 @@ public class CodeController {
 	 * @Description: TODO
 	 * @param @param request
 	 * @param @param phone 手机号
-	 * @param @param typeId 类型:1.注册;
+	 * @param @param typeId 类型:1.注册;2.换手机号;3.修改密码;
 	 * @param @return
 	 * @return ResultBean
 	 * @throws
@@ -62,11 +62,14 @@ public class CodeController {
 			log.warn("phone is error waith phone:{}", phone);
 			return new ErrorBean(ErrorConsts.CODE_10002, "手机号错误");
 		}
-		if(StringUtils.isNull(typeId) || !typeId.matches("^[1]$")) {
+		if(StringUtils.isNull(typeId) || !typeId.matches("^[123]$")) {
 			log.warn("typeId is error waith typeId:{}", typeId);
 			return new ErrorBean(ErrorConsts.CODE_10002, "类型错误");
 		}
-		if(DefaultConsts.NUMBER_1.equals(typeId) && userService.chackPhone(phone)) {
+		if(typeId.equals(DefaultConsts.NUMBER_1) && userService.chackPhone(phone)) {
+			return new ErrorBean(ErrorConsts.CODE_10003, "手机号已存在");
+		}
+		if(typeId.equals(DefaultConsts.NUMBER_2) && userService.chackPhone(phone)) {
 			return new ErrorBean(ErrorConsts.CODE_10003, "手机号已存在");
 		}
 		if(codeService.checkSend(phone, typeId)) {

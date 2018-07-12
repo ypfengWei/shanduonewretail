@@ -18,4 +18,6 @@ public interface ToUserMapper {
     ToUser getPhone(String mobilePhone);
     
     ToUser getLogin(String mobilePhone,String password);
+    
+    int updatePassswordByPhone(String phone, String password);
 }

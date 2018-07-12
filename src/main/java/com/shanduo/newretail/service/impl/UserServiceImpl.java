@@ -95,5 +95,34 @@ public class UserServiceImpl implements UserService {
 		}
 		return new TokenInfo(token, user);
 	}
+	
+	@Override
+	public boolean checkUserPassword(String userId, String password) {
+		ToUser user = userMapper.selectByPrimaryKey(userId);
+		password = MD5Utils.getInstance().getMD5(password);
+		if(password.equals(user.getPassword())) {
+			return false;
+		}
+		return true;
+	}
+	
+	@Override
+	public int updateUser(String userId, String parameter, String typrId) {
+		ToUser user = new ToUser();
+		user.setId(userId);
+		if(typrId.equals(DefaultConsts.NUMBER_1)) {
+			user.setMobilePhone(parameter);
+		}else {
+			parameter = MD5Utils.getInstance().getMD5(parameter);
+			user.setPassword(parameter);
+		}
+		return userMapper.updateByPrimaryKeySelective(user);
+	}
+
+	@Override
+	public int updatePassswordByPhone(String phone, String password) {
+		password = MD5Utils.getInstance().getMD5(password);
+		return userMapper.updatePassswordByPhone(phone, password);
+	}
 
 }

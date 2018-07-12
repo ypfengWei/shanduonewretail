@@ -58,4 +58,10 @@ public interface UserService {
 	 * @throws
 	 */
 	TokenInfo loginUser(String phone, String password);
+	
+	boolean checkUserPassword(String userId, String password);
+	
+	int updateUser(String userId, String parameter, String typrId);
+	
+	int updatePassswordByPhone(String phone, String password);
 }

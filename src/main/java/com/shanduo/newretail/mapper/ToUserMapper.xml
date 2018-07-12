@@ -125,6 +125,7 @@
       is_deleted = #{isDeleted,jdbcType=BIT}
     where id = #{id,jdbcType=VARCHAR}
   </update>
+  
   <select id="getPhone" parameterType="java.lang.String" resultMap="BaseResultMap">
     select 
     id, name, mobile_phone, password, jurisdiction
@@ -139,4 +140,9 @@
     and mobile_phone = #{0}
     and password = #{1}
   </select>
+  <update id="updatePassswordByPhone">
+    update to_user
+    set password = #{1}
+    where mobile_phone = #{0}
+  </update>
 </mapper>
