@@ -21,14 +21,14 @@ public class JsonStringUtils {
 	/**
 	 * json字符串转换List<Object>
 	 * @Title: getList
-	 * @Description: TODO(这里用一句话描述这个方法的作用)
+	 * @Description: TODO
 	 * @param @param json
 	 * @param @return
 	 * @return List<Object>
 	 * @throws
 	 */
 	public static List<Map<String, Object>> getList(String json){
-		if(json == null || json.equals("")) {
+		if(json == null || "".equals(json)) {
 			return new ArrayList<>(0);
 		}
 		JSONArray jsonArray = JSONArray.fromObject(json);

@@ -23,7 +23,7 @@ public interface UserService {
 	 * @return int
 	 * @throws
 	 */
-	int saveUser(String phone, String password, String parentId);
+	int saveUser(String openId, String phone, String password, String parentId);
 	
 	/**
 	 * 检查手机号是否已存在
@@ -59,9 +59,40 @@ public interface UserService {
 	 */
 	TokenInfo loginUser(String phone, String password);
 	
+	/**
+	 * 检查密码是否正确
+	 * @Title: checkUserPassword
+	 * @Description: TODO
+	 * @param @param userId
+	 * @param @param password
+	 * @param @return
+	 * @return boolean
+	 * @throws
+	 */
 	boolean checkUserPassword(String userId, String password);
 	
+	/**
+	 * 修改用户信息
+	 * @Title: updateUser
+	 * @Description: TODO
+	 * @param @param userId
+	 * @param @param parameter
+	 * @param @param typrId 类型:1.手机号;2.密码;3.昵称;
+	 * @param @return
+	 * @return int
+	 * @throws
+	 */
 	int updateUser(String userId, String parameter, String typrId);
 	
+	/**
+	 * 验证码修改密码
+	 * @Title: updatePassswordByPhone
+	 * @Description: TODO
+	 * @param @param phone
+	 * @param @param password
+	 * @param @return
+	 * @return int
+	 * @throws
+	 */
 	int updatePassswordByPhone(String phone, String password);
 }

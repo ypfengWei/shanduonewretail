@@ -38,12 +38,13 @@ public class UserServiceImpl implements UserService {
 	
 	@Override
 	@Transactional(rollbackFor = Exception.class)
-	public int saveUser(String phone, String password, String parentId) {
+	public int saveUser(String openId, String phone, String password, String parentId) {
 		String id = UUIDGenerator.getUUID();
 		password = MD5Utils.getInstance().getMD5(password);
 		String name = phone.replaceAll("(\\d{3})\\d{4}(\\d{4})","$1****$2");
 		ToUser user = new ToUser();
 		user.setId(id);
+		user.setOpenId(openId);
 		user.setName(name);
 		user.setMobilePhone(phone);
 		user.setPassword(password);
@@ -110,11 +111,19 @@ public class UserServiceImpl implements UserService {
 	public int updateUser(String userId, String parameter, String typrId) {
 		ToUser user = new ToUser();
 		user.setId(userId);
-		if(typrId.equals(DefaultConsts.NUMBER_1)) {
+		switch (typrId) {
+		case DefaultConsts.NUMBER_1:
 			user.setMobilePhone(parameter);
-		}else {
+			break;
+		case DefaultConsts.NUMBER_2:
 			parameter = MD5Utils.getInstance().getMD5(parameter);
 			user.setPassword(parameter);
+			break;
+		case DefaultConsts.NUMBER_3:
+			user.setName(parameter);
+			break;
+		default:
+			break;
 		}
 		return userMapper.updateByPrimaryKeySelective(user);
 	}
