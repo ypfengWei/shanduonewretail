@@ -18,4 +18,8 @@ public interface SellerService {
 	UserSeller selectSellerDetails(String id);
 	
 	int updateSellerDetails(Map<String, Object> userSellerMap);
+	
+	int updateBusinessSign(String businessSign,String id);
+	//判断该店铺是否营业中
+	boolean selectBusinessSign(String id);
 }

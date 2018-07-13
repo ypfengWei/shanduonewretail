@@ -22,5 +22,9 @@ public interface UserSellerMapper {
     List<String> selectNearbySellerType(double lon,double lat);
     
     List<UserSeller> selectNearbySeller(Map<String, Object> params);
+    
+    int updateBusinessSign(String businessSign,String id);
+    
+    UserSeller selectBusinessSign(String id);
 
 }

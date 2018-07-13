@@ -1,6 +1,7 @@
 package com.shanduo.newretail.service.impl;
 
 import java.math.BigDecimal;
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -16,6 +17,7 @@ import com.shanduo.newretail.mapper.UserSellerMapper;
 import com.shanduo.newretail.service.SellerService;
 import com.shanduo.newretail.util.DateUtils;
 import com.shanduo.newretail.util.LocationUtils;
+import com.shanduo.newretail.util.StringUtils;
 @Service
 public class SellerServiceImpl implements SellerService {
 	@Autowired
@@ -106,7 +108,37 @@ public class SellerServiceImpl implements SellerService {
 		userSeller.setSellerType(userSellerMap.get("sellerType").toString());
 		userSeller.setLat(new BigDecimal(userSellerMap.get("lat").toString()));
 		userSeller.setLon(new BigDecimal(userSellerMap.get("lon").toString()));
+		userSeller.setStartDate(new Timestamp(Long.parseLong(userSellerMap.get("startDate").toString())));
+		userSeller.setEndDate(new Timestamp(Long.parseLong(userSellerMap.get("endDate").toString())));
 		return userSellerMapper.updateByPrimaryKeySelective(userSeller);
+	}
+	@Override
+	public int updateBusinessSign(String businessSign, String id) {
+		
+		return userSellerMapper.updateBusinessSign(businessSign, id);
+	}
+	@Override
+	public boolean selectBusinessSign(String id) {
+		UserSeller userSeller = userSellerMapper.selectBusinessSign(id);
+		if(null==userSeller){
+			return false;
+		}
+		String businessSign = userSeller.getBusinessSign();
+		if("0".equals(businessSign)&&null!=userSeller.getStartDate()&&null!=userSeller.getEndDate()){
+			SimpleDateFormat df = new SimpleDateFormat("HH:mm");//设置日期格式
+		    Date now =null;
+		    Date beginTime = userSeller.getStartDate();
+		    Date endTime = userSeller.getEndDate();
+		    try {
+		        now = df.parse(df.format(new Date()));
+		    } catch (Exception e) {
+		        e.printStackTrace();
+		    }
+		    Boolean businessSigns = DateUtils.belongCalendar(now, beginTime, endTime);
+		    return businessSigns;
+		}
+		
+		return false;
 	}
 
 }

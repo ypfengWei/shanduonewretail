@@ -230,4 +230,16 @@
      and seller_type = #{sellerType,jdbcType=CHAR}           
     order by (((#{lon,jdbcType=DECIMAL}-lon)*100)*((#{lon,jdbcType=DECIMAL}-lon)*100)+((#{lat,jdbcType=DECIMAL}-lat)*100)*((#{lat,jdbcType=DECIMAL}-lat)*100)) 
   </select>
+  <update id="updateBusinessSign" parameterType="java.lang.String" >
+    update user_seller
+    set 
+      business_sign = #{0}
+      where id = #{1}
+  </update>
+  <select id="selectBusinessSign" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from user_seller
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
 </mapper>

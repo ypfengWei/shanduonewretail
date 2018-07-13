@@ -19,6 +19,7 @@ import com.shanduo.newretail.entity.common.ErrorBean;
 import com.shanduo.newretail.entity.common.ResultBean;
 import com.shanduo.newretail.entity.common.SuccessBean;
 import com.shanduo.newretail.entity.serice.SellerInfo;
+import com.shanduo.newretail.service.BaseService;
 import com.shanduo.newretail.service.SellerService;
 import com.shanduo.newretail.util.JsonStringUtils;
 import com.shanduo.newretail.util.PatternUtils;
@@ -31,6 +32,8 @@ public class SellerController {
 	private static final Logger Log = LoggerFactory.getLogger(SellerController.class);
 	@Autowired
 	private SellerService sellerService;
+	@Autowired
+	private BaseService baseService;
 	@RequestMapping(value = "selectsellertype",method={RequestMethod.POST,RequestMethod.GET})
 	@ResponseBody
 	//http://localhost:8081/shanduonewretail/jseller/selectsellertype?lon=113.074815&lat=28.227615
@@ -82,11 +85,16 @@ public class SellerController {
 	 */
 	@RequestMapping(value = "selectsellerdetails",method={RequestMethod.POST,RequestMethod.GET})
 	@ResponseBody
-	//http://localhost:8081/shanduonewretail/jseller/selectsellerdetails?id=1
-	public ResultBean selectSellerDetails(HttpServletRequest request, String id) {
-		if(StringUtils.isNull(id)) {
-			Log.warn("用户ID为空");
-			return new ErrorBean(ErrorConsts.CODE_10002,"用户ID为空");
+	//http://localhost:8081/shanduonewretail/jseller/selectsellerdetails?token=1
+	public ResultBean selectSellerDetails(HttpServletRequest request, String token) {
+		if(StringUtils.isNull(token)) {
+			Log.warn("token为空");
+			return new ErrorBean(ErrorConsts.CODE_10002,"token为空");
+		}
+		String id = baseService.checkUserToken(token);
+		if(null==id){
+			Log.warn("token失效");
+			return new ErrorBean(ErrorConsts.CODE_10001,"token失效");
 		}
 		UserSeller userSeller = new UserSeller();
 		try {
@@ -103,7 +111,16 @@ public class SellerController {
 	@RequestMapping(value = "updatesellerdetails",method={RequestMethod.POST,RequestMethod.GET})
 	@ResponseBody
 	//http://localhost:8081/shanduonewretail/jseller/selectsellerdetails?id=1
-	public ResultBean updateSellerDetails(HttpServletRequest request) {
+	public ResultBean updateSellerDetails(HttpServletRequest request,String token) {
+		if(StringUtils.isNull(token)) {
+			Log.warn("token为空");
+			return new ErrorBean(ErrorConsts.CODE_10002,"token为空");
+		}
+		String id = baseService.checkUserToken(token);
+		if(null==id){
+			Log.warn("token失效");
+			return new ErrorBean(ErrorConsts.CODE_10001,"token失效");
+		}
 		String userSeller = request.getParameter("userSeller");
 		if(StringUtils.isNull(userSeller)) {
 			Log.warn("用户信息为空");
@@ -111,7 +128,8 @@ public class SellerController {
 		}
 		Map<String, Object> userSellerMap = new HashMap<String, Object>();
 		userSellerMap = JsonStringUtils.getMap(userSeller);
-		if(StringUtils.isNull(userSellerMap.get("phone").toString()) || PatternUtils.patternPhone(userSellerMap.get("phone").toString())){
+		userSellerMap.put("id", id);
+		if(StringUtils.isNull(userSellerMap.get("phone")+"") || PatternUtils.patternPhone(userSellerMap.get("phone").toString())){
 			Log.warn("电话号码错误");
 			return new ErrorBean(ErrorConsts.CODE_10002,"电话号码错误");
 		}
@@ -126,4 +144,30 @@ public class SellerController {
 		return new SuccessBean("修改成功");
 	}
 	
+	/*
+	 * 开店关店
+	 */
+	@RequestMapping(value = "updatebusinesssign",method={RequestMethod.POST,RequestMethod.GET})
+	@ResponseBody
+	//http://localhost:8081/shanduonewretail/jseller/updatebusinesssign?token=1&businessSign=1
+	public ResultBean updateBusinessSign(HttpServletRequest request,String token,String businessSign) {
+		if(StringUtils.isNull(token)) {
+			Log.warn("token为空");
+			return new ErrorBean(ErrorConsts.CODE_10002,"token为空");
+		}
+		String id = baseService.checkUserToken(token);
+		if(null==id){
+			Log.warn("token失效");
+			return new ErrorBean(ErrorConsts.CODE_10001,"token失效");
+		}
+		try {
+			int count  = sellerService.updateBusinessSign(businessSign, id);
+			if(count<1){
+				return new ErrorBean(ErrorConsts.CODE_10004,"修改失败");
+			}
+		} catch (Exception e) {
+			return new ErrorBean(ErrorConsts.CODE_10004,"修改失败");
+		}
+		return new SuccessBean("修改成功");
+	}
 }

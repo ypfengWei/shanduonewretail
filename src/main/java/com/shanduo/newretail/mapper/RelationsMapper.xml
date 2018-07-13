@@ -114,4 +114,32 @@
     where commodity_id = #{commodityId,jdbcType=VARCHAR}
       and category_id = #{categoryId,jdbcType=INTEGER}
   </update>
+  
+  <select id="selectSellerCommodityType" parameterType="java.lang.String"
+	resultType="java.lang.Integer">
+	select
+	category_id
+	from relations
+	where user_id = #{id,jdbcType=VARCHAR}
+	order by category_id
+  </select>
+  
+  <select id="selectCommodityStock" parameterType="java.lang.String"
+	resultMap="BaseResultMap">
+	select
+	<include refid="Base_Column_List" />
+	from relations
+	where user_id = #{0} and commodity_id = #{1}
+  </select>
+  
+  <update id="updateCommodityStock" parameterType="com.shanduo.newretail.entity.Relations">
+    update relations
+    <set>
+        stock = #{stock,jdbcType=INTEGER},
+        sales_volume = #{salesVolume,jdbcType=INTEGER}
+    </set>
+    where commodity_id = #{commodityId,jdbcType=VARCHAR}
+      and user_id = #{userId,jdbcType=VARCHAR}
+  </update>
+  
 </mapper>
