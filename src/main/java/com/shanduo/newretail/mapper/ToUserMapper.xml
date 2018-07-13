@@ -3,6 +3,7 @@
 <mapper namespace="com.shanduo.newretail.mapper.ToUserMapper">
   <resultMap id="BaseResultMap" type="com.shanduo.newretail.entity.ToUser">
     <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="open_id" jdbcType="VARCHAR" property="openId" />
     <result column="name" jdbcType="VARCHAR" property="name" />
     <result column="mobile_phone" jdbcType="VARCHAR" property="mobilePhone" />
     <result column="password" jdbcType="VARCHAR" property="password" />
@@ -12,7 +13,8 @@
     <result column="is_deleted" jdbcType="BIT" property="isDeleted" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, name, mobile_phone, password, jurisdiction, gmt_create, gmt_modified, is_deleted
+    id, open_id, name, mobile_phone, password, jurisdiction, gmt_create, gmt_modified, 
+    is_deleted
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
     select 
@@ -25,18 +27,23 @@
     where id = #{id,jdbcType=VARCHAR}
   </delete>
   <insert id="insert" parameterType="com.shanduo.newretail.entity.ToUser">
-    insert into to_user (id, name, mobile_phone, 
-      password, jurisdiction, gmt_create, 
-      gmt_modified, is_deleted)
-    values (#{id,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{mobilePhone,jdbcType=VARCHAR}, 
-      #{password,jdbcType=VARCHAR}, #{jurisdiction,jdbcType=CHAR}, #{gmtCreate,jdbcType=TIMESTAMP}, 
-      #{gmtModified,jdbcType=TIMESTAMP}, #{isDeleted,jdbcType=BIT})
+    insert into to_user (id, open_id, name, 
+      mobile_phone, password, jurisdiction, 
+      gmt_create, gmt_modified, is_deleted
+      )
+    values (#{id,jdbcType=VARCHAR}, #{openId,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, 
+      #{mobilePhone,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, #{jurisdiction,jdbcType=CHAR}, 
+      #{gmtCreate,jdbcType=TIMESTAMP}, #{gmtModified,jdbcType=TIMESTAMP}, #{isDeleted,jdbcType=BIT}
+      )
   </insert>
   <insert id="insertSelective" parameterType="com.shanduo.newretail.entity.ToUser">
     insert into to_user
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
         id,
+      </if>
+      <if test="openId != null">
+        open_id,
       </if>
       <if test="name != null">
         name,
@@ -64,6 +71,9 @@
       <if test="id != null">
         #{id,jdbcType=VARCHAR},
       </if>
+      <if test="openId != null">
+        #{openId,jdbcType=VARCHAR},
+      </if>
       <if test="name != null">
         #{name,jdbcType=VARCHAR},
       </if>
@@ -90,6 +100,9 @@
   <update id="updateByPrimaryKeySelective" parameterType="com.shanduo.newretail.entity.ToUser">
     update to_user
     <set>
+      <if test="openId != null">
+        open_id = #{openId,jdbcType=VARCHAR},
+      </if>
       <if test="name != null">
         name = #{name,jdbcType=VARCHAR},
       </if>
@@ -116,7 +129,8 @@
   </update>
   <update id="updateByPrimaryKey" parameterType="com.shanduo.newretail.entity.ToUser">
     update to_user
-    set name = #{name,jdbcType=VARCHAR},
+    set open_id = #{openId,jdbcType=VARCHAR},
+      name = #{name,jdbcType=VARCHAR},
       mobile_phone = #{mobilePhone,jdbcType=VARCHAR},
       password = #{password,jdbcType=VARCHAR},
       jurisdiction = #{jurisdiction,jdbcType=CHAR},

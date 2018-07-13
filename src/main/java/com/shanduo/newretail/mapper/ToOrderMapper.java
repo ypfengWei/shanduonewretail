@@ -14,4 +14,6 @@ public interface ToOrderMapper {
     int updateByPrimaryKeySelective(ToOrder record);
 
     int updateByPrimaryKey(ToOrder record);
+    
+    ToOrder getUnpaidOrder(String id);
 }

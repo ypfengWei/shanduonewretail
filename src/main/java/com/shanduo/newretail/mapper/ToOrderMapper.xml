@@ -185,4 +185,13 @@
       is_deleted = #{isDeleted,jdbcType=BIT}
     where id = #{id,jdbcType=VARCHAR}
   </update>
+  
+  <select id="getUnpaidOrder" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    id, openid, total_price
+    from to_order
+    where is_deleted = '0'
+    and state = '1'
+    and id = #{id,jdbcType=VARCHAR}
+  </select>
 </mapper>

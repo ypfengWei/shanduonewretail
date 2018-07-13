@@ -58,7 +58,7 @@ public class UserController {
 	 */
 	@RequestMapping(value = "registeruser",method={RequestMethod.POST,RequestMethod.GET})
 	@ResponseBody
-	public ResultBean registerUser(HttpServletRequest request, String phone, String code, String password,String parentId) {
+	public ResultBean registerUser(HttpServletRequest request, String phone, String code, String password,String parentId, String openId) {
 		if(StringUtils.isNull(phone) || PatternUtils.patternPhone(phone)) {
 			log.warn("phone is error waith phone:{}", phone);
 			return new ErrorBean(ErrorConsts.CODE_10002, "手机号输入错误");
@@ -74,8 +74,12 @@ public class UserController {
 		if(codeService.checkCode(phone, code, DefaultConsts.CODE_REGISTER)) {
 			return new ErrorBean(ErrorConsts.CODE_10003, "验证码错误或超时");
 		}
+//		if(StringUtils.isNull(openId)) {
+//			log.warn("openId is null waith openId:{}", openId);
+//			return new ErrorBean(ErrorConsts.CODE_10002, "openId为空");
+//		}
 		try {
-			userService.saveUser(phone, password, parentId);
+			userService.saveUser(openId, phone, password, parentId);
 		} catch (Exception e) {
 			return new ErrorBean(ErrorConsts.CODE_10003, "注册失败");
 		}
