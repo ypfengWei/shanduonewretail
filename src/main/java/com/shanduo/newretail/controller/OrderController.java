@@ -1,8 +1,7 @@
 package com.shanduo.newretail.controller;
 
-import java.util.ArrayList;
+import java.math.BigDecimal;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -16,11 +15,17 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.shanduo.newretail.consts.ErrorConsts;
+import com.shanduo.newretail.consts.WxPayConsts;
+import com.shanduo.newretail.entity.ToOrder;
 import com.shanduo.newretail.entity.common.ErrorBean;
 import com.shanduo.newretail.entity.common.ResultBean;
+import com.shanduo.newretail.entity.common.SuccessBean;
 import com.shanduo.newretail.service.OrderService;
+import com.shanduo.newretail.util.IpUtils;
 import com.shanduo.newretail.util.JsonStringUtils;
 import com.shanduo.newretail.util.StringUtils;
+import com.shanduo.newretail.util.UUIDGenerator;
+import com.shanduo.newretail.util.WxPayUtils;
 
 /**
  * 订单接口层
@@ -60,8 +65,60 @@ public class OrderController {
 		} catch (Exception e) {
 			return new ErrorBean(ErrorConsts.CODE_10004, "订单错误");
 		}
-		
-		return null;
+		return payOrder(orderId, request);
 	}
 	
+	private ResultBean payOrder(String orderId, HttpServletRequest request) {
+		ToOrder order = orderService.getUnpaidOrder(orderId);
+		String body = "aaa";
+		//价格，单位为分
+		BigDecimal amount = order.getTotalPrice();
+		amount = amount.multiply(new BigDecimal("100"));
+		//订单总金额
+		Integer moneys = amount.intValue();
+		Map<String, String> paramsMap = new HashMap<>(10);
+		paramsMap.put("appid", WxPayConsts.APPID);
+		paramsMap.put("mch_id", WxPayConsts.MCH_ID);
+		paramsMap.put("nonce_str", UUIDGenerator.getUUID());
+		paramsMap.put("body", body);
+		paramsMap.put("out_trade_no", order.getId());
+		paramsMap.put("total_fee", moneys.toString());
+		paramsMap.put("spbill_create_ip", IpUtils.getIpAddress(request));
+		paramsMap.put("notify_url", WxPayConsts.NOTIFY_URL);
+		paramsMap.put("trade_type", WxPayConsts.TRADETYPE);
+		paramsMap.put("openid", order.getOpenid());
+		//把数组所有元素，按照“参数=参数值”的模式用“&”字符拼接成字符串
+		String paramsString = WxPayUtils.createLinkString(paramsMap);
+		//MD5运算生成签名
+		String sign = WxPayUtils.sign(paramsString, WxPayConsts.KEY, "utf-8").toUpperCase();
+		//签名
+		paramsMap.put("sign", sign);
+		String paramsXml = WxPayUtils.map2Xmlstring(paramsMap);
+		String result = WxPayUtils.httpRequest(WxPayConsts.PAY_URL, "POST", paramsXml);
+		Map<String, Object> resultMap = WxPayUtils.Str2Map(result);
+		String returnCode = resultMap.get("return_code").toString();
+		if(!returnCode.equals("SUCCESS")) {
+			log.error(resultMap.get("return_msg").toString());
+			return new ErrorBean(ErrorConsts.CODE_10004,"连接超时");
+		}
+		String resultCode = resultMap.get("result_code").toString();
+		if(!resultCode.equals("SUCCESS")) {
+			log.error(resultMap.get("err_code_des").toString());
+			return new ErrorBean(ErrorConsts.CODE_10004,"连接超时");
+		}
+		String prepayId = resultMap.get("prepay_id").toString();
+		Map<String, String> responseMap = new HashMap<String, String>(7);
+		responseMap.put("appid", WxPayConsts.APPID);
+		responseMap.put("prepayid", "prepay_id=" + prepayId);
+		responseMap.put("noncestr", UUIDGenerator.getUUID());
+		Long timeStamp = System.currentTimeMillis() / 1000;
+		responseMap.put("timeStamp", timeStamp + "");
+		responseMap.put("signType", "MD5");
+		//把数组所有元素，按照“参数=参数值”的模式用“&”字符拼接成字符串
+		String responseString = WxPayUtils.createLinkString(responseMap);
+		//MD5运算生成签名
+		String responseSign = WxPayUtils.sign(responseString, WxPayConsts.KEY, "utf-8").toUpperCase();
+		responseMap.put("sign", responseSign);
+		return new SuccessBean(responseMap);
+	}
 }

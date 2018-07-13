@@ -14,7 +14,25 @@ import com.shanduo.newretail.entity.ToOrder;
  */
 public interface OrderService {
 
+	/**
+	 * 生成订单
+	 * @Title: saveOrder
+	 * @Description: TODO
+	 * @param @param parameterMap
+	 * @param @return
+	 * @return String
+	 * @throws
+	 */
 	String saveOrder(Map<String, Object> parameterMap);
 	
+	/**
+	 * 查询待支付的订单
+	 * @Title: getUnpaidOrder
+	 * @Description: TODO
+	 * @param @param orderId
+	 * @param @return
+	 * @return ToOrder
+	 * @throws
+	 */
 	ToOrder getUnpaidOrder(String orderId);
 }

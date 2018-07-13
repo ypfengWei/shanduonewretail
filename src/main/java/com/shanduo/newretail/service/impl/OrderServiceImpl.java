@@ -16,7 +16,9 @@ import com.shanduo.newretail.entity.ToOrderDetails;
 import com.shanduo.newretail.mapper.CommodityMapper;
 import com.shanduo.newretail.mapper.ToOrderDetailsMapper;
 import com.shanduo.newretail.mapper.ToOrderMapper;
+import com.shanduo.newretail.service.CommodityService;
 import com.shanduo.newretail.service.OrderService;
+import com.shanduo.newretail.service.SellerService;
 import com.shanduo.newretail.util.UUIDGenerator;
 
 /**
@@ -38,6 +40,10 @@ public class OrderServiceImpl implements OrderService {
 	private ToOrderDetailsMapper orderDetailsMapper;
 	@Autowired
 	private CommodityMapper commodityMapper;
+	@Autowired
+	private SellerService sellerService;
+	@Autowired
+	private CommodityService commodityService;
 	
 	@Override
 	@Transactional(rollbackFor = Exception.class)
@@ -45,6 +51,9 @@ public class OrderServiceImpl implements OrderService {
 		String orderId = UUIDGenerator.getUUID();
 		String sellerId = parameterMap.get("sellerId").toString();
 		//检查店铺是否休息或不在营业时间段内
+		if(!sellerService.selectBusinessSign(sellerId)) {
+			return "0";
+		}
 		BigDecimal totalPrice = new BigDecimal("0");
 		@SuppressWarnings("unchecked")
 		List<Map<String, Object>> parameterList = (List<Map<String, Object>>) parameterMap.get("list");
@@ -52,7 +61,11 @@ public class OrderServiceImpl implements OrderService {
 			String commodityId = (String) map.get("commodityId");
 			int number = (int) map.get("number");
 			//检查商品库存是否删除是否下架是否足够再减库存
-			
+			if(!commodityService.selectCommodityStock(sellerId, commodityId, number)) {
+				log.warn("库存不足");
+				throw new RuntimeException();
+			}
+			commodityService.updateCommodityStock(sellerId, commodityId, number, "0");
 			Commodity commodity = commodityMapper.selectByPrimaryKey(commodityId);
 			ToOrderDetails orderDetails = new ToOrderDetails();
 			orderDetails.setOrderId(orderId);

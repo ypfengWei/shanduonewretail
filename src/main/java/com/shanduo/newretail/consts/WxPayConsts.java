@@ -2,17 +2,17 @@ package com.shanduo.newretail.consts;
 
 import com.shanduo.newretail.consts.ConfigConsts;
 
-public class WxGzhConsts {
+public class WxPayConsts {
 
 	/**
 	 * APPID
 	 */
-    public static final String APPID = "wx3dd985759741b34e";
+    public static final String APPID = "wxe0870cb2d63b008d";
     
     /**
      * 商户id
      */
-    public static final String MCH_ID = "1504783251";
+    public static final String MCH_ID = "1495349042";
     
     /**
      * 商户密钥
