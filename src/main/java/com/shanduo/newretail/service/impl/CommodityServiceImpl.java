@@ -1,15 +1,21 @@
 package com.shanduo.newretail.service.impl;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.shanduo.newretail.consts.ErrorConsts;
 import com.shanduo.newretail.controller.CommodityController;
 import com.shanduo.newretail.entity.Relations;
+import com.shanduo.newretail.entity.service.CommodityInfo;
+import com.shanduo.newretail.mapper.CommodityMapper;
 import com.shanduo.newretail.mapper.RelationsMapper;
 import com.shanduo.newretail.service.CommodityService;
 @Service
@@ -17,6 +23,8 @@ public class CommodityServiceImpl implements CommodityService {
 	private static final Logger Log = LoggerFactory.getLogger(CommodityServiceImpl.class);
 	@Autowired
 	private RelationsMapper relationsMapper;
+	@Autowired
+	private CommodityMapper commodityMapper;
 
 	@Override
 	public List<Integer> selectSellerCommodityType(String id) {
@@ -34,6 +42,7 @@ public class CommodityServiceImpl implements CommodityService {
 	}
 
 	@Override
+	@Transactional(rollbackFor = Exception.class)
 	public int updateCommodityStock(String id, String commodityId, int commoditynum,String type) {
 		Relations relations = new Relations();
 		relations.setCommodityId(commodityId);
@@ -55,6 +64,20 @@ public class CommodityServiceImpl implements CommodityService {
 			throw new RuntimeException();
 		}
 		return count;
+	}
+
+	@Override
+	public Map<Integer, List<CommodityInfo>> selectCommodity(List<Integer> categoryIdList, String id) {
+		Map<Integer, List<CommodityInfo>> commodityMap = new HashMap<Integer, List<CommodityInfo>>();
+		for(int i=0;i<categoryIdList.size();i++){
+			List<CommodityInfo> commodityInfo = new ArrayList<CommodityInfo>();
+			Integer categoryId = categoryIdList.get(i); 
+			commodityInfo = commodityMapper.selectCommodity(categoryId, id);
+			if(!commodityInfo.isEmpty()){
+				commodityMap.put(categoryId, commodityInfo);
+			}
+		}
+		return commodityMap;
 	}
 
 }

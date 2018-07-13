@@ -12,7 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.shanduo.newretail.entity.UserSeller;
-import com.shanduo.newretail.entity.serice.SellerInfo;
+import com.shanduo.newretail.entity.service.SellerInfo;
 import com.shanduo.newretail.mapper.UserSellerMapper;
 import com.shanduo.newretail.service.SellerService;
 import com.shanduo.newretail.util.DateUtils;

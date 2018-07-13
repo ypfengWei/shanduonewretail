@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.shanduo.newretail.entity.UserSeller;
-import com.shanduo.newretail.entity.serice.SellerInfo;
+import com.shanduo.newretail.entity.service.SellerInfo;
 
 
 public interface SellerService {

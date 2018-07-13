@@ -18,12 +18,14 @@ import com.shanduo.newretail.entity.UserSeller;
 import com.shanduo.newretail.entity.common.ErrorBean;
 import com.shanduo.newretail.entity.common.ResultBean;
 import com.shanduo.newretail.entity.common.SuccessBean;
-import com.shanduo.newretail.entity.serice.SellerInfo;
+import com.shanduo.newretail.entity.service.SellerInfo;
 import com.shanduo.newretail.service.BaseService;
 import com.shanduo.newretail.service.SellerService;
 import com.shanduo.newretail.util.JsonStringUtils;
 import com.shanduo.newretail.util.PatternUtils;
 import com.shanduo.newretail.util.StringUtils;
+
+import net.sf.json.JSONArray;
 
 
 @Controller
@@ -58,7 +60,7 @@ public class SellerController {
 	@RequestMapping(value = "selectseller",method={RequestMethod.POST,RequestMethod.GET})
 	@ResponseBody
 	//http://localhost:8081/shanduonewretail/jseller/selectseller?lon=113.074815&lat=28.227615&sellerType=[0,1,2]
-	public ResultBean selectseller(HttpServletRequest request, String lat,String lon,List<String> sellerType) {
+	public ResultBean selectseller(HttpServletRequest request, String lat,String lon) {
 		if(StringUtils.isNull(lon) || PatternUtils.patternLatitude(lon)) {
 			Log.warn("经度格式错误");
 			return new ErrorBean(ErrorConsts.CODE_10002,"经度格式错误");
@@ -67,13 +69,18 @@ public class SellerController {
 			Log.warn("纬度格式错误");
 			return new ErrorBean(ErrorConsts.CODE_10002,"纬度格式错误");
 		}
-		if(sellerType.isEmpty()){
-			Log.warn("无店铺类别");
-			return new ErrorBean(ErrorConsts.CODE_10002,"无店铺类别");
-		}
+		
 		List<Map<String, List<SellerInfo>>> sellerInfoList = new ArrayList<Map<String, List<SellerInfo>>>();
 		try {
-			sellerInfoList = sellerService.selectNearbySeller(new Double(lon), new Double(lat),sellerType);
+			String sellerType = request.getParameter("sellerTypeList");
+			JSONArray jsonArray = JSONArray.fromObject(sellerType);
+			@SuppressWarnings("unchecked")
+			List<String>sellerTypeList = (List<String>) JSONArray.toCollection(jsonArray, Map.class);
+			if(sellerTypeList.isEmpty()){
+				Log.warn("无店铺类别");
+				return new ErrorBean(ErrorConsts.CODE_10002,"无店铺类别");
+			}
+			sellerInfoList = sellerService.selectNearbySeller(new Double(lon), new Double(lat),sellerTypeList);
 		} catch (Exception e) {
 			return new ErrorBean(ErrorConsts.CODE_10004,"查询失败");
 		}

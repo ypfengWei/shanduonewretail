@@ -1,6 +1,6 @@
 package com.shanduo.newretail.service;
 
-import com.shanduo.newretail.entity.serice.TokenInfo;
+import com.shanduo.newretail.entity.service.TokenInfo;
 
 /**
  * 用户操作业务层

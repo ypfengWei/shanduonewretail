@@ -13,6 +13,8 @@
   <sql id="Base_Column_List">
     commodity_id, category_id, user_id, stock, sales_volume, visible, is_deleted
   </sql>
+ 
+ 
   <select id="selectByPrimaryKey" parameterType="com.shanduo.newretail.entity.RelationsKey" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />

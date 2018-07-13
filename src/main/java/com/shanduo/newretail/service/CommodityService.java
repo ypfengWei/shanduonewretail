@@ -1,6 +1,9 @@
 package com.shanduo.newretail.service;
 
 import java.util.List;
+import java.util.Map;
+
+import com.shanduo.newretail.entity.service.CommodityInfo;
 
 
 public interface CommodityService {
@@ -15,5 +18,7 @@ public interface CommodityService {
 	boolean selectCommodityStock(String id,String commodityId,int commoditynum);
 	
 	int updateCommodityStock(String id,String commodityId,int commoditynum,String type);
+	
+	Map<Integer,List<CommodityInfo>> selectCommodity(List<Integer> categoryIdList,String id);
 
 }

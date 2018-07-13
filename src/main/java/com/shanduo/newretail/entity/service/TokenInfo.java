@@ -1,4 +1,4 @@
-package com.shanduo.newretail.entity.serice;
+package com.shanduo.newretail.entity.service;
 
 import com.shanduo.newretail.entity.ToUser;
 

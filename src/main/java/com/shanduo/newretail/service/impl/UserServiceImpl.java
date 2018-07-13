@@ -8,7 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.shanduo.newretail.consts.DefaultConsts;
 import com.shanduo.newretail.entity.ToUser;
-import com.shanduo.newretail.entity.serice.TokenInfo;
+import com.shanduo.newretail.entity.service.TokenInfo;
 import com.shanduo.newretail.mapper.ToUserMapper;
 import com.shanduo.newretail.mapper.UserTokenMapper;
 import com.shanduo.newretail.service.SellerService;

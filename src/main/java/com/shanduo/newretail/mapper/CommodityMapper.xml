@@ -13,6 +13,16 @@
   <sql id="Base_Column_List">
     id, name, picture, price, gmt_create, gmt_modified, is_deleted
   </sql>
+  <resultMap id="CommodityResultMap" type="com.shanduo.newretail.entity.service.CommodityInfo">
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="picture" jdbcType="VARCHAR" property="picture" />
+    <result column="price" jdbcType="DECIMAL" property="price" />
+    <result column="stock" jdbcType="INTEGER" property="stock" />
+  </resultMap>
+  <sql id="Commodity_Column_List">
+    id, name, picture, price, stock
+  </sql> 
   <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
@@ -114,4 +124,11 @@
       is_deleted = #{isDeleted,jdbcType=BIT}
     where id = #{id,jdbcType=VARCHAR}
   </update>
+  
+  <select id="selectCommodity" resultMap="CommodityResultMap">
+	select
+	<include refid="Commodity_Column_List" />
+	from relations as re join commodity as co on co.id=re.commodity_id
+	where re.category_id=#{0} and re.user_id=#{1} and re.visible='1' and stock &gt;0
+  </select> 
 </mapper>

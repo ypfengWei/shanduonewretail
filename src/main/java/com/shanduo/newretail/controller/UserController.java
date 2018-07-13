@@ -15,7 +15,7 @@ import com.shanduo.newretail.consts.ErrorConsts;
 import com.shanduo.newretail.entity.common.ErrorBean;
 import com.shanduo.newretail.entity.common.ResultBean;
 import com.shanduo.newretail.entity.common.SuccessBean;
-import com.shanduo.newretail.entity.serice.TokenInfo;
+import com.shanduo.newretail.entity.service.TokenInfo;
 import com.shanduo.newretail.service.BaseService;
 import com.shanduo.newretail.service.CodeService;
 import com.shanduo.newretail.service.UserService;

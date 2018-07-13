@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.shanduo.newretail.entity.Relations;
 import com.shanduo.newretail.entity.RelationsKey;
+import com.shanduo.newretail.entity.service.CommodityInfo;
 
 public interface RelationsMapper {
     int deleteByPrimaryKey(RelationsKey key);
@@ -23,4 +24,6 @@ public interface RelationsMapper {
     Relations selectCommodityStock(String id,String commodityId);
     
     int updateCommodityStock(Relations relations);
+    
+    List<CommodityInfo> selectCommodity(Integer categoryId,String id);
 }
