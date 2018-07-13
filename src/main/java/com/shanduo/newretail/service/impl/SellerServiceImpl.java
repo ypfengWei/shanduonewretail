@@ -1,16 +1,15 @@
 package com.shanduo.newretail.service.impl;
 
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import com.shanduo.newretail.entity.UserSeller;
 import com.shanduo.newretail.entity.serice.SellerInfo;
 import com.shanduo.newretail.mapper.UserSellerMapper;
@@ -89,6 +88,25 @@ public class SellerServiceImpl implements SellerService {
 	public List<String> selectNearbySellerType(double lon, double lat) {
 		
 		return userSellerMapper.selectNearbySellerType(lon, lat);
+	}
+	@Override
+	public UserSeller selectSellerDetails(String id) {
+		
+		return userSellerMapper.selectByPrimaryKey(id);
+	}
+	@Override
+	@Transactional(rollbackFor = Exception.class)
+	public int updateSellerDetails(Map<String, Object> userSellerMap) {
+		UserSeller userSeller = new UserSeller();
+		userSeller.setId(userSellerMap.get("id").toString());
+		userSeller.setSellerName(userSellerMap.get("sellerName").toString());
+		userSeller.setSellerPicture(userSellerMap.get("sellerPicture").toString());
+		userSeller.setNotice(userSellerMap.get("notice").toString());
+		userSeller.setPhone(userSellerMap.get("phone").toString());
+		userSeller.setSellerType(userSellerMap.get("sellerType").toString());
+		userSeller.setLat(new BigDecimal(userSellerMap.get("lat").toString()));
+		userSeller.setLon(new BigDecimal(userSellerMap.get("lon").toString()));
+		return userSellerMapper.updateByPrimaryKeySelective(userSeller);
 	}
 
 }
