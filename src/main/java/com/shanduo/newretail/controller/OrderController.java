@@ -49,6 +49,16 @@ public class OrderController {
 	@Autowired
 	private OrderService orderService;
 	
+	/**
+	 * 支付订单
+	 * @Title: payOrder
+	 * @Description: TODO
+	 * @param @param request
+	 * @param @param data
+	 * @param @return
+	 * @return ResultBean
+	 * @throws
+	 */
 	@RequestMapping(value = "payorder",method={RequestMethod.POST,RequestMethod.GET})
 	@ResponseBody
 	public ResultBean payOrder(HttpServletRequest request, String data) {
@@ -73,24 +83,88 @@ public class OrderController {
 		return payOrder(orderId, request);
 	}
 	
+	/**
+	 * 商家接单
+	 * @Title: receivingOrder
+	 * @Description: TODO
+	 * @param @param request
+	 * @param @param token
+	 * @param @param orderId
+	 * @param @return
+	 * @return ResultBean
+	 * @throws
+	 */
 	@RequestMapping(value = "receivingorder",method={RequestMethod.POST,RequestMethod.GET})
 	@ResponseBody
 	public ResultBean receivingOrder(HttpServletRequest request, String token, String orderId) {
 		String sellerId = baseService.checkUserToken(token);
 		if(sellerId == null) {
-			
+			return new ErrorBean(ErrorConsts.CODE_10001, "请重新登录");
+		}
+		if(StringUtils.isNull(orderId)) {
+			log.warn("orderId is null");
+			return new ErrorBean(ErrorConsts.CODE_10002, "参数错误");
 		}
 		ToOrder order = orderService.getOrder(orderId, "2");
 		if(order == null) {
-			
+			log.warn("orderId is error waith orderId:{}", orderId);
+			return new ErrorBean(ErrorConsts.CODE_10003, "订单错误");
 		}
 		int i = orderService.updateReceivingOrder(orderId, sellerId);
 		if(i < 1) {
-			
+			log.warn("orderId is error waith orderId:{}", orderId);
+			return new ErrorBean(ErrorConsts.CODE_10004, "接单失败");
 		}
-		return null;
+		return new SuccessBean("接单成功");
 	}
 	
+	/**
+	 * 商家完成订单
+	 * @Title: finishOrder
+	 * @Description: TODO
+	 * @param @param request
+	 * @param @param token
+	 * @param @param orderId
+	 * @param @return
+	 * @return ResultBean
+	 * @throws
+	 */
+	@RequestMapping(value = "finishorder",method={RequestMethod.POST,RequestMethod.GET})
+	@ResponseBody
+	public ResultBean finishOrder(HttpServletRequest request, String token, String orderId) {
+		String sellerId = baseService.checkUserToken(token);
+		if(sellerId == null) {
+			return new ErrorBean(ErrorConsts.CODE_10001, "请重新登录");
+		}
+		if(StringUtils.isNull(orderId)) {
+			log.warn("orderId is null");
+			return new ErrorBean(ErrorConsts.CODE_10002, "参数错误");
+		}
+		ToOrder order = orderService.getOrder(orderId, "3");
+		if(order == null) {
+			log.warn("orderId is error waith orderId:{}", orderId);
+			return new ErrorBean(ErrorConsts.CODE_10003, "订单错误");
+		}
+		try {
+			orderService.updateFinishOrder(orderId, sellerId);
+		} catch (Exception e) {
+			log.warn("orderId is error waith orderId:{}", orderId);
+			return new ErrorBean(ErrorConsts.CODE_10004, "完成失败");
+		}
+		return new SuccessBean("订单完成");
+	}
+	
+	
+	/**
+	 * 微信统一下单
+	 * @Title: payOrder
+	 * @Description: TODO
+	 * @param @param orderId
+	 * @param @param request
+	 * @param @return
+	 * @return ResultBean
+	 * @throws
+	 */
 	private ResultBean payOrder(String orderId, HttpServletRequest request) {
 		ToOrder order = orderService.getOrder(orderId, "1");
 		List<ToOrderDetails> list = orderService.listOrderId(orderId);

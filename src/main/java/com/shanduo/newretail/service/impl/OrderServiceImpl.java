@@ -104,6 +104,11 @@ public class OrderServiceImpl implements OrderService {
 	}
 
 	@Override
+	public List<ToOrderDetails> listOrderId(String orderId) {
+		return orderDetailsMapper.listOrderId(orderId);
+	}
+	
+	@Override
 	public int updatePayOrder(String orderId) {
 		ToOrder order = new ToOrder();
 		order.setId(orderId);
@@ -118,18 +123,18 @@ public class OrderServiceImpl implements OrderService {
 	}
 
 	@Override
-	public List<ToOrderDetails> listOrderId(String orderId) {
-		return orderDetailsMapper.listOrderId(orderId);
-	}
-	
-	@Override
 	@Transactional(rollbackFor = Exception.class)
-	public int updateCancelOrder(String orderId, String sellerId) {
-		int i = orderMapper.updateReceivingOrder(orderId, sellerId,"4");
-		if(i < 1) {
-			
+	public int updateCancelOrder(String orderId) {
+		ToOrder order = getOrder(orderId, "4");
+//		int i = orderMapper.updateReceivingOrder(orderId, order.getSellerId(), "4");
+//		if(i < 1) {
+//			log.warn("订单修改退款状态失败");
+//			throw new RuntimeException();
+//		}
+		List<ToOrderDetails> list = listOrderId(orderId);
+		for (ToOrderDetails orderDetails : list) {
+			commodityService.updateCommodityStock(order.getSellerId(), orderDetails.getCommodityId(), orderDetails.getCommodityNumber(), "1");
 		}
-		//加库存减销量
 		return 1;
 	}
 
@@ -137,15 +142,13 @@ public class OrderServiceImpl implements OrderService {
 	@Transactional(rollbackFor = Exception.class)
 	public int updateFinishOrder(String orderId, String sellerId) {
 		ToOrder order = getOrder(orderId, "3");
-		if(order == null) {
-			
-		}
 		int i = orderMapper.updateReceivingOrder(orderId, sellerId,"5");
 		if(i < 1) {
 			log.warn("完成订单失败");
 			throw new RuntimeException();
 		}
 		//店铺加钱
+		sellerService.updateMoney(order.getTotalPrice(), sellerId, "0");
 		return 1;
 	}
 

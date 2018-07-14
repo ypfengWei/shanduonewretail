@@ -104,7 +104,7 @@
     where id = #{id,jdbcType=INTEGER}
   </update>
   
-  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+  <select id="listOrderId" parameterType="java.lang.String" resultMap="BaseResultMap">
     select 
     id, order_id, commodity_id, commodity_name, commodity_number, price
     from to_order_details

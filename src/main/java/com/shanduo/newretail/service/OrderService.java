@@ -78,12 +78,11 @@ public interface OrderService {
 	 * @Title: updateCancelOrder
 	 * @Description: TODO
 	 * @param @param orderId
-	 * @param @param sellerId
 	 * @param @return
 	 * @return int
 	 * @throws
 	 */
-	int updateCancelOrder(String orderId,String sellerId);
+	int updateCancelOrder(String orderId);
 	
 	/**
 	 * 完成订单
