@@ -89,7 +89,11 @@ public class OrderServiceImpl implements OrderService {
 		order.setUserName(parameterMap.get("name").toString());
 		order.setUserPhone(parameterMap.get("phone").toString());
 		order.setUserAddress(parameterMap.get("address").toString());
-		order.setRemarks(parameterMap.get("remarks")+"");
+		try {
+			order.setRemarks(parameterMap.get("remarks").toString());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		int i = orderMapper.insertSelective(order);
 		if(i < 1) {
 			log.warn("订单录入失败");
@@ -119,18 +123,23 @@ public class OrderServiceImpl implements OrderService {
 
 	@Override
 	public int updateReceivingOrder(String orderId,String sellerId) {
-		return orderMapper.updateReceivingOrder(orderId, sellerId, "3");
+		return orderMapper.updateOrder(orderId, sellerId, "3");
 	}
 
 	@Override
+	public int updateCancelOrder(String orderId,String sellerId) {
+		return orderMapper.updateOrder(orderId, sellerId, "5");
+	}
+	
+	@Override
 	@Transactional(rollbackFor = Exception.class)
 	public int updateCancelOrder(String orderId) {
-		ToOrder order = getOrder(orderId, "4");
-//		int i = orderMapper.updateReceivingOrder(orderId, order.getSellerId(), "4");
-//		if(i < 1) {
-//			log.warn("订单修改退款状态失败");
-//			throw new RuntimeException();
-//		}
+		ToOrder order = getOrder(orderId, "5");
+		int i = orderMapper.updateOrder(orderId, order.getSellerId(), "6");
+		if(i < 1) {
+			log.warn("订单修改退款状态失败");
+			throw new RuntimeException();
+		}
 		List<ToOrderDetails> list = listOrderId(orderId);
 		for (ToOrderDetails orderDetails : list) {
 			commodityService.updateCommodityStock(order.getSellerId(), orderDetails.getCommodityId(), orderDetails.getCommodityNumber(), "1");
@@ -142,13 +151,14 @@ public class OrderServiceImpl implements OrderService {
 	@Transactional(rollbackFor = Exception.class)
 	public int updateFinishOrder(String orderId, String sellerId) {
 		ToOrder order = getOrder(orderId, "3");
-		int i = orderMapper.updateReceivingOrder(orderId, sellerId,"5");
+		int i = orderMapper.updateOrder(orderId, sellerId,"4");
 		if(i < 1) {
 			log.warn("完成订单失败");
 			throw new RuntimeException();
 		}
+		BigDecimal totalPrice = order.getTotalPrice().multiply(new BigDecimal("0.94"));
 		//店铺加钱
-		sellerService.updateMoney(order.getTotalPrice(), sellerId, "0");
+		sellerService.updateMoney(totalPrice, sellerId, "0");
 		return 1;
 	}
 

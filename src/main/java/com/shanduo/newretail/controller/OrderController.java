@@ -24,6 +24,7 @@ import com.shanduo.newretail.entity.common.ResultBean;
 import com.shanduo.newretail.entity.common.SuccessBean;
 import com.shanduo.newretail.service.BaseService;
 import com.shanduo.newretail.service.OrderService;
+import com.shanduo.newretail.util.ClientCustomSSL;
 import com.shanduo.newretail.util.IpUtils;
 import com.shanduo.newretail.util.JsonStringUtils;
 import com.shanduo.newretail.util.StringUtils;
@@ -154,6 +155,75 @@ public class OrderController {
 		return new SuccessBean("订单完成");
 	}
 	
+	/**
+	 * 申请退款
+	 * @Title: cancelOrder
+	 * @Description: TODO
+	 * @param @param request
+	 * @param @param token
+	 * @param @param orderId
+	 * @param @return
+	 * @param @throws Exception
+	 * @return ResultBean
+	 * @throws
+	 */
+	@RequestMapping(value = "cancelorder",method={RequestMethod.POST,RequestMethod.GET})
+	@ResponseBody
+	public ResultBean cancelOrder(HttpServletRequest request, String token, String orderId) throws Exception {
+		String sellerId = baseService.checkUserToken(token);
+		if(sellerId == null) {
+			return new ErrorBean(ErrorConsts.CODE_10001, "请重新登录");
+		}
+		if(StringUtils.isNull(orderId)) {
+			log.warn("orderId is null");
+			return new ErrorBean(ErrorConsts.CODE_10002, "参数错误");
+		}
+		ToOrder order = orderService.getOrder(orderId, "2");
+		if(order == null) {
+			log.warn("orderId is error waith orderId:{}", orderId);
+			return new ErrorBean(ErrorConsts.CODE_10003, "订单错误");
+		}
+		//价格，单位为分
+		BigDecimal amount = order.getTotalPrice();
+		amount = amount.multiply(new BigDecimal("100"));
+		//订单总金额
+		Integer moneys = amount.intValue();
+		Map<String, String> paramsMap = new HashMap<>(10);
+		paramsMap.put("appid", WxPayConsts.APPID);
+		paramsMap.put("mch_id", WxPayConsts.MCH_ID);
+		paramsMap.put("nonce_str", UUIDGenerator.getUUID());
+		paramsMap.put("out_trade_no", order.getId());
+		paramsMap.put("out_refund_no", order.getId());
+		paramsMap.put("total_fee", moneys.toString());
+		paramsMap.put("refund_fee", moneys.toString());
+		paramsMap.put("notify_url", WxPayConsts.CANCEL_URL);
+		//把数组所有元素，按照“参数=参数值”的模式用“&”字符拼接成字符串
+		String paramsString = WxPayUtils.createLinkString(paramsMap);
+		//MD5运算生成签名
+		String sign = WxPayUtils.sign(paramsString, WxPayConsts.KEY, "utf-8").toUpperCase();
+		//签名
+		paramsMap.put("sign", sign);
+		String paramsXml = WxPayUtils.map2Xmlstring(paramsMap);
+		String result = ClientCustomSSL.doRefund(WxPayConsts.REFUND_URL, paramsXml);
+		Map<String, Object> resultMap = WxPayUtils.Str2Map(result);
+		String returnCode = resultMap.get("return_code").toString();
+		if(!returnCode.equals("SUCCESS")) {
+			log.error(resultMap.get("return_msg").toString());
+			return new ErrorBean(ErrorConsts.CODE_10004,"申请失败");
+		}
+		String resultCode = resultMap.get("result_code").toString();
+		if(!resultCode.equals("SUCCESS")) {
+			log.error(resultMap.get("err_code_des").toString());
+			return new ErrorBean(ErrorConsts.CODE_10004,"申请失败");
+		}
+		int i = orderService.updateCancelOrder(orderId, sellerId);
+		if(i < 1) {
+			log.warn("orderId is error waith orderId:{}", orderId);
+			return new ErrorBean(ErrorConsts.CODE_10004, "申请失败");
+		}
+		return new SuccessBean("申请成功");
+	}
+	
 	
 	/**
 	 * 微信统一下单
@@ -204,12 +274,12 @@ public class OrderController {
 		String returnCode = resultMap.get("return_code").toString();
 		if(!returnCode.equals("SUCCESS")) {
 			log.error(resultMap.get("return_msg").toString());
-			return new ErrorBean(ErrorConsts.CODE_10004,"连接超时");
+			return new ErrorBean(ErrorConsts.CODE_10004,"支付失败");
 		}
 		String resultCode = resultMap.get("result_code").toString();
 		if(!resultCode.equals("SUCCESS")) {
 			log.error(resultMap.get("err_code_des").toString());
-			return new ErrorBean(ErrorConsts.CODE_10004,"连接超时");
+			return new ErrorBean(ErrorConsts.CODE_10004,"支付失败");
 		}
 		String prepayId = resultMap.get("prepay_id").toString();
 		Map<String, String> responseMap = new HashMap<String, String>(7);

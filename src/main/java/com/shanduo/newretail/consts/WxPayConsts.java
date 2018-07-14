@@ -19,6 +19,8 @@ public class WxPayConsts {
      */
     public static final String KEY = "shanduo123456TCL987654888fa00888";
     
+    public static final String PKCS12_PATH = "/www/apiclient_cert.p12";
+    
     /**
      * 签名方式,固定值
      */
@@ -35,9 +37,19 @@ public class WxPayConsts {
     public static final String PAY_URL = "https://api.mch.weixin.qq.com/pay/unifiedorder";
     
     /**
-     * 回调url
+     * 支付回调url
      */
     public static final String NOTIFY_URL= ConfigConsts.API_URL+"/jpay/pay";
+    
+    /**
+     * 微信申请退款接口
+     */
+    public static final String REFUND_URL = "https://api.mch.weixin.qq.com/secapi/pay/refund";
+    
+    /**
+     * 退款回调url
+     */
+    public static final String CANCEL_URL= ConfigConsts.API_URL+"/jpay/cancel";
     
     /**
      * 调用微信接口的返回值的false

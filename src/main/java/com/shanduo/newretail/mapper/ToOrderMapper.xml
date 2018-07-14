@@ -194,7 +194,7 @@
     and id = #{0}
     and state = #{1}
   </select>
-  <update id="updateReceivingOrder">
+  <update id="updateOrder">
     update to_order
     set state = #{2}
     where is_deleted = '0'

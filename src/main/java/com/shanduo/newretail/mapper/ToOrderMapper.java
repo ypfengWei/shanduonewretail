@@ -17,5 +17,5 @@ public interface ToOrderMapper {
     
     ToOrder getOrder(String orderId, String typeId);
     
-    int updateReceivingOrder(String orderId, String sellerId,String state);
+    int updateOrder(String orderId, String sellerId,String state);
 }

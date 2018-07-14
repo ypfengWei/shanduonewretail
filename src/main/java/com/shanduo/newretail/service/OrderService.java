@@ -74,7 +74,19 @@ public interface OrderService {
 	int updateReceivingOrder(String orderId,String sellerId);
 	
 	/**
-	 * 退款
+	 * 申请退款中
+	 * @Title: updateCancelOrder
+	 * @Description: TODO
+	 * @param @param orderId
+	 * @param @param sellerId
+	 * @param @return
+	 * @return int
+	 * @throws
+	 */
+	int updateCancelOrder(String orderId,String sellerId);
+	
+	/**
+	 * 退款回调处理
 	 * @Title: updateCancelOrder
 	 * @Description: TODO
 	 * @param @param orderId
