@@ -22,6 +22,7 @@ import com.shanduo.newretail.entity.common.ErrorBean;
 import com.shanduo.newretail.entity.common.ResultBean;
 import com.shanduo.newretail.entity.common.SuccessBean;
 import com.shanduo.newretail.entity.service.CommodityInfo;
+import com.shanduo.newretail.service.BaseService;
 import com.shanduo.newretail.service.CommodityService;
 import com.shanduo.newretail.util.StringUtils;
 
@@ -33,6 +34,11 @@ public class CommodityController {
 	private static final Logger Log = LoggerFactory.getLogger(CommodityController.class);
 	@Autowired
 	private CommodityService commodityService;
+	@Autowired
+	private BaseService baseService;
+	/*
+	 * 查询店铺商品类别
+	 */
 	@RequestMapping(value = "selectcommoditytype",method={RequestMethod.POST,RequestMethod.GET})
 	@ResponseBody
 	//http://localhost:8081/shanduonewretail/jcommodity/selectcommoditytype?id=1
@@ -50,7 +56,9 @@ public class CommodityController {
 		return new SuccessBean(categoryIdList);
 		
 	}
-	
+	/*
+	 * 查询店铺所有商品
+	 */
 	@RequestMapping(value = "selectcommodity",method={RequestMethod.POST,RequestMethod.GET})
 	@ResponseBody
 	//http://localhost:8081/shanduonewretail/jcommodity/selectcommodity?id=1&categoryIdList=
@@ -72,10 +80,40 @@ public class CommodityController {
 			Map<Integer, List<CommodityInfo>> commodityMap = new HashMap<Integer, List<CommodityInfo>>();
 			commodityMap = commodityService.selectCommodity(categoryIdList, id);
 			return new SuccessBean(commodityMap);
-	} catch (Exception e) {
-		return new ErrorBean(ErrorConsts.CODE_10004,"查询失败");
+		} catch (Exception e) {
+			return new ErrorBean(ErrorConsts.CODE_10004,"查询失败");
+		}
 	}
-	
+	/*
+	 * 商品上下架
+	 */
+	@RequestMapping(value = "updatecommodityvisible",method={RequestMethod.POST,RequestMethod.GET})
+	@ResponseBody
+	//http://localhost:8081/shanduonewretail/jcommodity/updatecommodityvisible?token=1&visible=1&commodityId=1
+	public ResultBean updateCommodityVisible(HttpServletRequest request, String token,String visible,String commodityId) {
+		if(StringUtils.isNull(commodityId) ) {
+			Log.warn("commodityId为空");
+			return new ErrorBean(ErrorConsts.CODE_10002,"commodityId为空");
+		}
+		if(StringUtils.isNull(visible) || !visible.matches("^[01]$")) {
+			Log.error("visible错误");
+			return new ErrorBean(ErrorConsts.CODE_10002,"visible错误");
+		}
+		if(StringUtils.isNull(token)) {
+			Log.warn("token为空");
+			return new ErrorBean(ErrorConsts.CODE_10002,"token为空");
+		}
+		String id = baseService.checkUserToken(token);
+		
+		try {
+			int count = commodityService.updateCommodityVisible(commodityId, id, Integer.valueOf(visible));
+			if(count<1){
+				return new ErrorBean(ErrorConsts.CODE_10004,"修改失败");
+			}
+		} catch (Exception e) {
+			return new ErrorBean(ErrorConsts.CODE_10004,"修改失败");
+		}
+		return new SuccessBean("修改成功");
 		
 	}
 

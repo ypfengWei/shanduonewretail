@@ -1,5 +1,6 @@
 package com.shanduo.newretail.mapper;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 import com.shanduo.newretail.entity.UserSeller;
@@ -26,5 +27,7 @@ public interface UserSellerMapper {
     int updateBusinessSign(String businessSign,String id);
     
     UserSeller selectBusinessSign(String id);
+    
+    int updateMoney (BigDecimal money,String id);
 
 }

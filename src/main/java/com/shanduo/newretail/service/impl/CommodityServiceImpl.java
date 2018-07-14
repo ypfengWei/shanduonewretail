@@ -80,4 +80,10 @@ public class CommodityServiceImpl implements CommodityService {
 		return commodityMap;
 	}
 
+	@Override
+	public int updateCommodityVisible(String commodityId, String id, Integer visible) {
+		
+		return relationsMapper.updateCommodityVisible(commodityId, id, visible);
+	}
+
 }

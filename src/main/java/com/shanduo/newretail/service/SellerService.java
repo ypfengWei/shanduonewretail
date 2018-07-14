@@ -1,5 +1,6 @@
 package com.shanduo.newretail.service;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
@@ -22,4 +23,6 @@ public interface SellerService {
 	int updateBusinessSign(String businessSign,String id);
 	//判断该店铺是否营业中
 	boolean selectBusinessSign(String id);
+	//修改金额
+	int updateMoney (BigDecimal money,String id,String type);
 }

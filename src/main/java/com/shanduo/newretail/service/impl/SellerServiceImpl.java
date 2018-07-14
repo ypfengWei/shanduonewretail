@@ -8,6 +8,9 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,6 +23,7 @@ import com.shanduo.newretail.util.LocationUtils;
 import com.shanduo.newretail.util.StringUtils;
 @Service
 public class SellerServiceImpl implements SellerService {
+	private static final Logger Log = LoggerFactory.getLogger(SellerServiceImpl.class);
 	@Autowired
 	private UserSellerMapper userSellerMapper;
 
@@ -139,6 +143,25 @@ public class SellerServiceImpl implements SellerService {
 		}
 		
 		return false;
+	}
+	@Override
+	@Transactional(rollbackFor = Exception.class)
+	public int updateMoney(BigDecimal money, String id,String type) {
+		UserSeller userSeller = userSellerMapper.selectBusinessSign(id);
+		if("0".equals(type)){//加钱
+			money = money.add(userSeller.getMoney());
+		}else{
+			money = (userSeller.getMoney()).subtract(money);
+			if(BigDecimal.valueOf(0).compareTo(money)==1){
+				return 0;
+			}
+		}
+		int count = userSellerMapper.updateMoney(money, id);
+		if(count<1){
+			Log.warn("修改金额失败");
+			throw new RuntimeException();
+		}
+		return count;
 	}
 
 }

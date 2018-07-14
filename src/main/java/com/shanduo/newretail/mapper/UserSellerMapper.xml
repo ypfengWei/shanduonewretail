@@ -242,4 +242,10 @@
     from user_seller
     where id = #{id,jdbcType=VARCHAR}
   </select>
+  <update id="updateMoney" >
+    update user_seller
+    set 
+      money = #{0}
+      where id = #{1}
+  </update>
 </mapper>

@@ -143,5 +143,12 @@
     where commodity_id = #{commodityId,jdbcType=VARCHAR}
       and user_id = #{userId,jdbcType=VARCHAR}
   </update>
-  
+  <update id="updateCommodityVisible" >
+    update relations
+    <set>
+       visible = #{2}
+    </set>
+    where commodity_id = #{0}
+      and user_id = #{1}
+  </update>
 </mapper>
