@@ -163,5 +163,14 @@ public class SellerServiceImpl implements SellerService {
 		}
 		return count;
 	}
+	@Override
+	public int selectMoney(BigDecimal money, String id) {
+		UserSeller userSeller = userSellerMapper.selectBusinessSign(id);
+		money = (userSeller.getMoney()).subtract(money);
+		if(BigDecimal.valueOf(0).compareTo(money)==1){
+			return 0;
+		}
+		return 1;
+	}
 
 }
