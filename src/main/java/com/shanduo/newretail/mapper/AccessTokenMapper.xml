@@ -90,4 +90,11 @@
       create_date = #{createDate,jdbcType=BIGINT}
     where tokenid = #{tokenid,jdbcType=INTEGER}
   </update>
+  
+  <select id="selectAccessToken" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from access_token
+    where appid = #{appid,jdbcType=VARCHAR}
+  </select>
 </mapper>

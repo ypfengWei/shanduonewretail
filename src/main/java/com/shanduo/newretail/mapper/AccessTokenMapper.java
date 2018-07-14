@@ -14,4 +14,6 @@ public interface AccessTokenMapper {
     int updateByPrimaryKeySelective(AccessToken record);
 
     int updateByPrimaryKey(AccessToken record);
+    
+    AccessToken selectAccessToken(String appid);
 }

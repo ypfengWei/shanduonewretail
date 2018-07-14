@@ -90,4 +90,11 @@
       create_date = #{createDate,jdbcType=BIGINT}
     where js_api_tokenid = #{jsApiTokenid,jdbcType=INTEGER}
   </update>
+  
+  <select id="selectJsApiTicket" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from js_api_ticket
+    where appid = #{appid,jdbcType=VARCHAR}
+  </select>
 </mapper>
