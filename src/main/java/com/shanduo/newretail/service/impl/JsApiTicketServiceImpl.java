@@ -48,7 +48,8 @@ public class JsApiTicketServiceImpl implements JsApiTicketService {
 	                        jsApiTicket.setCreateDate(System.currentTimeMillis());
 	                        jsApiTicket.setExpiresIn(newJsApiTicket.getExpiresIn());
 	                        jsApiTicket.setTicket(newJsApiTicket.getTicket());
-	                        jsApiTicketMapper.insertSelective(jsApiTicket);
+	                        jsApiTicket.setAppid(appid);
+	                        jsApiTicketMapper.updateJsApiTicket(jsApiTicket);
 	                    }
 	                }
 	            }

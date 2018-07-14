@@ -51,7 +51,8 @@ public class AccessTokenServiceImpl implements AccessTokenService {
 	                    accessToken.setCreateDate(System.currentTimeMillis());
 	                    accessToken.setAccessToken(newAccessToken.getAccessToken());
 	                    accessToken.setExpiresIn(newAccessToken.getExpiresIn());
-	                    accessTokenMapper.insertSelective(accessToken);
+	                    accessToken.setAppid(WxPayConsts.APPID);
+	                    accessTokenMapper.updateAccessToken(accessToken);
 	                }
 	            }
 	        }

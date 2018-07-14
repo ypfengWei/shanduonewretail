@@ -97,4 +97,13 @@
     from access_token
     where appid = #{appid,jdbcType=VARCHAR}
   </select>
+  
+  <update id="updateAccessToken" parameterType="com.shanduo.newretail.entity.AccessToken">
+    update access_token
+    set 
+      access_token = #{accessToken,jdbcType=VARCHAR},
+      expires_in = #{expiresIn,jdbcType=INTEGER},
+      create_date = #{createDate,jdbcType=BIGINT}
+    where appid = #{appid,jdbcType=VARCHAR}
+  </update>
 </mapper>

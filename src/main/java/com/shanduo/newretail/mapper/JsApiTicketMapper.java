@@ -16,4 +16,6 @@ public interface JsApiTicketMapper {
     int updateByPrimaryKey(JsApiTicket record);
     
     JsApiTicket selectJsApiTicket(String appid);
+    
+    int updateJsApiTicket(JsApiTicket jsApiTicket);
 }

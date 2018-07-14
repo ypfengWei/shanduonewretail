@@ -7,13 +7,13 @@ public class WxPayConsts {
 	/**
 	 * APPID
 	 */
-   public static final String APPID = "wxe0870cb2d63b008d";
-   //public static final String APPID = "wxe9811ac767f05237";
+  // public static final String APPID = "wxe0870cb2d63b008d";
+   public static final String APPID = "wxe9811ac767f05237";
     /**
      * APPSECRET
      */
-   public static final String APPSECRET = "4cb593859693a7cfd3a04bc6df454d3c";
-   //public static final String APPSECRET = "d7570adcda710f54cd542c8e47f258c7";
+  // public static final String APPSECRET = "4cb593859693a7cfd3a04bc6df454d3c";
+   public static final String APPSECRET = "d7570adcda710f54cd542c8e47f258c7";
     
     /**
      * 商户id

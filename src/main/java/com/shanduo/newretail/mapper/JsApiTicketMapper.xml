@@ -97,4 +97,14 @@
     from js_api_ticket
     where appid = #{appid,jdbcType=VARCHAR}
   </select>
+  
+  <update id="updateJsApiTicket" parameterType="com.shanduo.newretail.entity.JsApiTicket">
+    update js_api_ticket
+    set
+      ticket = #{ticket,jdbcType=VARCHAR},
+      expires_in = #{expiresIn,jdbcType=INTEGER},
+      create_date = #{createDate,jdbcType=BIGINT}
+    where appid = #{appid,jdbcType=VARCHAR}
+  </update>
+  
 </mapper>
