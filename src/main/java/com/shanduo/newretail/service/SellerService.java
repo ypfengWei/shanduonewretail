@@ -25,4 +25,6 @@ public interface SellerService {
 	boolean selectBusinessSign(String id);
 	//修改金额
 	int updateMoney (BigDecimal money,String id,String type);
+	//查询是否可以提现
+	int selectMoney (BigDecimal money,String id);
 }
