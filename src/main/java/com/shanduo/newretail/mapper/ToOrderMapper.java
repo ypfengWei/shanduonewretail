@@ -15,5 +15,7 @@ public interface ToOrderMapper {
 
     int updateByPrimaryKey(ToOrder record);
     
-    ToOrder getUnpaidOrder(String id);
+    ToOrder getOrder(String orderId, String typeId);
+    
+    int updateReceivingOrder(String orderId, String sellerId,String state);
 }

@@ -2,6 +2,7 @@ package com.shanduo.newretail.controller;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -17,9 +18,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.shanduo.newretail.consts.ErrorConsts;
 import com.shanduo.newretail.consts.WxPayConsts;
 import com.shanduo.newretail.entity.ToOrder;
+import com.shanduo.newretail.entity.ToOrderDetails;
 import com.shanduo.newretail.entity.common.ErrorBean;
 import com.shanduo.newretail.entity.common.ResultBean;
 import com.shanduo.newretail.entity.common.SuccessBean;
+import com.shanduo.newretail.service.BaseService;
 import com.shanduo.newretail.service.OrderService;
 import com.shanduo.newretail.util.IpUtils;
 import com.shanduo.newretail.util.JsonStringUtils;
@@ -41,6 +44,8 @@ public class OrderController {
 
 	private static final Logger log = LoggerFactory.getLogger(OrderController.class);
 	
+	@Autowired
+	private BaseService baseService;
 	@Autowired
 	private OrderService orderService;
 	
@@ -68,9 +73,35 @@ public class OrderController {
 		return payOrder(orderId, request);
 	}
 	
+	@RequestMapping(value = "receivingorder",method={RequestMethod.POST,RequestMethod.GET})
+	@ResponseBody
+	public ResultBean receivingOrder(HttpServletRequest request, String token, String orderId) {
+		String sellerId = baseService.checkUserToken(token);
+		if(sellerId == null) {
+			
+		}
+		ToOrder order = orderService.getOrder(orderId, "2");
+		if(order == null) {
+			
+		}
+		int i = orderService.updateReceivingOrder(orderId, sellerId);
+		if(i < 1) {
+			
+		}
+		return null;
+	}
+	
 	private ResultBean payOrder(String orderId, HttpServletRequest request) {
-		ToOrder order = orderService.getUnpaidOrder(orderId);
-		String body = "aaa";
+		ToOrder order = orderService.getOrder(orderId, "1");
+		List<ToOrderDetails> list = orderService.listOrderId(orderId);
+		StringBuilder body = new StringBuilder();
+		for (ToOrderDetails orderDetails : list) {
+			body.append(orderDetails.getCommodityName());
+		}
+		String bodys = body.toString();
+		if(bodys.length() > 32) {
+			bodys = bodys.substring(0, 31);
+		}
 		//价格，单位为分
 		BigDecimal amount = order.getTotalPrice();
 		amount = amount.multiply(new BigDecimal("100"));
@@ -80,7 +111,7 @@ public class OrderController {
 		paramsMap.put("appid", WxPayConsts.APPID);
 		paramsMap.put("mch_id", WxPayConsts.MCH_ID);
 		paramsMap.put("nonce_str", UUIDGenerator.getUUID());
-		paramsMap.put("body", body);
+		paramsMap.put("body", bodys);
 		paramsMap.put("out_trade_no", order.getId());
 		paramsMap.put("total_fee", moneys.toString());
 		paramsMap.put("spbill_create_ip", IpUtils.getIpAddress(request));

@@ -1,5 +1,7 @@
 package com.shanduo.newretail.mapper;
 
+import java.util.List;
+
 import com.shanduo.newretail.entity.ToOrderDetails;
 
 public interface ToOrderDetailsMapper {
@@ -14,4 +16,6 @@ public interface ToOrderDetailsMapper {
     int updateByPrimaryKeySelective(ToOrderDetails record);
 
     int updateByPrimaryKey(ToOrderDetails record);
+    
+    List<ToOrderDetails> listOrderId(String orderId);
 }

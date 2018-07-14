@@ -1,6 +1,7 @@
 package com.shanduo.newretail.service.impl;
 
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -98,8 +99,54 @@ public class OrderServiceImpl implements OrderService {
 	}
 
 	@Override
-	public ToOrder getUnpaidOrder(String orderId) {
-		return orderMapper.getUnpaidOrder(orderId);
+	public ToOrder getOrder(String orderId,String typeId) {
+		return orderMapper.getOrder(orderId, typeId);
+	}
+
+	@Override
+	public int updatePayOrder(String orderId) {
+		ToOrder order = new ToOrder();
+		order.setId(orderId);
+		order.setState("2");
+		order.setPaymentTime(new Date());
+		return orderMapper.updateByPrimaryKeySelective(order);
+	}
+
+	@Override
+	public int updateReceivingOrder(String orderId,String sellerId) {
+		return orderMapper.updateReceivingOrder(orderId, sellerId, "3");
+	}
+
+	@Override
+	public List<ToOrderDetails> listOrderId(String orderId) {
+		return orderDetailsMapper.listOrderId(orderId);
 	}
 	
+	@Override
+	@Transactional(rollbackFor = Exception.class)
+	public int updateCancelOrder(String orderId, String sellerId) {
+		int i = orderMapper.updateReceivingOrder(orderId, sellerId,"4");
+		if(i < 1) {
+			
+		}
+		//加库存减销量
+		return 1;
+	}
+
+	@Override
+	@Transactional(rollbackFor = Exception.class)
+	public int updateFinishOrder(String orderId, String sellerId) {
+		ToOrder order = getOrder(orderId, "3");
+		if(order == null) {
+			
+		}
+		int i = orderMapper.updateReceivingOrder(orderId, sellerId,"5");
+		if(i < 1) {
+			log.warn("完成订单失败");
+			throw new RuntimeException();
+		}
+		//店铺加钱
+		return 1;
+	}
+
 }

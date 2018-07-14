@@ -186,12 +186,19 @@
     where id = #{id,jdbcType=VARCHAR}
   </update>
   
-  <select id="getUnpaidOrder" parameterType="java.lang.String" resultMap="BaseResultMap">
+  <select id="getOrder" resultMap="BaseResultMap">
     select 
     id, openid, total_price
     from to_order
     where is_deleted = '0'
-    and state = '1'
-    and id = #{id,jdbcType=VARCHAR}
+    and id = #{0}
+    and state = #{1}
   </select>
+  <update id="updateReceivingOrder">
+    update to_order
+    set state = #{2}
+    where is_deleted = '0'
+    and id = #{0}
+    and seller_id = #{1}
+  </update>
 </mapper>

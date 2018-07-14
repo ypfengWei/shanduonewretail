@@ -39,7 +39,7 @@ public class PayController {
 	
 	/**
 	 * 微信支付回调
-	 * @Title: appWxPay
+	 * @Title: pay
 	 * @Description: TODO
 	 * @param @param request
 	 * @param @return
@@ -49,7 +49,7 @@ public class PayController {
 	 */
 	@RequestMapping(value = "pay")
 	@ResponseBody
-	public String appWxPay(HttpServletRequest request) throws IOException {
+	public String pay(HttpServletRequest request) throws IOException {
 		BufferedReader reader = request.getReader();
         String line = "";
         StringBuffer inputString = new StringBuffer();
@@ -58,33 +58,33 @@ public class PayController {
         }
         String xmlString  = inputString.toString();
         request.getReader().close();
-        log.info("微信支付回调接口返回XML数据:" + xmlString);
+//        log.info("微信支付回调接口返回XML数据:" + xmlString);
         Map<String, Object> resultMap = WxPayUtils.Str2Map(xmlString);
         //验证签名是否微信调用
         boolean flag = WxPayUtils.isWechatSigns(resultMap, WxPayConsts.KEY, "utf-8");
         if(flag) {
         	String returnCode = resultMap.get("return_code").toString();
     		if(!"SUCCESS".equals(returnCode)) {
-    			log.error(resultMap.get("return_msg").toString());
+    			log.warn(resultMap.get("return_msg").toString());
     			return returnXML(WxPayConsts.FAIL);
     		}
     		String resultCode = resultMap.get("result_code").toString();
     		if(!"SUCCESS".equals(resultCode)) {
-    			log.error(resultMap.get("err_code_des").toString());
+    			log.warn(resultMap.get("err_code_des").toString());
     			return returnXML(WxPayConsts.FAIL);
     		}
     		String appid = resultMap.get("appid").toString();
     		if(!appid.equals(WxPayConsts.APPID)) {
-    			log.error("APPID不匹配");
+    			log.warn("APPID不匹配");
     			return returnXML(WxPayConsts.FAIL);
     		}
     		String mchId = resultMap.get("mch_id").toString();
     		if(!mchId.equals(WxPayConsts.MCH_ID)) {
-    			log.error("商户号不匹配");
+    			log.warn("商户号不匹配");
     			return returnXML(WxPayConsts.FAIL);
     		}
     		String orderId = resultMap.get("out_trade_no").toString();
-    		ToOrder order = orderService.getUnpaidOrder(orderId);
+    		ToOrder order = orderService.getOrder(orderId,"1");
 			if(order == null) {
 				log.error("订单已操作或不存在");
 				return returnXML(WxPayConsts.FAIL);
@@ -97,9 +97,8 @@ public class PayController {
     			log.error("订单金额错误:"+totalFee+","+order.getTotalPrice());
     			return returnXML(WxPayConsts.FAIL);
     		}
-    		try {
-//				orderService.updateOrders(orderId,"3");
-			} catch (Exception e) {
+    		int i = orderService.updatePayOrder(orderId);
+    		if(i == 0) {
 				log.error("修改订单错误");
 				return returnXML(WxPayConsts.FAIL);
 			}

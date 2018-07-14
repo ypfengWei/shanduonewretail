@@ -103,4 +103,11 @@
       price = #{price,jdbcType=DECIMAL}
     where id = #{id,jdbcType=INTEGER}
   </update>
+  
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    id, order_id, commodity_id, commodity_name, commodity_number, price
+    from to_order_details
+    where order_id = #{orderId,jdbcType=VARCHAR}
+  </select>
 </mapper>
