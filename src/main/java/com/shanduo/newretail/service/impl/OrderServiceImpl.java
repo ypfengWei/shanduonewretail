@@ -118,12 +118,21 @@ public class OrderServiceImpl implements OrderService {
 		order.setId(orderId);
 		order.setState("2");
 		order.setPaymentTime(new Date());
-		return orderMapper.updateByPrimaryKeySelective(order);
+		int i = orderMapper.updateByPrimaryKeySelective(order);
+		if(i > 0) {
+			//向卖家推送下单通知
+			//向买家推送支付成功通知
+		}
+		return i;
 	}
 
 	@Override
 	public int updateReceivingOrder(String orderId,String sellerId) {
-		return orderMapper.updateOrder(orderId, sellerId, "3");
+		int i = orderMapper.updateOrder(orderId, sellerId, "3");
+		if(i > 0) {
+			//向买家推送接单通知
+		}
+		return i;
 	}
 
 	@Override
@@ -144,6 +153,7 @@ public class OrderServiceImpl implements OrderService {
 		for (ToOrderDetails orderDetails : list) {
 			commodityService.updateCommodityStock(order.getSellerId(), orderDetails.getCommodityId(), orderDetails.getCommodityNumber(), "1");
 		}
+		//向买家推送退款通知
 		return 1;
 	}
 
@@ -159,6 +169,7 @@ public class OrderServiceImpl implements OrderService {
 		BigDecimal totalPrice = order.getTotalPrice().multiply(new BigDecimal("0.94"));
 		//店铺加钱
 		sellerService.updateMoney(totalPrice, sellerId, "0");
+		//向买家推送订单完成通知?
 		return 1;
 	}
 
