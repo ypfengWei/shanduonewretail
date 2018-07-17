@@ -35,15 +35,19 @@ public class CommodityController {
 	 */
 	@RequestMapping(value = "selectcommoditytype",method={RequestMethod.POST,RequestMethod.GET})
 	@ResponseBody
-	//http://localhost:8081/shanduonewretail/jcommodity/selectcommoditytype?id=1
-	public ResultBean selectCommodityType(HttpServletRequest request, String id) {
+	//http://localhost:8081/shanduonewretail/jcommodity/selectcommoditytype?id=1&typeId=1
+	public ResultBean selectCommodityType(HttpServletRequest request, String id,String typeId) {
 		if(StringUtils.isNull(id) ) {
+			Log.warn("id错误");
+			return new ErrorBean(ErrorConsts.CODE_10002,"参数为空");
+		}
+		if(StringUtils.isNull(typeId) ) {
 			Log.warn("id错误");
 			return new ErrorBean(ErrorConsts.CODE_10002,"参数为空");
 		}
 		List<Map<String,Object>> categoryIdList = new ArrayList<Map<String,Object>>();
 		try {
-			categoryIdList = commodityService.selectSellerCommodityType(id);
+			categoryIdList = commodityService.selectSellerCommodityType(id,typeId);
 			if(categoryIdList.isEmpty()){
 				return new ErrorBean();
 			}
@@ -59,7 +63,7 @@ public class CommodityController {
 	@RequestMapping(value = "selectcommodity",method={RequestMethod.POST,RequestMethod.GET})
 	@ResponseBody
 	//http://localhost:8081/shanduonewretail/jcommodity/selectcommodity?id=1&categoryId=
-	public ResultBean selectCommodity(HttpServletRequest request, String id,String categoryId) {
+	public ResultBean selectCommodity(HttpServletRequest request, String id,String categoryId, String page, String pageSize) {
 		if(StringUtils.isNull(id) ) {
 			Log.warn("id错误");
 			return new ErrorBean(ErrorConsts.CODE_10002,"参数为空");
@@ -68,14 +72,22 @@ public class CommodityController {
 			Log.warn("categoryId错误");
 			return new ErrorBean(ErrorConsts.CODE_10002,"参数为空");
 		}
+		if(StringUtils.isNull(page) || !page.matches("^\\d*$")) {
+			Log.warn("page is error waith page:{}", page);
+			return new ErrorBean(ErrorConsts.CODE_10002, "页码错误");
+		}
+		if(StringUtils.isNull(pageSize) || !pageSize.matches("^\\d*$")) {
+			Log.warn("pageSize is error waith pageSize:{}", pageSize);
+			return new ErrorBean(ErrorConsts.CODE_10002, "记录错误");
+		}
 		try {
 			
-			List<CommodityInfo> commodityInfo = new ArrayList<CommodityInfo>(); 
-			commodityInfo = commodityService.selectCommodity(Integer.valueOf(categoryId), id);
-			if(commodityInfo.isEmpty()){
+			Map<String, Object> resultMap = new HashMap<String, Object>(3);
+			resultMap = commodityService.selectCommodity(Integer.valueOf(categoryId), id,Integer.valueOf(page),Integer.valueOf(pageSize));
+			if(resultMap.isEmpty()){
 				return new ErrorBean();
 			}
-			return new SuccessBean(commodityInfo);
+			return new SuccessBean(resultMap);
 		} catch (Exception e) {
 			return new ErrorBean(ErrorConsts.CODE_10004,"查询失败");
 		}

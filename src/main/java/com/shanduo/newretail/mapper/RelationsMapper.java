@@ -29,4 +29,6 @@ public interface RelationsMapper {
     List<CommodityInfo> selectCommodity(Integer categoryId,String id);
     
     int updateCommodityVisible(String commodityId,String id,Integer visible);
+    
+    Integer selectCommodityNum(String id,Integer categoryId);
 }

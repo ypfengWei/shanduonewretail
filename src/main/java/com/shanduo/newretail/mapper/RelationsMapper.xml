@@ -117,12 +117,12 @@
       and category_id = #{categoryId,jdbcType=INTEGER}
   </update>
   
-  <select id="selectSellerCommodityType" parameterType="java.lang.String"
+  <select id="selectSellerCommodityType" 
 	resultType="map">
 	select
 	category.category_name,category.id
 	from relations join category on relations.category_id=category.id
-	where user_id = #{id,jdbcType=VARCHAR} and  relations.is_deleted = 0
+	where user_id = #{0} and  relations.is_deleted = 0 and relations.visible=1 
 	group by category_id
 	order by category_id
   </select>
@@ -152,4 +152,12 @@
     where commodity_id = #{0}
       and user_id = #{1}
   </update>
+  
+  <select id="selectCommodityNum"  resultType="java.lang.Integer">
+    select 
+    count(commodity_id)
+    from relations
+    where user_id = #{0}
+      and category_id = #{1} and visible=1 and is_deleted=0
+  </select>
 </mapper>

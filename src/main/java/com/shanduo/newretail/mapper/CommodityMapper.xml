@@ -130,5 +130,6 @@
 	<include refid="Commodity_Column_List" />
 	from relations as re join commodity as co on co.id=re.commodity_id
 	where re.category_id=#{0} and re.user_id=#{1} and re.visible='1' and stock &gt;0
+	limit #{2},#{3}
   </select> 
 </mapper>

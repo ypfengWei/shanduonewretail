@@ -248,11 +248,11 @@ public class OrderController {
 			log.warn("state is error waith state:{}", state);
 			return new ErrorBean(ErrorConsts.CODE_10002, "请重新登录");
 		}
-		if(StringUtils.isNull(page) || !page.matches("^\\d$")) {
+		if(StringUtils.isNull(page) || !page.matches("^\\d*$")) {
 			log.warn("page is error waith page:{}", page);
 			return new ErrorBean(ErrorConsts.CODE_10002, "页码错误");
 		}
-		if(StringUtils.isNull(pageSize) || !pageSize.matches("^\\d$")) {
+		if(StringUtils.isNull(pageSize) || !pageSize.matches("^\\d*$")) {
 			log.warn("pageSize is error waith pageSize:{}", pageSize);
 			return new ErrorBean(ErrorConsts.CODE_10002, "记录错误");
 		}

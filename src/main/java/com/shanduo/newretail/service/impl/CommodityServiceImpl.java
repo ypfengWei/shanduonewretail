@@ -14,6 +14,7 @@ import com.shanduo.newretail.entity.service.CommodityInfo;
 import com.shanduo.newretail.mapper.CommodityMapper;
 import com.shanduo.newretail.mapper.RelationsMapper;
 import com.shanduo.newretail.service.CommodityService;
+import com.shanduo.newretail.util.Page;
 @Service
 public class CommodityServiceImpl implements CommodityService {
 	private static final Logger Log = LoggerFactory.getLogger(CommodityServiceImpl.class);
@@ -23,9 +24,12 @@ public class CommodityServiceImpl implements CommodityService {
 	private CommodityMapper commodityMapper;
 
 	@Override
-	public List<Map<String,Object>> selectSellerCommodityType(String id) {
+	public List<Map<String,Object>> selectSellerCommodityType(String id,String typeId) {
+		if("1".equals(typeId)){
+			return relationsMapper.selectSellerCommodityType(id);
+		}
+		return null;
 		
-		return relationsMapper.selectSellerCommodityType(id);
 	}
 
 	@Override
@@ -63,10 +67,20 @@ public class CommodityServiceImpl implements CommodityService {
 	}
 
 	@Override
-	public List<CommodityInfo> selectCommodity(Integer categoryId, String id) {
+	public Map<String, Object> selectCommodity(Integer categoryId, String id,Integer pageNum, Integer pageSize) {
 		List<CommodityInfo> commodityInfo = new ArrayList<CommodityInfo>(); 
-		commodityInfo = commodityMapper.selectCommodity(categoryId, id);
-		return commodityInfo;
+		int totalRecord = relationsMapper.selectCommodityNum(id, categoryId);
+		Map<String, Object> resultMap = new HashMap<String, Object>(3);
+		if(0==totalRecord){
+			return resultMap;
+		}
+		Page page = new Page(totalRecord, pageSize, pageNum);
+		pageNum = (page.getPageNum() - 1) * page.getPageSize();
+		commodityInfo = commodityMapper.selectCommodity(categoryId, id,pageNum, page.getPageSize());
+		resultMap.put("page", page.getPageNum());
+		resultMap.put("totalPage", page.getTotalPage());
+		resultMap.put("commodityInfoList", commodityInfo);
+		return resultMap;
 	}
 
 	@Override
