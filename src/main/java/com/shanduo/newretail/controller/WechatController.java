@@ -3,8 +3,15 @@ package com.shanduo.newretail.controller;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.security.SecureRandom;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.http.client.ClientProtocolException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -80,5 +87,34 @@ public class WechatController {
              }
          }
 	     return accessToken;
+    }
+    @ResponseBody
+	@RequestMapping(value = "access")
+    public String wxRedirectMessage(HttpServletRequest request, String signature,String timestamp,String nonce,String echostr) {
+        
+        if (echostr == null) {
+           
+        } else {
+            //接入端口验证
+            List<String> list = new ArrayList<String>();
+            list.add(WxPayConsts.TOKEN);
+            list.add(timestamp);
+            list.add(nonce);
+            // 1. 将token、timestamp、nonce三个参数进行字典序排序  
+            Collections.sort(list, new Comparator<String>() {  
+                @Override  
+                public int compare(String o1, String o2) {  
+                    return o1.compareTo(o2);  
+                }  
+            });  
+            String signStr = "";
+            for (String str : list) {
+                signStr += str;
+            }
+            if (signature.equals(SHA1.SHA2(signStr))) {
+            	 return echostr;
+            } 
+        }
+        return null; 
     }
 }

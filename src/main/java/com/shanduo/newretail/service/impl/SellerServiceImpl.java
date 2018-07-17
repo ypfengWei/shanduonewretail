@@ -91,7 +91,7 @@ public class SellerServiceImpl implements SellerService {
 	}
 
 	@Override
-	public List<String> selectNearbySellerType(double lon, double lat) {
+	public List<Map<String,Object>> selectNearbySellerType(double lon, double lat) {
 		
 		return userSellerMapper.selectNearbySellerType(lon, lat);
 	}

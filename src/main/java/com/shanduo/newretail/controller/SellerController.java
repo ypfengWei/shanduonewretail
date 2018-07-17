@@ -48,7 +48,7 @@ public class SellerController {
 			Log.warn("纬度格式错误");
 			return new ErrorBean(ErrorConsts.CODE_10002,"纬度格式错误");
 		}
-		List<String>	sellerTypeList = new ArrayList<String>();
+		List<Map<String,Object>>	sellerTypeList = new ArrayList<Map<String,Object>>();
 		try {
 				sellerTypeList = sellerService.selectNearbySellerType(new Double(lon), new Double(lat));
 		} catch (Exception e) {

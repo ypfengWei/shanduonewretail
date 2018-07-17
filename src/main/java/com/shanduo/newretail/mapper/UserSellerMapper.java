@@ -20,7 +20,7 @@ public interface UserSellerMapper {
     
     int insertSeller(String id,String sellerName,String phone,String parentId);
     
-    List<String> selectNearbySellerType(double lon,double lat);
+    List<Map<String,Object>> selectNearbySellerType(double lon,double lat);
     
     List<UserSeller> selectNearbySeller(Map<String, Object> params);
     

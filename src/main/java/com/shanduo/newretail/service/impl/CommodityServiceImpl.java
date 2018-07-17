@@ -23,7 +23,7 @@ public class CommodityServiceImpl implements CommodityService {
 	private CommodityMapper commodityMapper;
 
 	@Override
-	public List<Integer> selectSellerCommodityType(String id) {
+	public List<Map<String,Object>> selectSellerCommodityType(String id) {
 		
 		return relationsMapper.selectSellerCommodityType(id);
 	}

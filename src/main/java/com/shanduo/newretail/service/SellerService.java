@@ -12,7 +12,7 @@ public interface SellerService {
 	
 	List<Map<String, List<SellerInfo>>> selectNearbySeller(double lon,double lat,List<String> sellerType);
 	
-	List<String> selectNearbySellerType(double lon,double lat);
+	List<Map<String,Object>> selectNearbySellerType(double lon,double lat);
 	
 	int insertSeller(String id,String sellerName,String phone,String parentId);
 	

@@ -41,7 +41,7 @@ public class CommodityController {
 			Log.warn("id错误");
 			return new ErrorBean(ErrorConsts.CODE_10002,"参数为空");
 		}
-		List<Integer> categoryIdList = new ArrayList<Integer>();
+		List<Map<String,Object>> categoryIdList = new ArrayList<Map<String,Object>>();
 		try {
 			categoryIdList = commodityService.selectSellerCommodityType(id);
 	} catch (Exception e) {

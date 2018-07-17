@@ -11,7 +11,7 @@ public interface CommodityService {
 	 * 查询店铺商品种类
 	 * 
 	 */
-	List<Integer> selectSellerCommodityType(String id);
+	List<Map<String,Object>> selectSellerCommodityType(String id);
 	/*
 	 * 检测购买数量是否大于库存
 	 */
