@@ -224,6 +224,19 @@ public class OrderController {
 		return new SuccessBean("申请成功");
 	}
 	
+	/**
+	 * 卖家条件分页查询订单
+	 * @Title: orderList
+	 * @Description: TODO
+	 * @param @param request
+	 * @param @param token
+	 * @param @param state
+	 * @param @param page
+	 * @param @param pageSize
+	 * @param @return
+	 * @return ResultBean
+	 * @throws
+	 */
 	@RequestMapping(value = "orderList",method={RequestMethod.POST,RequestMethod.GET})
 	@ResponseBody
 	public ResultBean orderList(HttpServletRequest request, String token, String state, String page, String pageSize) {

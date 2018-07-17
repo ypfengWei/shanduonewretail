@@ -37,8 +37,8 @@
 	</bean>
 	
 	<!-- 定时器启动组件 -->
-	<task:annotation-driven/>
-	<context:component-scan base-package="com.shanduo.newretail.timing"/>
+	<!-- <task:annotation-driven/>
+	<context:component-scan base-package="com.shanduo.newretail.timing"/> -->
 	
 	<!-- 拦截器拦截路径 -->
 	<mvc:interceptors>

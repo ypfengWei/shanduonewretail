@@ -28,6 +28,9 @@ public class WxPayConsts {
      */
     public static final String KEY = "shanduo123456TCL987654888fa00888";
     
+    /**
+     * 证书保存目录
+     */
     public static final String PKCS12_PATH = "/www/apiclient_cert.p12";
     
     /**

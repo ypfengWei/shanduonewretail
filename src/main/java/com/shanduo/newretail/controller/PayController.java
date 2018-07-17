@@ -108,6 +108,16 @@ public class PayController {
     	return returnXML(WxPayConsts.FAIL);
 	}
 	
+	/**
+	 * 微信退款回调
+	 * @Title: cancel
+	 * @Description: TODO
+	 * @param @param request
+	 * @param @return
+	 * @param @throws Exception
+	 * @return String
+	 * @throws
+	 */
 	@RequestMapping(value = "cancel")
 	@ResponseBody
 	public String cancel(HttpServletRequest request) throws Exception {
