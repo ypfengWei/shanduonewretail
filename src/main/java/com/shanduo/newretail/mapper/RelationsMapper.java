@@ -1,6 +1,10 @@
 package com.shanduo.newretail.mapper;
 
 import java.util.List;
+<<<<<<< HEAD
+=======
+import java.util.Map;
+>>>>>>> 292a584f24f9808b854bb1946a748c8c915d6d14
 
 import com.shanduo.newretail.entity.Relations;
 import com.shanduo.newretail.entity.RelationsKey;
@@ -19,7 +23,11 @@ public interface RelationsMapper {
 
     int updateByPrimaryKey(Relations record);
     
+<<<<<<< HEAD
     List<Integer> selectSellerCommodityType(String id);
+=======
+    List<Map<String,Object>> selectSellerCommodityType(String id);
+>>>>>>> 292a584f24f9808b854bb1946a748c8c915d6d14
     
     Relations selectCommodityStock(String id,String commodityId);
     

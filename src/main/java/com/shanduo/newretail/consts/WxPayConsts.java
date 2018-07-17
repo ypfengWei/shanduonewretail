@@ -14,6 +14,11 @@ public class WxPayConsts {
      */
   // public static final String APPSECRET = "4cb593859693a7cfd3a04bc6df454d3c";
    public static final String APPSECRET = "d7570adcda710f54cd542c8e47f258c7";
+<<<<<<< HEAD
+=======
+   
+   public static final String TOKEN="weixin";
+>>>>>>> 292a584f24f9808b854bb1946a748c8c915d6d14
     
     /**
      * 商户id

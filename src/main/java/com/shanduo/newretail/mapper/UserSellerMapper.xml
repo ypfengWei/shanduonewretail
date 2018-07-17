@@ -214,10 +214,17 @@
     values (#{0}, #{1},  #{2} ,#{3} )
   </insert>
   
+<<<<<<< HEAD
   <select id="selectNearbySellerType" resultType="java.lang.String">
     select 
     seller_type
     from user_seller
+=======
+  <select id="selectNearbySellerType" resultType="map">
+    select 
+    seller_type,category_name
+    from user_seller join category on user_seller.seller_type=(category.id+"")
+>>>>>>> 292a584f24f9808b854bb1946a748c8c915d6d14
     where (((#{0}-lon)*100)*((#{0}-lon)*100)+((#{1}-lat)*100)*((#{1}-lat)*100)) &lt; 1         
    group by seller_type
 

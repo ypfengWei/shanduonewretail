@@ -23,7 +23,11 @@ public class CommodityServiceImpl implements CommodityService {
 	private CommodityMapper commodityMapper;
 
 	@Override
+<<<<<<< HEAD
 	public List<Integer> selectSellerCommodityType(String id) {
+=======
+	public List<Map<String,Object>> selectSellerCommodityType(String id) {
+>>>>>>> 292a584f24f9808b854bb1946a748c8c915d6d14
 		
 		return relationsMapper.selectSellerCommodityType(id);
 	}
@@ -63,6 +67,7 @@ public class CommodityServiceImpl implements CommodityService {
 	}
 
 	@Override
+<<<<<<< HEAD
 	public Map<Integer, List<CommodityInfo>> selectCommodity(List<Integer> categoryIdList, String id) {
 		Map<Integer, List<CommodityInfo>> commodityMap = new HashMap<Integer, List<CommodityInfo>>();
 		for(int i=0;i<categoryIdList.size();i++){
@@ -74,6 +79,12 @@ public class CommodityServiceImpl implements CommodityService {
 			}
 		}
 		return commodityMap;
+=======
+	public List<CommodityInfo> selectCommodity(Integer categoryId, String id) {
+		List<CommodityInfo> commodityInfo = new ArrayList<CommodityInfo>(); 
+		commodityInfo = commodityMapper.selectCommodity(categoryId, id);
+		return commodityInfo;
+>>>>>>> 292a584f24f9808b854bb1946a748c8c915d6d14
 	}
 
 	@Override
