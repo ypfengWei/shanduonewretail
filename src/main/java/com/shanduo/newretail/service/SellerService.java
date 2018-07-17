@@ -4,19 +4,19 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
-import com.shanduo.newretail.entity.UserSeller;
+import com.shanduo.newretail.entity.service.SellerDetails;
 import com.shanduo.newretail.entity.service.SellerInfo;
 
 
 public interface SellerService {
 	
-	Map<String, List<SellerInfo>> selectNearbySellerOneType(double lon,double lat,String sellerType);
+	List<SellerInfo> selectNearbySellerOneType(double lon,double lat,String sellerType);
 	
 	List<Map<String,Object>> selectNearbySellerType(double lon,double lat);
 	
 	int insertSeller(String id,String sellerName,String phone,String parentId);
 	
-	UserSeller selectSellerDetails(String id);
+	SellerDetails selectSellerDetails(String id);
 	
 	int updateSellerDetails(Map<String, Object> userSellerMap);
 	

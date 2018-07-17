@@ -18,6 +18,7 @@ import com.shanduo.newretail.entity.UserSeller;
 import com.shanduo.newretail.entity.common.ErrorBean;
 import com.shanduo.newretail.entity.common.ResultBean;
 import com.shanduo.newretail.entity.common.SuccessBean;
+import com.shanduo.newretail.entity.service.SellerDetails;
 import com.shanduo.newretail.entity.service.SellerInfo;
 import com.shanduo.newretail.service.BaseService;
 import com.shanduo.newretail.service.SellerService;
@@ -51,6 +52,9 @@ public class SellerController {
 		List<Map<String,Object>>	sellerTypeList = new ArrayList<Map<String,Object>>();
 		try {
 				sellerTypeList = sellerService.selectNearbySellerType(new Double(lon), new Double(lat));
+				if(sellerTypeList.isEmpty()){
+					return new ErrorBean();
+				}
 		} catch (Exception e) {
 			return new ErrorBean(ErrorConsts.CODE_10004,"查询失败");
 		}
@@ -74,10 +78,14 @@ public class SellerController {
 			return new ErrorBean(ErrorConsts.CODE_10002,"无店铺类别");
 		}
 		
-		Map<String, List<SellerInfo>> sellerInfoMap = new HashMap<String, List<SellerInfo>>();
+		List<SellerInfo> sellerInfoMap = new ArrayList<SellerInfo>();
+		
 		try {
 			
 			sellerInfoMap = sellerService.selectNearbySellerOneType(new Double(lon), new Double(lat),sellerType);
+			if(sellerInfoMap.isEmpty()){
+				return new ErrorBean();
+			}
 		} catch (Exception e) {
 			return new ErrorBean(ErrorConsts.CODE_10004,"查询失败");
 		}
@@ -100,7 +108,7 @@ public class SellerController {
 			Log.warn("token失效");
 			return new ErrorBean(ErrorConsts.CODE_10001,"token失效");
 		}
-		UserSeller userSeller = new UserSeller();
+		SellerDetails userSeller = new SellerDetails();
 		try {
 			userSeller  = sellerService.selectSellerDetails(id);
 		} catch (Exception e) {

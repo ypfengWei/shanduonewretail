@@ -22,11 +22,38 @@
     id, seller_name, seller_picture, notice, phone, seller_type, start_date, end_date, 
     business_sign, money, parent_id, lat, lon, gmt_create, gmt_modified
   </sql>
+  
+  <resultMap id="BoleResultMap" type="com.shanduo.newretail.entity.service.SellerDetails">
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="seller_name" jdbcType="VARCHAR" property="sellerName" />
+    <result column="seller_picture" jdbcType="VARCHAR" property="sellerPicture" />
+    <result column="notice" jdbcType="VARCHAR" property="notice" />
+    <result column="phone" jdbcType="VARCHAR" property="phone" />
+    <result column="seller_type" jdbcType="CHAR" property="sellerType" />
+    <result column="start_date" jdbcType="TIME" property="startDate" />
+    <result column="end_date" jdbcType="TIME" property="endDate" />
+    <result column="lat" jdbcType="DECIMAL" property="lat" />
+    <result column="lon" jdbcType="DECIMAL" property="lon" />
+    <result column="business_sign" jdbcType="CHAR" property="businessSign" />
+    <result column="money" jdbcType="DECIMAL" property="money" />
+ 	<result column="name" jdbcType="VARCHAR" property="name" />
+  </resultMap>
+  <sql id="Bole_Column_List">
+   se.id id, seller_name, seller_picture, notice, phone, seller_type, start_date, end_date, 
+ 	 business_sign, money,lat, lon, name
+  </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
     from user_seller
     where id = #{id,jdbcType=VARCHAR}
+  </select>
+  
+  <select id="selectSellerDetails" parameterType="java.lang.String" resultMap="BoleResultMap">
+    select 
+    <include refid="Bole_Column_List" />
+    from user_seller as se join to_user as tu on se.id=tu.id
+    where se.id = #{id,jdbcType=VARCHAR}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
     delete from user_seller

@@ -44,6 +44,9 @@ public class CommodityController {
 		List<Map<String,Object>> categoryIdList = new ArrayList<Map<String,Object>>();
 		try {
 			categoryIdList = commodityService.selectSellerCommodityType(id);
+			if(categoryIdList.isEmpty()){
+				return new ErrorBean();
+			}
 	} catch (Exception e) {
 		return new ErrorBean(ErrorConsts.CODE_10004,"查询失败");
 	}
@@ -69,6 +72,9 @@ public class CommodityController {
 			
 			List<CommodityInfo> commodityInfo = new ArrayList<CommodityInfo>(); 
 			commodityInfo = commodityService.selectCommodity(Integer.valueOf(categoryId), id);
+			if(commodityInfo.isEmpty()){
+				return new ErrorBean();
+			}
 			return new SuccessBean(commodityInfo);
 		} catch (Exception e) {
 			return new ErrorBean(ErrorConsts.CODE_10004,"查询失败");

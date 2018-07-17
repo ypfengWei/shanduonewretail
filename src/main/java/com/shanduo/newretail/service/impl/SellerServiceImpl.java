@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.shanduo.newretail.entity.UserSeller;
+import com.shanduo.newretail.entity.service.SellerDetails;
 import com.shanduo.newretail.entity.service.SellerInfo;
 import com.shanduo.newretail.mapper.UserSellerMapper;
 import com.shanduo.newretail.service.SellerService;
@@ -28,20 +29,12 @@ public class SellerServiceImpl implements SellerService {
 	private UserSellerMapper userSellerMapper;
 
 	
-	public List<Map<String, List<SellerInfo>>> selectNearbySeller(double lon, double lat,List<String> sellerType) {
-		List<Map<String, List<SellerInfo>>> sellerInfoList = new ArrayList<Map<String, List<SellerInfo>>>();
-		for(int i=0;i<sellerType.size();i++){
-			Map<String, List<SellerInfo>> sellerInfoMap = new HashMap<String, List<SellerInfo>>();
-			sellerInfoMap = selectNearbySellerOneType(lon,lat,sellerType.get(i));
-			sellerInfoList.add(sellerInfoMap);
-		}
-		return sellerInfoList;
-	}
+	
 	/*
 	 * 查询单个店铺种类下的附近所有店铺
 	 */
 	@Override
-	public Map<String, List<SellerInfo>> selectNearbySellerOneType(double lon, double lat,String sellerType) {
+	public List<SellerInfo> selectNearbySellerOneType(double lon, double lat,String sellerType) {
 		List<UserSeller> sellerList = new ArrayList<UserSeller>();
 		List<SellerInfo>  sellerInfoList= new ArrayList<SellerInfo>();
 		Map<String, Object> params = new HashMap<String, Object>();
@@ -78,9 +71,7 @@ public class SellerServiceImpl implements SellerService {
 				sellerInfoList.add(seller);
 			
 		}
-		Map<String, List<SellerInfo>> sellerInfoMap = new HashMap<String, List<SellerInfo>>();
-		sellerInfoMap.put(sellerType, sellerInfoList);
-		return sellerInfoMap;
+		return sellerInfoList;
 	}
 
 
@@ -97,9 +88,9 @@ public class SellerServiceImpl implements SellerService {
 		return userSellerMapper.selectNearbySellerType(lon, lat);
 	}
 	@Override
-	public UserSeller selectSellerDetails(String id) {
+	public SellerDetails selectSellerDetails(String id) {
 		
-		return userSellerMapper.selectByPrimaryKey(id);
+		return userSellerMapper.selectSellerDetails(id);
 	}
 	@Override
 	@Transactional(rollbackFor = Exception.class)

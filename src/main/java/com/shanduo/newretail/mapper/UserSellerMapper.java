@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 import com.shanduo.newretail.entity.UserSeller;
+import com.shanduo.newretail.entity.service.SellerDetails;
 
 public interface UserSellerMapper {
     int deleteByPrimaryKey(String id);
@@ -29,5 +30,7 @@ public interface UserSellerMapper {
     UserSeller selectBusinessSign(String id);
     
     int updateMoney (BigDecimal money,String id);
+    
+    SellerDetails selectSellerDetails(String id);
 
 }
