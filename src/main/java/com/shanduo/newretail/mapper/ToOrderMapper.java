@@ -1,6 +1,11 @@
 package com.shanduo.newretail.mapper;
 
+import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
+
 import com.shanduo.newretail.entity.ToOrder;
+import com.shanduo.newretail.entity.service.OrderInfo;
 
 public interface ToOrderMapper {
     int deleteByPrimaryKey(String id);
@@ -18,4 +23,9 @@ public interface ToOrderMapper {
     ToOrder getOrder(String orderId, String typeId);
     
     int updateOrder(String orderId, String sellerId,String state);
+    
+    int countSellerOrder(@Param("sellerId")String sellerId,@Param("state")String state);
+    
+    List<OrderInfo> listSellerOrder(@Param("sellerId")String sellerId,@Param("state")String state,
+    		@Param("pageNum")Integer pageNum,@Param("pageSize")Integer pageSize);
 }

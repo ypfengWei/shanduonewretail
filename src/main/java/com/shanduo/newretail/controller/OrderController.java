@@ -224,6 +224,36 @@ public class OrderController {
 		return new SuccessBean("申请成功");
 	}
 	
+	@RequestMapping(value = "orderList",method={RequestMethod.POST,RequestMethod.GET})
+	@ResponseBody
+	public ResultBean orderList(HttpServletRequest request, String token, String state, String page, String pageSize) {
+		String sellerId = baseService.checkUserToken(token);
+		if(sellerId == null) {
+			return new ErrorBean(ErrorConsts.CODE_10001, "请重新登录");
+		}
+		if(StringUtils.isNull(state) || !state.matches("^[2346]$")) {
+			log.warn("state is error waith state:{}", state);
+			return new ErrorBean(ErrorConsts.CODE_10002, "请重新登录");
+		}
+		if(StringUtils.isNull(page) || !page.matches("^\\d$")) {
+			log.warn("page is error waith page:{}", page);
+			return new ErrorBean(ErrorConsts.CODE_10002, "页码错误");
+		}
+		if(StringUtils.isNull(pageSize) || !pageSize.matches("^\\d$")) {
+			log.warn("pageSize is error waith pageSize:{}", pageSize);
+			return new ErrorBean(ErrorConsts.CODE_10002, "记录错误");
+		}
+		Integer pages = Integer.valueOf(page);
+		Integer pageSizes = Integer.valueOf(pageSize);
+		Map<String, Object> resultMap = new HashMap<>(3);
+		try {
+			resultMap = orderService.listSellerOrder(sellerId, state, pages, pageSizes);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new ErrorBean(ErrorConsts.CODE_10002, "查询错误");
+		}
+		return new SuccessBean(resultMap);
+	}
 	
 	/**
 	 * 微信统一下单

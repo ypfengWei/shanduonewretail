@@ -107,4 +107,18 @@ public interface OrderService {
 	 * @throws
 	 */
 	int updateFinishOrder(String orderId,String sellerId);
+	
+	/**
+	 * 条件分页查询卖家订单
+	 * @Title: listSellerOrder
+	 * @Description: TODO
+	 * @param @param sellerId
+	 * @param @param state
+	 * @param @param pageNum
+	 * @param @param pageSize
+	 * @param @return
+	 * @return Map<String,Object>
+	 * @throws
+	 */
+	Map<String, Object> listSellerOrder(String sellerId, String state, Integer pageNum, Integer pageSize);
 }

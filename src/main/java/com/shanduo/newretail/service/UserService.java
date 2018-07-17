@@ -23,7 +23,7 @@ public interface UserService {
 	 * @return int
 	 * @throws
 	 */
-	int saveUser(String openId, String phone, String password, String parentId);
+	int saveUser(String openId, String phone, String password, String parentId, String typrId);
 	
 	/**
 	 * 检查手机号是否已存在

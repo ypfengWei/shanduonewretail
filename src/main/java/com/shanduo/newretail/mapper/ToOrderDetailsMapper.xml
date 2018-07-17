@@ -13,7 +13,7 @@
     id, order_id, commodity_id, commodity_name, commodity_number, price
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
-    select 
+    select
     <include refid="Base_Column_List" />
     from to_order_details
     where id = #{id,jdbcType=INTEGER}

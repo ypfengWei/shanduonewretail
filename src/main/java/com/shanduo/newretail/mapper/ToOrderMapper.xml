@@ -16,6 +16,15 @@
     <result column="gmt_modified" jdbcType="TIMESTAMP" property="gmtModified" />
     <result column="is_deleted" jdbcType="BIT" property="isDeleted" />
   </resultMap>
+  <resultMap id="OrderInfo" type="com.shanduo.newretail.entity.service.OrderInfo">
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="total_price" jdbcType="DECIMAL" property="totalPrice" />
+    <result column="user_name" jdbcType="VARCHAR" property="userName" />
+    <result column="user_phone" jdbcType="VARCHAR" property="userPhone" />
+    <result column="user_address" jdbcType="VARCHAR" property="userAddress" />
+    <result column="remarks" jdbcType="VARCHAR" property="remarks" />
+    <result column="gmt_create" jdbcType="TIMESTAMP" property="gmtCreate" />
+  </resultMap>
   <sql id="Base_Column_List">
     id, openid, seller_id, total_price, user_name, user_phone, user_address, state, remarks, 
     payment_time, gmt_create, gmt_modified, is_deleted
@@ -201,4 +210,22 @@
     and id = #{0}
     and seller_id = #{1}
   </update>
+  <select id="countSellerOrder" resultType="java.lang.Integer">
+    select 
+    count(id)
+    from to_order
+    where is_deleted = '0'
+    and seller_id = #{sellerId,jdbcType=VARCHAR}
+    and state = #{state,jdbcType=CHAR}
+  </select>
+  <select id="listSellerOrder" resultMap="OrderInfo">
+    select 
+    id, total_price, user_name, user_phone, user_address, remarks, gmt_create
+    from to_order
+    where is_deleted = '0'
+    and seller_id = #{sellerId,jdbcType=VARCHAR}
+    and state = #{state,jdbcType=CHAR}
+    order by gmt_create desc
+    limit #{pageNum},#{pageSize}
+  </select>
 </mapper>

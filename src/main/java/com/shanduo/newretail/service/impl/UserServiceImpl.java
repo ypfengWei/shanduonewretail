@@ -38,7 +38,7 @@ public class UserServiceImpl implements UserService {
 	
 	@Override
 	@Transactional(rollbackFor = Exception.class)
-	public int saveUser(String openId, String phone, String password, String parentId) {
+	public int saveUser(String openId, String phone, String password, String parentId, String typrId) {
 		String id = UUIDGenerator.getUUID();
 		password = MD5Utils.getInstance().getMD5(password);
 		String name = phone.replaceAll("(\\d{3})\\d{4}(\\d{4})","$1****$2");
@@ -48,11 +48,14 @@ public class UserServiceImpl implements UserService {
 		user.setName(name);
 		user.setMobilePhone(phone);
 		user.setPassword(password);
-		user.setJurisdiction(DefaultConsts.ROLE_MERCHANT);
+		user.setJurisdiction(typrId);
 		int i = userMapper.insertSelective(user);
 		if(i < 1) {
 			log.warn("regin user is error waith phone:{} and password:{}", phone, password);
 			throw new RuntimeException();
+		}
+		if(!typrId.equals(DefaultConsts.ROLE_MERCHANT)) {
+			return 1;
 		}
 		i = sellerService.insertSeller(id, name, phone, parentId);
 		if(i < 1) {

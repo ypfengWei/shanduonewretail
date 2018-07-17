@@ -2,6 +2,7 @@ package com.shanduo.newretail.service.impl;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -14,12 +15,14 @@ import org.springframework.transaction.annotation.Transactional;
 import com.shanduo.newretail.entity.Commodity;
 import com.shanduo.newretail.entity.ToOrder;
 import com.shanduo.newretail.entity.ToOrderDetails;
+import com.shanduo.newretail.entity.service.OrderInfo;
 import com.shanduo.newretail.mapper.CommodityMapper;
 import com.shanduo.newretail.mapper.ToOrderDetailsMapper;
 import com.shanduo.newretail.mapper.ToOrderMapper;
 import com.shanduo.newretail.service.CommodityService;
 import com.shanduo.newretail.service.OrderService;
 import com.shanduo.newretail.service.SellerService;
+import com.shanduo.newretail.util.Page;
 import com.shanduo.newretail.util.UUIDGenerator;
 
 /**
@@ -171,6 +174,23 @@ public class OrderServiceImpl implements OrderService {
 		sellerService.updateMoney(totalPrice, sellerId, "0");
 		//向买家推送订单完成通知?
 		return 1;
+	}
+
+	@Override
+	public Map<String, Object> listSellerOrder(String sellerId, String state, Integer pageNum, Integer pageSize) {
+		int totalRecord = orderMapper.countSellerOrder(sellerId, state);
+		Page page = new Page(totalRecord, pageSize, pageNum);
+		pageNum = (page.getPageNum() - 1) * page.getPageSize();
+		List<OrderInfo> listOrderInfo = orderMapper.listSellerOrder(sellerId, state, pageNum, page.getPageSize());
+		for (OrderInfo order : listOrderInfo) {
+			List<ToOrderDetails> details = listOrderId(order.getId());
+			order.setDetails(details);
+		}
+		Map<String, Object> resultMap = new HashMap<String, Object>(3);
+		resultMap.put("page", page.getPageNum());
+		resultMap.put("totalPage", page.getTotalPage());
+		resultMap.put("data", listOrderInfo);
+		return resultMap;
 	}
 
 }
