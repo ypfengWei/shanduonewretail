@@ -63,17 +63,10 @@ public class CommodityServiceImpl implements CommodityService {
 	}
 
 	@Override
-	public Map<Integer, List<CommodityInfo>> selectCommodity(List<Integer> categoryIdList, String id) {
-		Map<Integer, List<CommodityInfo>> commodityMap = new HashMap<Integer, List<CommodityInfo>>();
-		for(int i=0;i<categoryIdList.size();i++){
-			List<CommodityInfo> commodityInfo = new ArrayList<CommodityInfo>();
-			Integer categoryId = categoryIdList.get(i); 
-			commodityInfo = commodityMapper.selectCommodity(categoryId, id);
-			if(!commodityInfo.isEmpty()){
-				commodityMap.put(categoryId, commodityInfo);
-			}
-		}
-		return commodityMap;
+	public List<CommodityInfo> selectCommodity(Integer categoryId, String id) {
+		List<CommodityInfo> commodityInfo = new ArrayList<CommodityInfo>(); 
+		commodityInfo = commodityMapper.selectCommodity(categoryId, id);
+		return commodityInfo;
 	}
 
 	@Override

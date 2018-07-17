@@ -21,9 +21,9 @@ public interface CommodityService {
 	 */
 	int updateCommodityStock(String id,String commodityId,int commoditynum,String type);
 	/*
-	 * 查询店铺所有商品
+	 * 查询店铺同一类别的所有商品
 	 */
-	Map<Integer,List<CommodityInfo>> selectCommodity(List<Integer> categoryIdList,String id);
+	List<CommodityInfo> selectCommodity(Integer categoryId,String id);
 	/*
 	 * 商品上下架
 	 */

@@ -27,7 +27,7 @@ public class SellerServiceImpl implements SellerService {
 	@Autowired
 	private UserSellerMapper userSellerMapper;
 
-	@Override
+	
 	public List<Map<String, List<SellerInfo>>> selectNearbySeller(double lon, double lat,List<String> sellerType) {
 		List<Map<String, List<SellerInfo>>> sellerInfoList = new ArrayList<Map<String, List<SellerInfo>>>();
 		for(int i=0;i<sellerType.size();i++){
@@ -40,6 +40,7 @@ public class SellerServiceImpl implements SellerService {
 	/*
 	 * 查询单个店铺种类下的附近所有店铺
 	 */
+	@Override
 	public Map<String, List<SellerInfo>> selectNearbySellerOneType(double lon, double lat,String sellerType) {
 		List<UserSeller> sellerList = new ArrayList<UserSeller>();
 		List<SellerInfo>  sellerInfoList= new ArrayList<SellerInfo>();

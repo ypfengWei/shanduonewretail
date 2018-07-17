@@ -10,7 +10,7 @@ import com.shanduo.newretail.entity.service.SellerInfo;
 
 public interface SellerService {
 	
-	List<Map<String, List<SellerInfo>>> selectNearbySeller(double lon,double lat,List<String> sellerType);
+	Map<String, List<SellerInfo>> selectNearbySellerOneType(double lon,double lat,String sellerType);
 	
 	List<Map<String,Object>> selectNearbySellerType(double lon,double lat);
 	
