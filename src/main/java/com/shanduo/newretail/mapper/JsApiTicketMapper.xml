@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.shanduo.newretail.mapper.JsApiTicketMapper">
+  <resultMap id="BaseResultMap" type="com.shanduo.newretail.entity.JsApiTicket">
+    <id column="js_api_tokenid" jdbcType="INTEGER" property="jsApiTokenid" />
+    <result column="appid" jdbcType="VARCHAR" property="appid" />
+    <result column="ticket" jdbcType="VARCHAR" property="ticket" />
+    <result column="expires_in" jdbcType="INTEGER" property="expiresIn" />
+    <result column="create_date" jdbcType="BIGINT" property="createDate" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    js_api_tokenid, appid, ticket, expires_in, create_date
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from js_api_ticket
+    where js_api_tokenid = #{jsApiTokenid,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from js_api_ticket
+    where js_api_tokenid = #{jsApiTokenid,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.shanduo.newretail.entity.JsApiTicket">
+    insert into js_api_ticket (js_api_tokenid, appid, ticket, 
+      expires_in, create_date)
+    values (#{jsApiTokenid,jdbcType=INTEGER}, #{appid,jdbcType=VARCHAR}, #{ticket,jdbcType=VARCHAR}, 
+      #{expiresIn,jdbcType=INTEGER}, #{createDate,jdbcType=BIGINT})
+  </insert>
+  <insert id="insertSelective" parameterType="com.shanduo.newretail.entity.JsApiTicket">
+    insert into js_api_ticket
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="jsApiTokenid != null">
+        js_api_tokenid,
+      </if>
+      <if test="appid != null">
+        appid,
+      </if>
+      <if test="ticket != null">
+        ticket,
+      </if>
+      <if test="expiresIn != null">
+        expires_in,
+      </if>
+      <if test="createDate != null">
+        create_date,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="jsApiTokenid != null">
+        #{jsApiTokenid,jdbcType=INTEGER},
+      </if>
+      <if test="appid != null">
+        #{appid,jdbcType=VARCHAR},
+      </if>
+      <if test="ticket != null">
+        #{ticket,jdbcType=VARCHAR},
+      </if>
+      <if test="expiresIn != null">
+        #{expiresIn,jdbcType=INTEGER},
+      </if>
+      <if test="createDate != null">
+        #{createDate,jdbcType=BIGINT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.shanduo.newretail.entity.JsApiTicket">
+    update js_api_ticket
+    <set>
+      <if test="appid != null">
+        appid = #{appid,jdbcType=VARCHAR},
+      </if>
+      <if test="ticket != null">
+        ticket = #{ticket,jdbcType=VARCHAR},
+      </if>
+      <if test="expiresIn != null">
+        expires_in = #{expiresIn,jdbcType=INTEGER},
+      </if>
+      <if test="createDate != null">
+        create_date = #{createDate,jdbcType=BIGINT},
+      </if>
+    </set>
+    where js_api_tokenid = #{jsApiTokenid,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.shanduo.newretail.entity.JsApiTicket">
+    update js_api_ticket
+    set appid = #{appid,jdbcType=VARCHAR},
+      ticket = #{ticket,jdbcType=VARCHAR},
+      expires_in = #{expiresIn,jdbcType=INTEGER},
+      create_date = #{createDate,jdbcType=BIGINT}
+    where js_api_tokenid = #{jsApiTokenid,jdbcType=INTEGER}
+  </update>
+  
+  <select id="selectJsApiTicket" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from js_api_ticket
+    where appid = #{appid,jdbcType=VARCHAR}
+  </select>
+  
+  <update id="updateJsApiTicket" parameterType="com.shanduo.newretail.entity.JsApiTicket">
+    update js_api_ticket
+    set
+      ticket = #{ticket,jdbcType=VARCHAR},
+      expires_in = #{expiresIn,jdbcType=INTEGER},
+      create_date = #{createDate,jdbcType=BIGINT}
+    where appid = #{appid,jdbcType=VARCHAR}
+  </update>
+  
+</mapper>
