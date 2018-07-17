@@ -48,11 +48,7 @@ public class SellerController {
 			Log.warn("纬度格式错误");
 			return new ErrorBean(ErrorConsts.CODE_10002,"纬度格式错误");
 		}
-<<<<<<< HEAD
-		List<String>	sellerTypeList = new ArrayList<String>();
-=======
 		List<Map<String,Object>>	sellerTypeList = new ArrayList<Map<String,Object>>();
->>>>>>> 292a584f24f9808b854bb1946a748c8c915d6d14
 		try {
 				sellerTypeList = sellerService.selectNearbySellerType(new Double(lon), new Double(lat));
 		} catch (Exception e) {
@@ -64,11 +60,7 @@ public class SellerController {
 	@RequestMapping(value = "selectseller",method={RequestMethod.POST,RequestMethod.GET})
 	@ResponseBody
 	//http://localhost:8081/shanduonewretail/jseller/selectseller?lon=113.074815&lat=28.227615&sellerType=[0,1,2]
-<<<<<<< HEAD
-	public ResultBean selectseller(HttpServletRequest request, String lat,String lon) {
-=======
 	public ResultBean selectseller(HttpServletRequest request, String lat,String lon,String sellerType) {
->>>>>>> 292a584f24f9808b854bb1946a748c8c915d6d14
 		if(StringUtils.isNull(lon) || PatternUtils.patternLatitude(lon)) {
 			Log.warn("经度格式错误");
 			return new ErrorBean(ErrorConsts.CODE_10002,"经度格式错误");
@@ -77,20 +69,6 @@ public class SellerController {
 			Log.warn("纬度格式错误");
 			return new ErrorBean(ErrorConsts.CODE_10002,"纬度格式错误");
 		}
-<<<<<<< HEAD
-		
-		List<Map<String, List<SellerInfo>>> sellerInfoList = new ArrayList<Map<String, List<SellerInfo>>>();
-		try {
-			String sellerType = request.getParameter("sellerTypeList");
-			JSONArray jsonArray = JSONArray.fromObject(sellerType);
-			@SuppressWarnings("unchecked")
-			List<String>sellerTypeList = (List<String>) JSONArray.toCollection(jsonArray, Map.class);
-			if(sellerTypeList.isEmpty()){
-				Log.warn("无店铺类别");
-				return new ErrorBean(ErrorConsts.CODE_10002,"无店铺类别");
-			}
-			sellerInfoList = sellerService.selectNearbySeller(new Double(lon), new Double(lat),sellerTypeList);
-=======
 		if(StringUtils.isNull(sellerType) ) {
 			Log.warn("无店铺类别");
 			return new ErrorBean(ErrorConsts.CODE_10002,"无店铺类别");
@@ -100,16 +78,11 @@ public class SellerController {
 		try {
 			
 			sellerInfoMap = sellerService.selectNearbySellerOneType(new Double(lon), new Double(lat),sellerType);
->>>>>>> 292a584f24f9808b854bb1946a748c8c915d6d14
 		} catch (Exception e) {
 			return new ErrorBean(ErrorConsts.CODE_10004,"查询失败");
 		}
 		
-<<<<<<< HEAD
-		return new SuccessBean(sellerInfoList);
-=======
 		return new SuccessBean(sellerInfoMap);
->>>>>>> 292a584f24f9808b854bb1946a748c8c915d6d14
 	}
 	/*
 	 * 查询店铺详情

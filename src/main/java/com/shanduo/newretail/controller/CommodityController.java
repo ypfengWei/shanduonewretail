@@ -41,11 +41,7 @@ public class CommodityController {
 			Log.warn("id错误");
 			return new ErrorBean(ErrorConsts.CODE_10002,"参数为空");
 		}
-<<<<<<< HEAD
-		List<Integer> categoryIdList = new ArrayList<Integer>();
-=======
 		List<Map<String,Object>> categoryIdList = new ArrayList<Map<String,Object>>();
->>>>>>> 292a584f24f9808b854bb1946a748c8c915d6d14
 		try {
 			categoryIdList = commodityService.selectSellerCommodityType(id);
 	} catch (Exception e) {
@@ -59,31 +55,12 @@ public class CommodityController {
 	 */
 	@RequestMapping(value = "selectcommodity",method={RequestMethod.POST,RequestMethod.GET})
 	@ResponseBody
-<<<<<<< HEAD
-	//http://localhost:8081/shanduonewretail/jcommodity/selectcommodity?id=1&categoryIdList=
-	public ResultBean selectCommodity(HttpServletRequest request, String id) {
-=======
 	//http://localhost:8081/shanduonewretail/jcommodity/selectcommodity?id=1&categoryId=
 	public ResultBean selectCommodity(HttpServletRequest request, String id,String categoryId) {
->>>>>>> 292a584f24f9808b854bb1946a748c8c915d6d14
 		if(StringUtils.isNull(id) ) {
 			Log.warn("id错误");
 			return new ErrorBean(ErrorConsts.CODE_10002,"参数为空");
 		}
-<<<<<<< HEAD
-		try {
-			String categoryId = request.getParameter("categoryIdList");
-			JSONArray jsonArray = JSONArray.fromObject(categoryId);
-			@SuppressWarnings("unchecked")
-			List<Integer>categoryIdList = (List<Integer>) JSONArray.toCollection(jsonArray, Map.class);
-			if(null==categoryIdList || categoryIdList.isEmpty()){
-				Log.warn("categoryIdList错误");
-				return new ErrorBean(ErrorConsts.CODE_10002,"参数为空");
-			}
-			Map<Integer, List<CommodityInfo>> commodityMap = new HashMap<Integer, List<CommodityInfo>>();
-			commodityMap = commodityService.selectCommodity(categoryIdList, id);
-			return new SuccessBean(commodityMap);
-=======
 		if(null==categoryId){
 			Log.warn("categoryId错误");
 			return new ErrorBean(ErrorConsts.CODE_10002,"参数为空");
@@ -93,7 +70,6 @@ public class CommodityController {
 			List<CommodityInfo> commodityInfo = new ArrayList<CommodityInfo>(); 
 			commodityInfo = commodityService.selectCommodity(Integer.valueOf(categoryId), id);
 			return new SuccessBean(commodityInfo);
->>>>>>> 292a584f24f9808b854bb1946a748c8c915d6d14
 		} catch (Exception e) {
 			return new ErrorBean(ErrorConsts.CODE_10004,"查询失败");
 		}

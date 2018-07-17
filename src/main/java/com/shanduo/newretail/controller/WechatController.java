@@ -3,10 +3,6 @@ package com.shanduo.newretail.controller;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.security.SecureRandom;
-<<<<<<< HEAD
-import java.util.HashMap;
-import java.util.Map;
-=======
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -16,7 +12,6 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
->>>>>>> 292a584f24f9808b854bb1946a748c8c915d6d14
 import org.apache.http.client.ClientProtocolException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -93,8 +88,6 @@ public class WechatController {
          }
 	     return accessToken;
     }
-<<<<<<< HEAD
-=======
     @ResponseBody
 	@RequestMapping(value = "access")
     public String wxRedirectMessage(HttpServletRequest request, String signature,String timestamp,String nonce,String echostr) {
@@ -124,5 +117,4 @@ public class WechatController {
         }
         return null; 
     }
->>>>>>> 292a584f24f9808b854bb1946a748c8c915d6d14
 }

@@ -118,20 +118,12 @@
   </update>
   
   <select id="selectSellerCommodityType" parameterType="java.lang.String"
-<<<<<<< HEAD
-	resultType="java.lang.Integer">
-	select
-	category_id
-	from relations
-	where user_id = #{id,jdbcType=VARCHAR}
-=======
 	resultType="map">
 	select
 	category.category_name,category.id
 	from relations join category on relations.category_id=category.id
 	where user_id = #{id,jdbcType=VARCHAR} and  relations.is_deleted = 0
 	group by category_id
->>>>>>> 292a584f24f9808b854bb1946a748c8c915d6d14
 	order by category_id
   </select>
   
