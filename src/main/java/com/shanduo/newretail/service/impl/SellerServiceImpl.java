@@ -89,8 +89,15 @@ public class SellerServiceImpl implements SellerService {
 	}
 	@Override
 	public SellerDetails selectSellerDetails(String id) {
-		
-		return userSellerMapper.selectSellerDetails(id);
+		SellerDetails userSeller = userSellerMapper.selectSellerDetails(id);
+		if("0".equals(userSeller.getSellerType())){
+			userSeller.setSellerType("超市");
+		}else if("1".equals(userSeller.getSellerType())){
+			userSeller.setSellerType("水果店");
+		}else{
+			userSeller.setSellerType("冷饮店");
+		}
+		return userSeller;
 	}
 	@Override
 	@Transactional(rollbackFor = Exception.class)

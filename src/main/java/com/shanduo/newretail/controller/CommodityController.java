@@ -36,14 +36,16 @@ public class CommodityController {
 	@RequestMapping(value = "selectcommoditytype",method={RequestMethod.POST,RequestMethod.GET})
 	@ResponseBody
 	//http://localhost:8081/shanduonewretail/jcommodity/selectcommoditytype?id=1&typeId=1
-	public ResultBean selectCommodityType(HttpServletRequest request, String id,String typeId) {
-		if(StringUtils.isNull(id) ) {
-			Log.warn("id错误");
+	public ResultBean selectCommodityType(HttpServletRequest request, String id,String typeId,String token) {
+		if(StringUtils.isNull(typeId) ) {
+			Log.warn("typeId错误");
 			return new ErrorBean(ErrorConsts.CODE_10002,"参数为空");
 		}
-		if(StringUtils.isNull(typeId) ) {
-			Log.warn("id错误");
-			return new ErrorBean(ErrorConsts.CODE_10002,"参数为空");
+		if("1".equals(typeId)){
+			if(StringUtils.isNull(id) ) {
+				Log.warn("id错误");
+				return new ErrorBean(ErrorConsts.CODE_10002,"参数为空");
+			}
 		}
 		List<Map<String,Object>> categoryIdList = new ArrayList<Map<String,Object>>();
 		try {

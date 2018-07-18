@@ -1,0 +1,14 @@
+{
+  "button": [
+    {
+      "type": "view",
+      "name": "闪多新零售",
+      "url": "https://open.weixin.qq.com/connect/oauth2/authorize?appid=${appid}&redirect_uri=${host}/yapingzh/shanduo_zahuopu/index.html&response_type=code&scope=snsapi_userinfo#wechat_redirect"
+    },
+    {
+      "type": "view",
+      "name": "后台管理",
+      "url": "${host}/yapingzh/shanduo_zahuopu/login.html"
+    }
+  ]
+}
