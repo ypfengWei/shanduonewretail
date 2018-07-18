@@ -16,12 +16,15 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.shanduo.newretail.consts.ErrorConsts;
+import com.shanduo.newretail.consts.WxPayConsts;
 import com.shanduo.newretail.entity.common.ErrorBean;
 import com.shanduo.newretail.entity.common.ResultBean;
 import com.shanduo.newretail.entity.common.SuccessBean;
+import com.shanduo.newretail.service.AccessTokenService;
 import com.shanduo.newretail.service.BaseService;
 import com.shanduo.newretail.service.CommodityService;
 import com.shanduo.newretail.util.StringUtils;
+import com.shanduo.newretail.util.WxFileUtils;
 
 @Controller
 @RequestMapping(value = "jcommodity")
@@ -31,6 +34,8 @@ public class CommodityController {
 	private CommodityService commodityService;
 	@Autowired
 	private BaseService baseService;
+	@Autowired
+	private AccessTokenService accessTokenService;
 	/*
 	 * 查询店铺商品类别
 	 */
@@ -143,7 +148,10 @@ public class CommodityController {
 			return new ErrorBean(ErrorConsts.CODE_10002,"token为空");
 		}
 		String id = baseService.checkUserToken(token);
-		
+		if(null==id){
+			Log.warn("token失效");
+			return new ErrorBean(ErrorConsts.CODE_10001,"token失效");
+		}
 		try {
 			int count = commodityService.updateCommodityVisible(commodityId, id, Integer.valueOf(visible));
 			if(count<1){
@@ -153,6 +161,59 @@ public class CommodityController {
 			return new ErrorBean(ErrorConsts.CODE_10004,"修改失败");
 		}
 		return new SuccessBean("修改成功");
+		
+	}
+	/*
+	 * 商品上传
+	 */
+	@RequestMapping(value = "insertcommodity",method={RequestMethod.POST,RequestMethod.GET})
+	@ResponseBody
+	//http://localhost:8081/shanduonewretail/jcommodity/insertcommodity?token=1&name=adsds&picture=11111&price=2.3&stock=1&categoryId=100
+	public ResultBean insertCommodity(HttpServletRequest request, String token,String name,String picture,String price,String stock,String categoryId) {
+		if(StringUtils.isNull(token)) {
+			Log.warn("token为空");
+			return new ErrorBean(ErrorConsts.CODE_10002,"token为空");
+		}
+		if(StringUtils.isNull(name) ) {
+			Log.warn("name为空");
+			return new ErrorBean(ErrorConsts.CODE_10002,"name为空");
+		}
+		if(StringUtils.isNull(picture)) {
+			Log.warn("picture为空");
+			return new ErrorBean(ErrorConsts.CODE_10002,"picture为空");
+		}
+		if(StringUtils.isNull(price)) {
+			Log.warn("price为空");
+			return new ErrorBean(ErrorConsts.CODE_10002,"price为空");
+		}
+		try{
+			if(StringUtils.isNull(stock) || Integer.valueOf(stock)<0) {
+				Log.warn("stock为空");
+				return new ErrorBean(ErrorConsts.CODE_10002,"stock为空");
+			}
+		}catch (Exception e) {
+			return new ErrorBean(ErrorConsts.CODE_10002,"stock不合法");
+		}
+		
+		if(StringUtils.isNull(categoryId)) {
+			Log.warn("categoryId为空");
+			return new ErrorBean(ErrorConsts.CODE_10002,"categoryId为空");
+		}
+		String userId = baseService.checkUserToken(token);
+		if(null==userId){
+			Log.warn("token失效");
+			return new ErrorBean(ErrorConsts.CODE_10001,"token失效");
+		}
+		try {
+			picture = WxFileUtils.downloadImage(accessTokenService.selectAccessToken(WxPayConsts.APPID).getAccessToken(),picture);
+			int count = commodityService.insertCommodity(name, picture, price, stock, categoryId,userId);
+			if(count<1){
+				return new ErrorBean(ErrorConsts.CODE_10004,"上传失败");
+			}
+		} catch (Exception e) {
+			return new ErrorBean(ErrorConsts.CODE_10004,"上传失败");
+		}
+		return new SuccessBean("上传成功");
 		
 	}
 

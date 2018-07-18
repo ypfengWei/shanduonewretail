@@ -27,4 +27,6 @@ public interface SellerService {
 	int updateMoney (BigDecimal money,String id,String type);
 	//查询是否可以提现
 	int selectMoney (BigDecimal money,String id);
+	
+	List<Map<String,Object>> selectSellerType();
 }

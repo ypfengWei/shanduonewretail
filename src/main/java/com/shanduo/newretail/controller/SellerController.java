@@ -152,7 +152,7 @@ public class SellerController {
 		Map<String, Object> userSellerMap = new HashMap<String, Object>();
 		userSellerMap = JsonStringUtils.getMap(userSeller);
 		userSellerMap.put("id", id);
-		userSellerMap.put("accessToken", accessTokenService.selectAccessToken(WxPayConsts.APPID));
+		userSellerMap.put("accessToken", accessTokenService.selectAccessToken(WxPayConsts.APPID).getAccessToken());
 		if(StringUtils.isNull(userSellerMap.get("phone")+"") || PatternUtils.patternPhone(userSellerMap.get("phone").toString())){
 			Log.warn("电话号码错误");
 			return new ErrorBean(ErrorConsts.CODE_10002,"电话号码错误");
@@ -193,5 +193,21 @@ public class SellerController {
 			return new ErrorBean(ErrorConsts.CODE_10004,"修改失败");
 		}
 		return new SuccessBean("修改成功");
+	}
+	
+	/*
+	 * 查询店铺所有类型
+	 */
+	@RequestMapping(value = "selectselleralltype",method={RequestMethod.POST,RequestMethod.GET})
+	@ResponseBody
+	//http://localhost:8081/shanduonewretail/jseller/selectselleralltype
+	public ResultBean selectSellerAllType(HttpServletRequest request) {
+		List<Map<String,Object>> sellerAllTypeList = new ArrayList<Map<String,Object>>();
+		try {
+			sellerAllTypeList  = sellerService.selectSellerType();
+		} catch (Exception e) {
+			return new ErrorBean(ErrorConsts.CODE_10004,"查询失败");
+		}
+		return new SuccessBean(sellerAllTypeList);
 	}
 }

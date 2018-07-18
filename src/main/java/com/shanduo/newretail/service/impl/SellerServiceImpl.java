@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.shanduo.newretail.entity.UserSeller;
 import com.shanduo.newretail.entity.service.SellerDetails;
 import com.shanduo.newretail.entity.service.SellerInfo;
+import com.shanduo.newretail.mapper.CategoryMapper;
 import com.shanduo.newretail.mapper.UserSellerMapper;
 import com.shanduo.newretail.service.SellerService;
 import com.shanduo.newretail.util.DateUtils;
@@ -28,7 +29,8 @@ public class SellerServiceImpl implements SellerService {
 	private static final Logger Log = LoggerFactory.getLogger(SellerServiceImpl.class);
 	@Autowired
 	private UserSellerMapper userSellerMapper;
-
+	@Autowired
+	private CategoryMapper categoryMapper;
 	
 	
 	/*
@@ -172,6 +174,13 @@ public class SellerServiceImpl implements SellerService {
 			return 0;
 		}
 		return 1;
+	}
+
+
+	@Override
+	public List<Map<String,Object>> selectSellerType() {
+		
+		return categoryMapper.selectSellerType();
 	}
 
 }
