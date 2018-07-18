@@ -108,12 +108,19 @@
 <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 <script type="text/javascript">
     let href = location.href.split('#')[0];
+    let storeId = GetQueryString('storeId');
     var vm = new Vue({
         el: '#vueData',
         data: {
             cart: null,
             totalPrice: 0,
-            contactInfo: null,
+            contactInfo: {
+            	cityName: '长沙',
+                countryName: '岳麓区',
+                recevername: '李新荣',
+                recevertel: '18680602795',
+                receveraddr: 'xx街道'
+            },
             remarks: '',
             in_operation: true,
             currentTime: null
@@ -142,26 +149,27 @@
                 if (vm.contactInfo) {
                     let orderDetails = [];
                     let commodityOrder = {
-                        openid: openid,
+                    	sellerId:storeId,
+                    	openId: openid,
                         remarks: vm.remarks,
-                        userAddress: vm.contactInfo.recevername + ';' + vm.contactInfo.recevertel + ';' + vm.contactInfo.cityName + '%' + vm.contactInfo.countryName + '%' + vm.contactInfo.receveraddr
+                        name:vm.contactInfo.recevername,
+                        phone:vm.contactInfo.recevertel,
+                        address:vm.contactInfo.cityName + vm.contactInfo.countryName + vm.contactInfo.receveraddr
                     };
                     $.each(vm.cart, function (i, commodity) {
                         if (commodity.count > 0) {
                             orderDetails.push({
-                                commodityId: commodity.commodityId,
-                                price: commodity.commodityPrice,
-                                commodityName: commodity.commodityName,
-                                commodityNumber: commodity.count
+                            	commodityId: commodity.commodityId,
+                            	number: commodity.count
                             });
                         }
                     });
+                    commodityOrder.list=orderDetails;
                     $.ajax({
                         type: "POST",
-                        url: "/yapingzh/addOrder.do",
+                        url: "/shanduonewretail/jorder/payorder",
                         data: {
-                            "commodityOrder": JSON.stringify(commodityOrder),
-                            "orderDetailsList": JSON.stringify(orderDetails)
+                            "data": JSON.stringify(commodityOrder),
                         },
                         header: {
                             'content-type': 'application/x-www-form-urlencoded'

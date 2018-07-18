@@ -39,10 +39,9 @@ function getOpenid(code) {
         },
         type: "POST",
         dataType: "json",
-        success: function (result) {
-        	console.log(result);
-            if (result.success) {
-                localStorage.setItem('openid', result.openid);
+        success: function (res) {
+            if (res.success) {
+                localStorage.setItem('openid', res.result);
             }
         }
     });

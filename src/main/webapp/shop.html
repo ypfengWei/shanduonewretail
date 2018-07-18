@@ -324,7 +324,7 @@ let storeId = GetQueryString('storeId');
             },
             submitOrderView() {
                 if (vm.totalCount > 0) {
-                    location.href = 'payment.html';
+                    location.href = 'payment.html?storeId='+storeId;
                 } else {
                     toast('客官选一件吧!');
                 }
