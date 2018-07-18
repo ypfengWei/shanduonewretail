@@ -77,10 +77,27 @@ public class CommodityController {
 	@RequestMapping(value = "selectcommodity",method={RequestMethod.POST,RequestMethod.GET})
 	@ResponseBody
 	//http://localhost:8081/shanduonewretail/jcommodity/selectcommodity?id=1&categoryId=
-	public ResultBean selectCommodity(HttpServletRequest request, String id,String categoryId, String page, String pageSize) {
-		if(StringUtils.isNull(id) ) {
-			Log.warn("id错误");
+	public ResultBean selectCommodity(HttpServletRequest request, String id,String categoryId, String page, String pageSize,String typeId,String token) {
+		
+		if(StringUtils.isNull(typeId) ) {
+			Log.warn("typeId错误");
 			return new ErrorBean(ErrorConsts.CODE_10002,"参数为空");
+		}
+		if("1".equals(typeId)){
+			if(StringUtils.isNull(id) ) {
+				Log.warn("id错误");
+				return new ErrorBean(ErrorConsts.CODE_10002,"参数为空");
+			}
+		}else{
+			if(StringUtils.isNull(token)) {
+				Log.warn("token为空");
+				return new ErrorBean(ErrorConsts.CODE_10002,"token为空");
+			}
+			id = baseService.checkUserToken(token);
+			if(null==id){
+				Log.warn("token失效");
+				return new ErrorBean(ErrorConsts.CODE_10001,"token失效");
+			}
 		}
 		if(null==categoryId){
 			Log.warn("categoryId错误");
@@ -97,7 +114,7 @@ public class CommodityController {
 		try {
 			
 			Map<String, Object> resultMap = new HashMap<String, Object>(3);
-			resultMap = commodityService.selectCommodity(Integer.valueOf(categoryId), id,Integer.valueOf(page),Integer.valueOf(pageSize));
+			resultMap = commodityService.selectCommodity(Integer.valueOf(categoryId), id,Integer.valueOf(page),Integer.valueOf(pageSize),typeId);
 			if(resultMap.isEmpty()){
 				return new ErrorBean();
 			}
