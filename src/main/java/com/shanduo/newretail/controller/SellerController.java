@@ -110,8 +110,8 @@ public class SellerController {
 			}
 		}else{
 			if(StringUtils.isNull(id)) {
-				Log.warn("token为空");
-				return new ErrorBean(ErrorConsts.CODE_10002,"token为空");
+				Log.warn("id为空");
+				return new ErrorBean(ErrorConsts.CODE_10002,"id为空");
 			}
 		}
 		SellerDetails userSeller = new SellerDetails();

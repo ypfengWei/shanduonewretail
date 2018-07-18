@@ -1,0 +1,22 @@
+{
+  "touser":"${openid}",
+  "template_id":"${template_id}",
+  "data":{
+    "first": {
+      "value":"恭喜你购买成功！",
+      "color":"#173177"
+    },
+    "orderMoneySum": {
+      "value":"${price}",
+      "color":"#173177"
+    },
+    "orderProductName":{
+      "value":"<#list orderDetailsList as item>${item.commodityName}\t${item.commodityNumber}\n</#list>",
+      "color":"#173177"
+    },
+    "Remark":{
+      "value":"欢迎再次购买！",
+      "color":"#173177"
+    }
+  }
+}

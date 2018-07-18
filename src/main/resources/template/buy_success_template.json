@@ -1,0 +1,14 @@
+{
+  "touser":"${openid}",
+  "template_id":"${template_id}",
+  "data":{
+    "name": {
+      "value":"<#list orderDetailsList as item>${item.commodityName}\t${item.commodityNumber}\\n</#list>",
+      "color":"#173177"
+    },
+    "remark":{
+      "value":"欢迎再次购买！",
+      "color":"#173177"
+    }
+  }
+}
