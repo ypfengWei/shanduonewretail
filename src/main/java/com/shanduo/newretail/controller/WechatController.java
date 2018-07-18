@@ -165,7 +165,7 @@ public class WechatController {
         }
         return new SuccessBean() ;
     }*/
-    @ResponseBody
+   /* @ResponseBody
 	@RequestMapping(value = "getopenid")
     public  String getMenu(String token) throws IOException {
     	 String requestUrl ="https://api.weixin.qq.com/cgi-bin/menu/get?access_token=" + token;
@@ -179,5 +179,5 @@ public class WechatController {
         }
       //  return null;
     }
-
+*/
 }
