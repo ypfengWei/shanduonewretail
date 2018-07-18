@@ -19,6 +19,8 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.TrustManager;
 
+import com.shanduo.newretail.wx.MyX509TrustManager;
+
 import net.sf.json.JSONObject;
 
 

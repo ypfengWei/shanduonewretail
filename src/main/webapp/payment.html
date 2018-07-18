@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"/>
+    <meta content="telephone=no,email=no" name="format-detection">
+    <!--禁止自动识别电话号码和邮箱-->
+    <meta content="yes" name="apple-mobile-web-app-capable">
+    <!--苹果手机：会删除默认的工具栏和菜单栏，网站开启对web app程序的支持-->
+    <meta name="apple-mobile-web-app-status-bar-style" content="black"/>
+    <!--苹果手机：在web app应用下状态条（屏幕顶部条）的颜色,默认值为default（白色），可以定为black（黑色）和black-translucent（灰色半透明）。-->
+    <meta name="apple-touch-fullscreen" content="yes"/>
+    <!--苹果手机：如果把一个web app添加到了主屏幕中，那么从主屏幕中打开这个web app则全屏显示-->
+    <link rel="stylesheet" href="css/bootstrap.css">
+    <link rel="stylesheet" href="css/payment.css">
+    <script src="js/jquery-3.3.1.js"></script>
+    <script src="https://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
+    <script src="js/store_service.js"></script>
+    <script src="js/layer.js"></script>
+    <script src="js/utils.js"></script>
+    <title>支付</title>
+</head>
+<body>
+<div id="vueData">
+    <header>
+        <div class="title_header dis_flex">
+            <div @click="goBack">
+                <img src="img/return_1.png" alt="">
+            </div>
+            <div>
+                <span>闪多新零售</span>
+            </div>
+            <div></div>
+        </div>
+    </header>
+    <div class="body">
+        <!--地址-->
+        <div class="body_address dis_flex">
+            <div class="dis_flex">
+                <img src="img/address.png" alt="">
+            </div>
+            <div class="dis_flex" v-if="contactInfo" @click="selectAddress">
+                <!--位置-->
+                <div>
+                    <span>收货地址:{{contactInfo.cityName}}/{{contactInfo.countryName}}/{{contactInfo.receveraddr}}</span>
+                </div>
+                <!--人物信息-->
+                <div>
+                    <span>收货人:{{contactInfo.recevername}};电话:{{contactInfo.recevertel}}</span>
+                </div>
+            </div>
+            <div class="dis_flex" @click="selectAddress" v-else>
+                <!--位置-->
+                <div>
+                    <span>选择地址</span>
+                </div>
+            </div>
+        </div>
+        <!--店名-->
+        <div class="body_shop">
+            <img src="img/rectangle_1.png" alt="">
+            <span class="col_hui">闪多便利店</span>
+        </div>
+        <!--商品-->
+        <div class="body_commodity">
+            <!--单个商品-->
+            <div v-for="item in cart" v-if="item.count>0" class="dis_flex">
+                <div>
+                    <div class="body_commodity_pic">
+                        <div :style="item.picture.myStyle"></div>
+                    </div>
+                </div>
+                <div class="dis_flex">
+                    <div>
+                        <div class="title">{{item.commodityName}}</div>
+                        <div class="subtitle">{{item.commodityDesc}}</div>
+                    </div>
+                    <div class="col_hui">{{item.count}}</div>
+                </div>
+                <div>
+                    <span>￥</span>
+                    <span class="title">{{item.subtotal}}</span>
+                </div>
+            </div>
+        </div>
+        <!--备注-->
+        <div class="body_remarks dis_flex">
+            <span>备注:</span>
+            <textarea rows="5" placeholder="口味,偏好等要求" v-model="remarks"
+                      style="line-height:normal;"></textarea>
+        </div>
+    </div>
+    <footer>
+        <div v-if="in_operation" class="dis_flex" @click="submitOrder">
+            <span>微信支付</span>
+            <span>&nbsp;￥&nbsp;</span>
+            <span>{{totalPrice}}</span>
+        </div>
+        <div class="dis_flex" v-else>
+            <span>店家休息中</span>
+            <span></span>
+            <span></span>
+        </div>
+    </footer>
+</div>
+</body>
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script type="text/javascript">
+    let href = location.href.split('#')[0];
+    var vm = new Vue({
+        el: '#vueData',
+        data: {
+            cart: null,
+            totalPrice: 0,
+            contactInfo: null,
+            remarks: '',
+            in_operation: true,
+            currentTime: null
+        }, mounted: function () {
+            setInterval(function () {
+                vm.currentTime = new Date().getTime();
+            }, 1000);
+        },
+        methods: {
+            goBack() {
+                history.go(-1);
+            }, selectAddress() {
+                //拉取微信用户地址
+                wx.openAddress({
+                    success: function (res) {
+                        vm.contactInfo = {
+                            cityName: res.cityName,
+                            countryName: res.countryName,
+                            recevername: res.userName,
+                            recevertel: res.telNumber,
+                            receveraddr: res.detailInfo
+                        };
+                    }
+                });
+            }, submitOrder() {
+                if (vm.contactInfo) {
+                    let orderDetails = [];
+                    let commodityOrder = {
+                        openid: openid,
+                        remarks: vm.remarks,
+                        userAddress: vm.contactInfo.recevername + ';' + vm.contactInfo.recevertel + ';' + vm.contactInfo.cityName + '%' + vm.contactInfo.countryName + '%' + vm.contactInfo.receveraddr
+                    };
+                    $.each(vm.cart, function (i, commodity) {
+                        if (commodity.count > 0) {
+                            orderDetails.push({
+                                commodityId: commodity.commodityId,
+                                price: commodity.commodityPrice,
+                                commodityName: commodity.commodityName,
+                                commodityNumber: commodity.count
+                            });
+                        }
+                    });
+                    $.ajax({
+                        type: "POST",
+                        url: "/yapingzh/addOrder.do",
+                        data: {
+                            "commodityOrder": JSON.stringify(commodityOrder),
+                            "orderDetailsList": JSON.stringify(orderDetails)
+                        },
+                        header: {
+                            'content-type': 'application/x-www-form-urlencoded'
+                        },
+                        dataType: "JSON",
+                        success: function (res) {
+                            if (res.success) {
+                                //发起微信支付
+                                wx.chooseWXPay({
+                                    timestamp: res.data.timeStamp,
+                                    nonceStr: res.data.nonceStr,
+                                    package: res.data.package,
+                                    signType: res.data.signType,
+                                    paySign: res.data.paySign,
+                                    success: function (res) {
+                                        emptyDB();
+                                        location.href = 'pay_success.html';
+                                    }, fail: function (res) {
+                                        toast('支付失败');
+                                    }, cancel: function (res) {
+                                        toast('取消支付');
+                                    }
+                                });
+                            } else {
+                                toast('订单错误');
+                            }
+                        },
+                        error: function () {
+                            toast('请求错误');
+                        }
+                    });
+                } else {
+                    toast('请选择收货地址');
+                }
+            }
+        }
+    });
+    vm.$watch('cart', function () {
+        let price = 0;
+        $.each(vm.cart, function (i, item) {
+            price += parseFloat(item.subtotal);
+        });
+        vm.totalPrice = price.toFixed(2);
+    });
+    let startTime = new Date();
+    startTime.setHours(9);
+    let endTime = new Date();
+    endTime.setHours(19);
+    endTime.setMinutes(29);
+    vm.$watch('currentTime', function () {
+        if (startTime.getTime() > vm.currentTime || vm.currentTime > endTime.getTime()) {
+            vm.in_operation = false;
+        }
+    });
+    $(function () {
+        init_wx_js_sdk(href, function (result) {
+            //初始化接口环境
+            wx.config({
+                appId: result.appid,
+                timestamp: result.timestamp,
+                nonceStr: result.noncestr,
+                signature: result.signature,
+                jsApiList: ['editAddress', 'getLatestAddress', 'openAddress', 'chooseWXPay']
+            });
+        });
+        init(function () {
+            queryCartAll(function (res) {
+                if (res.length > 0) {
+                    for (let i = 0; i < res.length; i++) {
+                        res[i].subtotal = (res[i].count * res[i].commodityPrice).toFixed(2);
+                        res[i].picture = {
+                            myStyle: {backgroundImage: "url('" + res[i].commodityPicture + "')"},
+                        };
+                    }
+                    vm.cart = res;
+                }
+            });
+        });
+    });
+</script>
+</html>

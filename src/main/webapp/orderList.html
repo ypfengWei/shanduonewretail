@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"/>
+    <meta content="telephone=no,email=no" name="format-detection">
+    <!--禁止自动识别电话号码和邮箱-->
+    <meta content="yes" name="apple-mobile-web-app-capable">
+    <!--苹果手机：会删除默认的工具栏和菜单栏，网站开启对web app程序的支持-->
+    <meta name="apple-mobile-web-app-status-bar-style" content="black"/>
+    <!--苹果手机：在web app应用下状态条（屏幕顶部条）的颜色,默认值为default（白色），可以定为black（黑色）和black-translucent（灰色半透明）。-->
+    <meta name="apple-touch-fullscreen" content="yes"/>
+    <!--苹果手机：如果把一个web app添加到了主屏幕中，那么从主屏幕中打开这个web app则全屏显示-->
+    <link rel="stylesheet" href="css/bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="css/orderList.css">
+    <link rel="stylesheet" type="text/css" href="../css/mescroll.min.css">
+    <script type="text/javascript" src="../js/jquery-3.3.1.js"></script>
+    <script type="text/javascript" src="../js/layer.js"></script>
+    <script type="text/javascript" src="../js/utils.js"></script>
+    <title>订单管理</title>
+</head>
+<body>
+<div id="vueData" class="mescroll">
+    <header>
+        <div class="title_header dis_flex">
+            <div @click="goBack">
+                <img src="img/return_1.png" alt="">
+            </div>
+            <div>
+                <span>订单管理</span>
+            </div>
+            <div></div>
+        </div>
+    </header>
+    <article id="menu">
+        <div class="swiper-container">
+            <div class="swiper-container-div">
+                <ul class="swiper-container-ul dis_flex">
+                    <li class="swiper-container-ul-li actives">
+                        <a href="javascript:" class="dis_inli">待确认</a>
+                    </li>
+                    <li class="swiper-container-ul-li">
+                        <a href="javascript:" class="dis_inli">待配送</a>
+                    </li>
+                    <li class="swiper-container-ul-li">
+                        <a href="javascript:" class="dis_inli">已完成</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="content">
+            <!--待确认-->
+            <div class="swiper-wrapper">
+                <div class="swiper-slide">
+                    <div class="frame">
+                        <!--没有订单时显示-->
+                        <span class="dis_inli" v-if="orders[0].arrayResult.length==0">没有订单</span>
+                        <ul :style="{maxHeight: winHeight+'px'}">
+                            <li class="item" v-for="(order,index) in orders[0].arrayResult">
+                                <div class="item-right">
+                                    <div class="title" v-for="details in order.orderDetailsList">
+                                        {{details.commodityName}}
+                                    </div>
+                                    <div class="subtitle">
+                                        <span>备注:</span>
+                                        <span>{{order.remarks}}</span>
+                                    </div>
+                                    <div class="number dis_flex">
+                                        <span class="price">￥{{order.totalPrice}}</span>
+                                        <div class="dis_flex">
+                                            <a href="javascript:"
+                                               @click="exctueMethod(index,'/yapingzh/confirmOrder.do', order.id )">接单</a>
+                                            <a href="javascript:"
+                                               @click="exctueMethod(index,'/yapingzh/cancelOrder.do', order.id )">拒绝</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <!--待配送-->
+            <div class="swiper-wrapper">
+                <div class="swiper-slide" style="display:none;">
+                    <div class="frame">
+                        <!--没有订单时显示-->
+                        <span class="dis_inli" v-if="orders[1].arrayResult.length==0">没有订单</span>
+                        <ul :style="{maxHeight: winHeight+'px'}">
+                            <li class="item" v-for="(order,index) in orders[1].arrayResult">
+                                <div class="item-right">
+                                    <div class="title" v-for="details in order.orderDetailsList">
+                                        {{details.commodityName}}
+                                    </div>
+                                    <div class="subtitle">
+                                        <span>备注:</span>
+                                        <span>{{order.remarks}}</span>
+                                    </div>
+                                    <div class="number dis_flex">
+                                        <span class="price">￥{{order.totalPrice}}</span>
+                                        <div class="dis_flex">
+                                            <a href="javascript:"
+                                               @click="exctueMethod(index,'/yapingzh/completeOrder.do', order.id )">已完成</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <!--已完成-->
+            <div class="swiper-wrapper">
+                <div class="swiper-slide" style="display:none;">
+                    <div class="frame">
+                        <!--没有订单时显示-->
+                        <span class="dis_inli" v-if="orders[2].arrayResult.length==0">没有订单</span>
+                        <div v-else>
+                            <div>
+                                <div class="dis_flex">
+                                    <input type="datetime-local" v-model="startTime">
+                                    <span>至</span>
+                                    <input type="datetime-local" v-model="endTime">
+                                    <input type="button" value="查询" @click="statisticsQuery">
+                                </div>
+                                <div class="dis_flex" v-if="census">
+                                    <p>订单：{{census.totalNumber}}</p>
+                                    <p>总额：{{census.turnover}}</p>
+                                    <select name="region" v-if="userId==1" @change="selectChange">
+                                        <option selected="selected" value="-1">-选择区域-</option>
+                                        <option v-for="(area,index) in areaArray" :value="index">{{area.userName}}
+                                        </option>
+                                    </select>
+                                </div>
+                                <div class="dis_flex" v-else>
+                                    <p>订单：0</p>
+                                    <p>总额：0</p>
+                                </div>
+                            </div>
+                            <ul :style="{maxHeight: winHeight-80+'px'}">
+                                <li class="item" v-for="(order,index) in orders[2].arrayResult">
+                                    <div class="item-right">
+                                        <div class="title" v-for="details in order.orderDetailsList">
+                                            {{details.commodityName}}
+                                        </div>
+                                        <div class="subtitle">
+                                            <span>备注:</span>
+                                            <span>{{order.remarks}}</span>
+                                        </div>
+                                        <div class="number dis_flex">
+                                            <span class="price">￥{{order.totalPrice}}</span>
+                                            <div class="dis_flex">
+                                                <a href="javascript:"
+                                                   @click="exctueMethod(index,'/yapingzh/delOrder.do', order.id )">删除</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </article>
+    <footer>
+        <div>
+            <a href="javascript:" @click="logout">退出登录</a>
+        </div>
+    </footer>
+</div>
+</body>
+<script src="../js/mescroll.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script type="text/javascript">
+    let userId = localStorage.getItem('userId');
+    let vm = new Vue({
+        el: '#vueData',
+        data: {
+            //获取屏幕分辨率高度
+            winHeight: null,
+            currentTab: 0,
+            pageSize: 20,
+            orders: [{
+                currentPage: 1,
+                totalpage: 0,
+                arrayResult: [],
+                state: 1
+            }, {
+                currentPage: 1,
+                totalpage: 0,
+                arrayResult: [],
+                state: 2
+            }, {
+                currentPage: 1,
+                totalpage: 0,
+                arrayResult: [],
+                state: 4
+            }],
+            census: null,
+            userId: 0,
+            areaArray: [],
+            startTime: '',
+            endTime: '',
+            mescroll: null
+        },
+        mounted: function () {
+            //获取屏幕分辨率高度
+            let that = this;
+            that.winHeight = window.screen.height - 100;
+            that.mescroll = new MeScroll("vueData", { //请至少在vue的mounted生命周期初始化mescroll,以确保您配置的id能够被找到
+                up: {
+                    callback: that.upCallback, //上拉回调
+                    auto: false
+                }, down: {
+                    callback: that.downCallback,
+                    auto: false
+                }
+            });
+        },
+        methods: {
+            statisticsQuery() {
+                if ($.trim(vm.startTime).length > 0 && $.trim(vm.endTime).length > 0) {
+                    let startTime = new Date(vm.startTime);
+                    let endTime = new Date(vm.endTime);
+                    if (endTime.getTime() < startTime.getTime()) {
+                        toast('结束时间不正确');
+                        return;
+                    }
+                    $.ajax({
+                        type: 'POST',
+                        url: '/yapingzh/businessStatisticsByTime.do',
+                        dataType: 'json',
+                        data: {
+                            "census.startTime": vm.startTime,
+                            "census.endTime": vm.endTime
+                        },
+                        success: (res) => {
+                            if (res.success) {
+                                vm.census = res.data;
+                            }
+                        }
+                    });
+                } else {
+                    toast('请选择时间段');
+                }
+            },
+            upCallback() {
+                let that = this;
+                if (vm.orders[vm.currentTab].totalpage > vm.orders[vm.currentTab].currentPage) {
+                    vm.orders[vm.currentTab].currentPage += 1;
+                    loadDate(function () {
+                        that.mescroll.endByPage(vm.pageSize, vm.orders[vm.currentTab].totalpage);
+                    }, function () {
+                        that.mescroll.endErr();
+                    });
+                } else {
+                    that.mescroll.endErr();
+                }
+            }, downCallback() {
+                let that = this;
+                businessStatistics();
+                emptyData();
+                loadDate(function () {
+                    that.mescroll.endByPage(vm.pageSize, vm.orders[vm.currentTab].totalpage);
+                }, function () {
+                    that.mescroll.endErr();
+                });
+            },
+            goBack() {
+                if (!localStorage.deliverRegion) {
+                    history.go(-1);
+                }
+            }, exctueMethod(key, url, orderId) {
+                layer.open({
+                    content: "执行这个操作？"
+                    , btn: ['是的', '取消']
+                    , yes: function (index) {
+                        $.getJSON(url, {"orderId": orderId, "userId": userId}, function (result) {
+                            if (result.success) {
+                                let oldData = vm.orders[vm.currentTab].arrayResult;
+                                oldData.splice(key, 1);
+                                vm.orders[vm.currentTab].arrayResult = oldData;
+                                toast(result.msg);
+                            } else {
+                                toast('操作失败');
+                            }
+                        });
+                        layer.close(index);
+                    }
+                });
+            }, logout() {
+                localStorage.removeItem("userId");
+                localStorage.removeItem("deliverRegion");
+                location.href = 'login.html';
+            }, selectChange(e) {
+                let indexVal = e.target.value;
+                if (indexVal >= 0) {
+                    let userInfo = vm.areaArray[indexVal];
+                    $.getJSON('/yapingzh/businessStatisticsByArea.do', {"census.area": userInfo.deliverRegion}, function (res) {
+                        if (res.success) {
+                            vm.census = res.data;
+                        }
+                    });
+                }
+            },
+        }
+    });
+    $(function () {
+        vm.userId = localStorage.userId;
+        $('.swiper-container-ul li').on('click', function () {
+            let alink = $(this);
+            let selectId = alink.index();
+            if (vm.currentTab === selectId) {
+                return;
+            }
+            vm.currentTab = selectId;
+            emptyData();
+            $(alink).addClass('actives').siblings('li').removeClass('actives');
+            $('.swiper-wrapper').eq(vm.currentTab).show().children().show().parent().siblings('.swiper-wrapper').hide();
+            loadDate();
+        });
+        businessStatistics();
+        if (!localStorage.deliverRegion) {
+            $.get('/yapingzh/loadAreaArray.do', function (res) {
+                if (res.success) {
+                    vm.areaArray = res.areaArray;
+                }
+            });
+        }
+    });
+    function businessStatistics() {
+        $.getJSON('/yapingzh/businessStatistics.do', function (res) {
+            if (res.success) {
+                vm.census = res.data;
+            }
+        });
+    }
+    function loadDate(cbOK, cbErr) {
+        $.ajax({
+            type: 'GET',
+            url: '/yapingzh/loadOrders.do',
+            data: {
+                "state": vm.orders[vm.currentTab].state,
+                "userId": userId,
+                "pageIndex": vm.orders[vm.currentTab].currentPage,
+                "pageCount": vm.pageSize
+            },
+            dataType: 'json',
+            success: function (result) {
+                vm.orders[vm.currentTab].totalpage = result.totalPage;
+                vm.orders[vm.currentTab].arrayResult = vm.orders[vm.currentTab].arrayResult.concat(result.commodityOrders);
+                cbOK && cbOK();
+            }, error: function () {
+                cbErr && cbErr();
+            }
+        });
+    }
+    function emptyData() {
+        let ary = vm.orders[vm.currentTab].arrayResult;
+        ary.splice(0, ary.length);
+        vm.orders[vm.currentTab].arrayResult = ary;
+        vm.orders[vm.currentTab].currentPage = 1;
+        vm.orders[vm.currentTab].totalpage = 0;
+    }
+</script>
+</html>

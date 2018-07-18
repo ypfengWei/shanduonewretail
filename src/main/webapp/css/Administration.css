@@ -1,0 +1,109 @@
+/*部分重置*/
+body {
+    word-wrap: break-word;
+    font-family: Helvetica, Arial;
+    /*这里是设置字体，Helvetica字体在移动端各系统都支持（都不支持微软雅黑）*/
+    color: #333;
+    -webkit-text-size-adjust: none;
+    /*设置文本不会放大，普通网页在移动端打开文本是会跟随网页结构缩放的*/
+    margin: 0;
+}
+html{
+    -webkit-text-size-adjust:none;
+    font-size: 62.5%;
+}
+ul,li,p{
+    padding: 0;
+    margin: 0;
+    list-style-type:none;
+}
+a:focus, a:active, a:focus-within, a:visited, a:hover{
+    text-decoration: none!important;
+}
+body *{
+    -webkit-tap-highlight-color: transparent;
+    /*在一些手机上，如iphone，点击按钮等元素会出现点击态的背景色，设置为透明就看不出来了*/
+}
+body{
+    height: 100%;
+}
+
+.dis_flex{
+    display: flex;
+    flex-shrink:0;
+}
+header{
+    background: url("../img/bottom_img.png") no-repeat;
+    background-size: cover;
+    flex-direction: column;
+    align-items: center;
+}
+/*标题*/
+div.title_header {
+    height: 90px;
+    width: 100%;
+}
+div.title_header>div{
+    width: 33%;
+    text-align: center;
+    height: 100%;
+}
+div.title_header>div>span{
+    line-height: 90px;
+    font-size: 19px;
+    color: #fff;
+}
+/*左边*/
+div.title_header>div:first-child{
+    text-align: left;
+    align-items: center;
+    margin-left: 0.5%;
+}
+div.title_header>div:first-child>img{
+    width: 18px;
+    margin-left: 20px;
+}
+/*右边*/
+div.title_header>div:last-child{
+    text-align: right;
+    margin-right: 0.5%;
+}
+div.title_header>div:last-child>img {
+    margin-right: 5px;
+    width: 24px;
+    height: 24px;
+
+}
+header>img{
+    width: 80px;
+    height: 80px;
+}
+header>span{
+    color: #fff;
+    font-size: 18px;
+    margin-top: 10px;
+    margin-bottom: 30px;
+}
+.category{
+    justify-content: space-between;
+    padding: 0 15px;
+}
+.category>div{
+    width: 50%;
+    height: 55px;
+    align-items: center;
+}
+.category>div:last-child{
+    justify-content: flex-end;
+}
+.category>div:first-child>img{
+    width: 25px;
+}
+.category>div:first-child>span{
+    margin-left: 15px;
+    font-size: 16px;
+    color: #999999;
+}
+.category>div:last-child>img{
+    height: 15px;
+}

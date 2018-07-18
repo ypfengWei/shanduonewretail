@@ -27,7 +27,6 @@ import com.shanduo.newretail.util.JsonStringUtils;
 import com.shanduo.newretail.util.PatternUtils;
 import com.shanduo.newretail.util.StringUtils;
 
-
 @Controller
 @RequestMapping(value = "jseller")
 public class SellerController {
@@ -78,9 +77,7 @@ public class SellerController {
 		}
 		
 		List<SellerInfo> sellerInfoMap = new ArrayList<SellerInfo>();
-		
 		try {
-			
 			sellerInfoMap = sellerService.selectNearbySellerOneType(new Double(lon), new Double(lat),sellerType);
 			if(sellerInfoMap.isEmpty()){
 				return new ErrorBean();
@@ -88,7 +85,6 @@ public class SellerController {
 		} catch (Exception e) {
 			return new ErrorBean(ErrorConsts.CODE_10004,"查询失败");
 		}
-		
 		return new SuccessBean(sellerInfoMap);
 	}
 	/*
@@ -121,7 +117,7 @@ public class SellerController {
 	 */
 	@RequestMapping(value = "updatesellerdetails",method={RequestMethod.POST,RequestMethod.GET})
 	@ResponseBody
-	//http://localhost:8081/shanduonewretail/jseller/selectsellerdetails?id=1
+	//http://localhost:8081/shanduonewretail/jseller/selectsellerdetails?token=1
 	public ResultBean updateSellerDetails(HttpServletRequest request,String token) {
 		if(StringUtils.isNull(token)) {
 			Log.warn("token为空");

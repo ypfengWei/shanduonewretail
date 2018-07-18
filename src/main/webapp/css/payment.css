@@ -1,0 +1,215 @@
+/*部分重置*/
+body {
+  word-wrap: break-word;
+  font-family: Helvetica, Arial;
+  /*这里是设置字体，Helvetica字体在移动端各系统都支持（都不支持微软雅黑）*/
+  color: #333;
+  -webkit-text-size-adjust: none;
+  /*设置文本不会放大，普通网页在移动端打开文本是会跟随网页结构缩放的*/
+}
+html{
+  -webkit-text-size-adjust:none;
+  font-size: 62.5%;
+}
+ul,li,p{
+  padding: 0;
+  margin: 0;
+  list-style-type:none;
+}
+a:focus, a:active, a:focus-within, a:visited, a:hover{
+  text-decoration: none;
+}
+body *{
+  -webkit-tap-highlight-color: transparent;
+  /*在一些手机上，如iphone，点击按钮等元素会出现点击态的背景色，设置为透明就看不出来了*/
+  /*-webkit-user-select:none;*/
+  /*设置元素内的文字及其子元素将不会被选中*/
+}
+body{
+  height: 100%;
+  background-color: #F4F4F4;
+}
+
+/*共有*/
+.dis_flex{
+  display: flex;
+  flex-shrink:0;
+}
+.dis_inli{
+  display: inline-block;
+}
+.dis_none{
+  display: none;
+}
+.dis_block{
+  display: block;
+}
+.col_hui{
+  color: #999999;
+}
+
+header{
+  height: 40px;
+  width: 100%;
+}
+/*标题*/
+div.title_header {
+  height: 40px;
+  width: 100%;
+  background-color: #ffffff;
+}
+div.title_header>div{
+  width: 33%;
+  text-align: center;
+  height: 100%;
+}
+div.title_header>div>span{
+  line-height: 40px;
+  color: #333333;
+  font-size: 16px;
+}
+/*左边*/
+div.title_header>div:first-child{
+  text-align: left;
+  padding-left: 5px;
+  line-height: 40px;
+}
+div.title_header>div:first-child>img{
+  width: 20px;
+  height: 20px;
+  margin-left: 7px;
+}
+/*右边*/
+div.title_header>div:last-child{
+  text-align: right;
+  margin-right: 1%;
+}
+div.title_header>div:last-child>img{
+  margin-right: 5px;
+  width: 24px;
+  height: 24px;
+}
+/**/
+.body{
+  padding: 10px;
+}
+/*地址*/
+.body_address{
+  height: 80px;
+}
+.body_address>div:first-child{
+  justify-content: center;
+  align-items: center;
+  width: 50px;
+}
+.body_address>div:last-child{
+  justify-content: center;
+  flex-direction: column;
+}
+.body_address>div>img{
+  width: 22px;
+  height: 22px;
+}
+/*店名*/
+.body_shop{
+  height: 45px;
+  line-height: 45px;
+  background-color: #ffffff;
+  padding-left: 10px;
+}
+.body_shop>img{
+  width: 30px;
+  height: 30px;
+}
+.body_shop>span{
+  font-weight: 600;
+}
+/*商品*/
+.body_commodity{
+  max-height: 320px;
+  overflow-y: scroll;
+}
+.body_commodity>div{
+  padding: 10px;
+}
+.body_commodity>div>div:nth-child(1){
+  width: 60px;
+}
+.body_commodity>div>div:nth-child(2){
+  padding-left: 10px;
+  width: 51%;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.body_commodity>div>div:nth-child(3){
+  width: 28%;
+  text-align: right;
+}
+/*商品图片*/
+.body_commodity_pic{
+  width: 60px;
+  height: 60px;
+}
+.body_commodity_pic >div {
+  width: 100%;
+  height: 0;
+  padding-bottom: 100%;
+  overflow: hidden;
+  background-position: center center;
+  background-repeat: no-repeat;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  background-size: cover;
+  border-radius: 5px;
+}
+.title {
+  color: #333333;
+  font-size: 16px;
+  font-weight: bolder;
+}
+
+.subtitle {
+  overflow: hidden;
+  font-size: 12px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: #999999;
+}
+/*备注*/
+.body_remarks{
+  background-color: #ffffff;
+  justify-content: space-between;
+}
+.body_remarks>textarea{
+  width: 87%;
+  padding-top: 5px;
+  border:0;
+  outline:none
+}
+.body_remarks>textarea::-webkit-input-placeholder {
+  /* placeholder颜色  */
+  color: #999999;
+  /* placeholder位置  */
+  text-align: right;
+}
+.body_remarks>span{
+  margin-left: 10px;
+  margin-top: 5px;
+}
+/**/
+footer{
+  height: 60px;
+  width: 100%;
+  background-color: #333333;
+  color: #ffffff;
+  position: fixed;
+  left: 0;
+  bottom: 0;
+}
+footer>div{
+  width: 100%;
+  height: 100%;
+  justify-content: center;
+  align-items: center;
+  font-size: 16px;
+}
