@@ -92,16 +92,27 @@ public class SellerController {
 	 */
 	@RequestMapping(value = "selectsellerdetails",method={RequestMethod.POST,RequestMethod.GET})
 	@ResponseBody
-	//http://localhost:8081/shanduonewretail/jseller/selectsellerdetails?token=1
-	public ResultBean selectSellerDetails(HttpServletRequest request, String token) {
-		if(StringUtils.isNull(token)) {
-			Log.warn("token为空");
-			return new ErrorBean(ErrorConsts.CODE_10002,"token为空");
+	//http://localhost:8081/shanduonewretail/jseller/selectsellerdetails?token=1&id=&typeId=(0顾客1店家)
+	public ResultBean selectSellerDetails(HttpServletRequest request, String token,String id,String typeId) {
+		if(StringUtils.isNull(typeId)) {
+			Log.warn("typeId为空");
+			return new ErrorBean(ErrorConsts.CODE_10002,"typeId为空");
 		}
-		String id = baseService.checkUserToken(token);
-		if(null==id){
-			Log.warn("token失效");
-			return new ErrorBean(ErrorConsts.CODE_10001,"token失效");
+		if("1".equals(typeId)){
+			if(StringUtils.isNull(token)) {
+				Log.warn("token为空");
+				return new ErrorBean(ErrorConsts.CODE_10002,"token为空");
+			}
+			id = baseService.checkUserToken(token);
+			if(null==id){
+				Log.warn("token失效");
+				return new ErrorBean(ErrorConsts.CODE_10001,"token失效");
+			}
+		}else{
+			if(StringUtils.isNull(id)) {
+				Log.warn("token为空");
+				return new ErrorBean(ErrorConsts.CODE_10002,"token为空");
+			}
 		}
 		SellerDetails userSeller = new SellerDetails();
 		try {
