@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +26,7 @@ import com.shanduo.newretail.service.SellerService;
 import com.shanduo.newretail.util.JsonStringUtils;
 import com.shanduo.newretail.util.PatternUtils;
 import com.shanduo.newretail.util.StringUtils;
+
 @Controller
 @RequestMapping(value = "jseller")
 public class SellerController {

@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"/>
+    <meta content="telephone=no,email=no" name="format-detection">
+    <!--禁止自动识别电话号码和邮箱-->
+    <meta content="yes" name="apple-mobile-web-app-capable">
+    <!--苹果手机：会删除默认的工具栏和菜单栏，网站开启对web app程序的支持-->
+    <meta name="apple-mobile-web-app-status-bar-style" content="black"/>
+    <!--苹果手机：在web app应用下状态条（屏幕顶部条）的颜色,默认值为default（白色），可以定为black（黑色）和black-translucent（灰色半透明）。-->
+    <meta name="apple-touch-fullscreen" content="yes"/>
+    <!--苹果手机：如果把一个web app添加到了主屏幕中，那么从主屏幕中打开这个web app则全屏显示-->
+    <link rel="stylesheet" type="text/css" href="css/index.css">
+    <title>首页</title>
+    <script src="js/jquery-3.3.1.js"></script>
+    <script src="js/service.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="https://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
+</head>
+<body>
+<div id="vueData">
+    <header>
+        <div class="title_header dis_flex">
+            <div class="dis_flex">
+                <img src="img/return_2.png" alt="">
+            </div>
+            <div>
+                <span>闪多新零售</span>
+            </div>
+            <div></div>
+        </div>
+    </header>
+    <div class="body">
+        <div class="pos_top">
+            <div class="inp_div">
+                <input type="text" placeholder="搜索">
+            </div>
+            <div class="dis_flex sort">
+                <div v-for="(item,key) in category" :class="key==0?'active':''" @click="changer(item.seller_type)">
+                    <span>{{item.category_name}}</span>
+                    <img src="img/return_4.png" style="display: none;">
+                </div>
+            </div>
+        </div>
+        <div class="sort_ul">
+            <div class="sort_li dis_flex" v-for="(store,index) in stores" @click="storeDetail(store.businessSign,store.id)">
+                <div class="dis_flex">
+                    <img src="img/icon_16.png">
+                    <span>{{store.sellerName}}</span>
+                </div>
+                <div class="dis_flex">
+                    <img v-if="!store.businessSign" src="img/Rest.png">
+                    <span>{{store.distance}}km</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <footer></footer>
+</div>
+</body>
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script>
+let code = GetQueryString('code');
+    let href = location.href.split('#')[0],
+        lat = 0.00, lon = 0.00, mescroll = null, currentIndex = 0,
+        vm = new Vue({
+            el: '#vueData',
+            data: {
+                category: [],
+                stores:[]
+            },
+            methods: {
+                changer(seller_type){
+                	let selectIndex = $(event.currentTarget).index();
+                    if (selectIndex === currentIndex) {
+                        return;
+                    }
+                    currentIndex = selectIndex;
+                    $(event.currentTarget).addClass('active').siblings('div').removeClass('active');
+                    emptyData();
+                    getClassifyBySellerType(lat,lon,seller_type,function(res){
+                    	vm.stores=vm.stores.concat(res.result);
+                    });
+                },storeDetail(businessSign,storeId){
+                	if(businessSign){
+                		location.href='shop.html?storeId='+storeId;
+                	}
+                }
+            }
+        });
+     $(function () {
+    	 if (!openid) {
+	         if (code) {
+	             getOpenid(code);
+	         } 
+	         /* else {
+	             location.href = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxe0870cb2d63b008d&redirect_uri=https://yapinkeji.com/shanduonewretail/index.html&response_type=code&scope=snsapi_userinfo#wechat_redirect';
+	         } */
+		} 
+         init_wx_js_sdk(href, function (result) {
+             //初始化接口环境
+             wx.config({
+                 appId: result.appid,
+                 timestamp: result.timestamp,
+                 nonceStr: result.noncestr,
+                 signature: result.signature,
+                 jsApiList: ['getLocation', 'hideMenuItems']
+             });
+             wx.ready(function () {
+                 wx.getLocation({
+                     success: function (res) {
+                         lat = res.latitude; // 纬度，浮点数，范围为90 ~ -90
+                         lon = res.longitude; // 经度，浮点数，范围为180 ~ -180。
+                         getClassify(lat,lon,function(res){
+                        	 vm.category=vm.category.concat(res.result);
+                        	 
+                        	 getClassifyBySellerType(lat,lon,vm.category[0].seller_type,function(res){
+                             	vm.stores=vm.stores.concat(res.result);
+                             });
+                         });
+                     }
+                 });
+                 wx.hideMenuItems({
+                     menuList: ['menuItem:copyUrl', 'menuItem:share:qq', 'menuItem:share:QZone', 'menuItem:openWithQQBrowser', 'menuItem:openWithSafari', 'menuItem:share:email', 'menuItem:readMode']
+                 });
+             });
+         });
+     });
+     function emptyData() {
+         let ary = vm.stores;
+         ary.splice(0, ary.length);
+         vm.stores = ary;
+     }
+</script>
+</html>

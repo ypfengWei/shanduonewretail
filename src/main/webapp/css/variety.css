@@ -1,0 +1,151 @@
+*{
+  padding: 0;
+  margin: 0;
+  font-family: '微软雅黑';
+}
+.clear{
+  clear:both;
+}
+.thead{
+	position: fixed;
+	top:0;
+	left: 0;
+	width: 100%;
+	height: 25px;
+	padding: 10px 0;
+	background-color: #fefefe;
+}
+.thead>a{
+  text-decoration: none;
+  color: #000;
+}
+.thead>a>img{
+  vertical-align: bottom;
+  width: 25px;
+  height: 25px;
+  margin-right: 135px;
+}
+article{
+	background-color: #d3d3d33b;
+	padding: 5px 10px 40px;
+}
+.tbody{
+	margin: 50px 0 0;
+	height: 545px;
+	border-radius: 0px;
+	background-color: #ffffff;
+}
+.pic{
+	width: 100%;
+	height: 200px;
+	text-align: center;
+	line-height: 200px;
+}
+.pic>img{
+	width: 100%;
+	height: 200px;
+}
+.details{
+	background-color: #d3d3d33b;
+	color: #333333;
+}
+.details>p{
+	background-color: #ffffff;
+	margin-top: 2px;
+	height: 35px;
+	line-height: 35px;
+}
+.details>p>label{
+	margin-left: 10px;
+}
+.details>p:nth-child(1){
+	border-top: 2px solid #d3d3d33b;
+}
+.details>p:nth-child(3){
+	height: 100%;
+}
+.details>p:nth-child(3)>label{
+	margin-left: 15px;
+}
+.details>p>input{
+  -webkit-appearance: none;
+  outline:none;
+  border:1px solid transparent;
+  cursor:pointer;
+  text-indent:12px;
+  width: 270px;
+  height: 25px;
+}
+.details>p:nth-child(3)>input{
+  width: 30px;
+	-webkit-appearance:checkbox;
+}
+.details>p>textarea{
+  vertical-align: top;
+  -webkit-appearance: none;
+  outline:none;
+  border:1px solid transparent;
+  cursor:pointer;
+  text-indent:12px;
+}
+
+footer{
+	position: fixed;
+	width: 100%;
+	height: 57px;
+	bottom: -3px;
+	left: 0;
+}
+footer>img{
+	position: absolute;
+	width: 60px;
+	height: 60px;
+	top: -39px;
+	left: 5px;
+}
+.tfoot{
+	position: relative;
+	height: 57px;
+	width: 100%;
+}
+.tfoot>a{
+	text-align: center;
+	line-height: 57px;
+	width: 100%;
+	height: 57px;
+	background: #ff734c;
+	color: #ffffff;
+	text-decoration: none;
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	z-index: 100;
+}
+.img_left{
+	right: 10px;
+	bottom: -2px;
+}
+.plan {
+	display: inline-block;
+}
+.plan img{
+	vertical-align: middle;
+	width: 25px;
+	height: 25px;
+}
+.total {
+	position: absolute;
+	top: -37px;
+	left: 25px;
+}
+.total>img{
+	width: 20px;
+	height: 20px;
+}
+.total>span{
+	color: #ffffff;
+	font-size: 12px;
+	position: absolute;
+	top: 2px;
+	left: 6px;
+}

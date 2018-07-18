@@ -3,9 +3,9 @@ package com.shanduo.newretail.util;
 import java.io.File;
 import java.io.FileInputStream;
 import java.security.KeyStore;
- 
+
 import javax.net.ssl.SSLContext;
- 
+
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
