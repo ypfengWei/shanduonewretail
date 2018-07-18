@@ -1,7 +1,5 @@
 package com.shanduo.newretail.consts;
 
-import com.shanduo.newretail.consts.ConfigConsts;
-
 public class WxPayConsts {
 
 	/**

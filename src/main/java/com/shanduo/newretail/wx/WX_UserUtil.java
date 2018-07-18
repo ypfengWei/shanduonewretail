@@ -1,8 +1,9 @@
 package com.shanduo.newretail.wx;
 
-import com.alibaba.fastjson.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.alibaba.fastjson.JSONObject;
 
 public class WX_UserUtil {
 

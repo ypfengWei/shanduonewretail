@@ -1,9 +1,11 @@
 package com.shanduo.newretail.wx;
 
-import com.alibaba.fastjson.JSONObject;
+import java.util.Map;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import java.util.Map;
+
+import com.alibaba.fastjson.JSONObject;
 
 public class WX_TemplateMsgUtil {
 

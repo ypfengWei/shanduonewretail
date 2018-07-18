@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import com.shanduo.newretail.entity.UserSeller;
 import com.shanduo.newretail.entity.service.SellerDetails;
 import com.shanduo.newretail.entity.service.SellerInfo;
@@ -21,7 +22,6 @@ import com.shanduo.newretail.mapper.UserSellerMapper;
 import com.shanduo.newretail.service.SellerService;
 import com.shanduo.newretail.util.DateUtils;
 import com.shanduo.newretail.util.LocationUtils;
-import com.shanduo.newretail.util.StringUtils;
 @Service
 public class SellerServiceImpl implements SellerService {
 	private static final Logger Log = LoggerFactory.getLogger(SellerServiceImpl.class);

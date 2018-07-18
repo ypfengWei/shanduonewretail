@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,15 +14,14 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+
 import com.shanduo.newretail.consts.ErrorConsts;
 import com.shanduo.newretail.entity.common.ErrorBean;
 import com.shanduo.newretail.entity.common.ResultBean;
 import com.shanduo.newretail.entity.common.SuccessBean;
-import com.shanduo.newretail.entity.service.CommodityInfo;
 import com.shanduo.newretail.service.BaseService;
 import com.shanduo.newretail.service.CommodityService;
 import com.shanduo.newretail.util.StringUtils;
-import net.sf.json.JSONArray;
 
 @Controller
 @RequestMapping(value = "jcommodity")

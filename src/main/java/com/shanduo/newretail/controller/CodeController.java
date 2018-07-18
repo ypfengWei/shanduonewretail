@@ -22,8 +22,8 @@ import com.shanduo.newretail.entity.common.SuccessBean;
 import com.shanduo.newretail.service.CodeService;
 import com.shanduo.newretail.service.UserService;
 import com.shanduo.newretail.util.PatternUtils;
-import com.shanduo.newretail.util.StringUtils;
 import com.shanduo.newretail.util.SmsUtils;
+import com.shanduo.newretail.util.StringUtils;
 
 /**
  * 验证码接口层

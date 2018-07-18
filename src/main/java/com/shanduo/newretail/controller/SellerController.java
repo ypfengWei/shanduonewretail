@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.shanduo.newretail.consts.ErrorConsts;
-import com.shanduo.newretail.entity.UserSeller;
 import com.shanduo.newretail.entity.common.ErrorBean;
 import com.shanduo.newretail.entity.common.ResultBean;
 import com.shanduo.newretail.entity.common.SuccessBean;
@@ -25,8 +26,6 @@ import com.shanduo.newretail.service.SellerService;
 import com.shanduo.newretail.util.JsonStringUtils;
 import com.shanduo.newretail.util.PatternUtils;
 import com.shanduo.newretail.util.StringUtils;
-
-import net.sf.json.JSONArray;
 
 
 @Controller

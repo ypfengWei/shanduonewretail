@@ -3,6 +3,7 @@ package com.shanduo.newretail.mapper;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
+
 import com.shanduo.newretail.entity.UserSeller;
 import com.shanduo.newretail.entity.service.SellerDetails;
 
