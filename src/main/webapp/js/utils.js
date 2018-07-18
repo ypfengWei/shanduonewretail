@@ -33,13 +33,14 @@ function askforJumpPage(content, view, positiveButton, negativeButton) {
 
 function getOpenid(code) {
     $.ajax({
-        url: "/yapingzh/getOpenid.do",
+        url: "/shanduonewretail/jwechat/getopenid",
         data: {
             "code": code
         },
         type: "POST",
         dataType: "json",
         success: function (result) {
+        	console.log(result);
             if (result.success) {
                 localStorage.setItem('openid', result.openid);
             }

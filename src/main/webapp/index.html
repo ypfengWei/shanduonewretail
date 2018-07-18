@@ -91,13 +91,14 @@ let code = GetQueryString('code');
             }
         });
      $(function () {
-    	 /* if (!openid) {
-         if (code) {
-             getOpenid(code);
-         } else {
-             location.href = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxe0870cb2d63b008d&redirect_uri=https://yapinkeji.com/yapingzh/shanduo_zahuopu/index.html&response_type=code&scope=snsapi_userinfo#wechat_redirect';
-         }
-     } */
+    	 if (!openid) {
+	         if (code) {
+	             getOpenid(code);
+	         } 
+	         /* else {
+	             location.href = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxe0870cb2d63b008d&redirect_uri=https://yapinkeji.com/shanduonewretail/index.html&response_type=code&scope=snsapi_userinfo#wechat_redirect';
+	         } */
+		} 
          init_wx_js_sdk(href, function (result) {
              //初始化接口环境
              wx.config({
