@@ -11,14 +11,12 @@ import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
-
 import org.apache.http.client.ClientProtocolException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
-
 import com.shanduo.newretail.consts.WxPayConsts;
 import com.shanduo.newretail.entity.AccessToken;
 import com.shanduo.newretail.entity.JsApiTicket;
@@ -29,7 +27,8 @@ import com.shanduo.newretail.service.AccessTokenService;
 import com.shanduo.newretail.service.JsApiTicketService;
 import com.shanduo.newretail.util.HttpRequest;
 import com.shanduo.newretail.util.SHA1;
-
+import freemarker.template.Template;
+import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
 import net.sf.json.JSON;
 import net.sf.json.JSONException;
 import net.sf.json.JSONObject;
@@ -165,11 +164,19 @@ public class WechatController {
         }
         return new SuccessBean() ;
     }*/
-   /* @ResponseBody
-	@RequestMapping(value = "getopenid")
+    /*@ResponseBody
+	@RequestMapping(value = "getopenids")
     public  String getMenu(String token) throws IOException {
-    	 String requestUrl ="https://api.weixin.qq.com/cgi-bin/menu/get?access_token=" + token;
+    	 String requestUrl ="https://api.weixin.qq.com/cgi-bin/menu/delete?access_token=" + token;
     	 JSONObject jsonObject = HttpRequest.httpsRequest(requestUrl, "GET", null);
+    	 requestUrl ="https://api.weixin.qq.com/cgi-bin/menu/create?access_token=" + token;
+    	 jsonObject = HttpRequest.httpsRequest(requestUrl, "GET", null);
+    	 Map<String, Object> map = new HashMap<>();
+    	 map.put("appid", WxPayConsts.APPID);
+         map.put("host",WxPayConsts.APPSECRET);
+         Template freeMarkerConfigurer = null;
+		Template tpl = freeMarkerConfigurer.getConfiguration().getTemplate("menu.json");
+        //JSON.parseObject(WebUtils.createMenu(token.getAccess_token(), FreeMarkerTemplateUtils.processTemplateIntoString(tpl, map)));
         try {
           //  if (response.getStatusLine().getStatusCode() == org.apache.http.HttpStatus.SC_OK) {
                 return null;

@@ -48,6 +48,17 @@ public class CommodityController {
 				return new ErrorBean(ErrorConsts.CODE_10002,"参数为空");
 			}
 		}
+		if("2".equals(typeId)){
+			if(StringUtils.isNull(token)) {
+				Log.warn("token为空");
+				return new ErrorBean(ErrorConsts.CODE_10002,"token为空");
+			}
+			id = baseService.checkUserToken(token);
+			if(null==id){
+				Log.warn("token失效");
+				return new ErrorBean(ErrorConsts.CODE_10001,"token失效");
+			}
+		}
 		List<Map<String,Object>> categoryIdList = new ArrayList<Map<String,Object>>();
 		try {
 			categoryIdList = commodityService.selectSellerCommodityType(id,typeId);
