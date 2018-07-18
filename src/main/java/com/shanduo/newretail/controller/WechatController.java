@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.shanduo.newretail.consts.WxPayConsts;
 import com.shanduo.newretail.entity.AccessToken;
 import com.shanduo.newretail.entity.JsApiTicket;
+import com.shanduo.newretail.entity.common.ErrorBean;
 import com.shanduo.newretail.entity.common.ResultBean;
 import com.shanduo.newretail.entity.common.SuccessBean;
 import com.shanduo.newretail.service.JsApiTicketService;
@@ -58,7 +59,7 @@ public class WechatController {
             return new SuccessBean(respJSON);
         }
        
-       return null;
+       return new ErrorBean();
     }
     
     /**
@@ -125,18 +126,19 @@ public class WechatController {
     @ResponseBody
 	@RequestMapping(value = "getopenid")
     //http://localhost:8081/shanduonewretail/jwechat/getopenid?code=
-    public  String getWXOpenId(String code)  {
+    public  ResultBean getWXOpenId(String code)  {
          String requestUrl = "https://api.weixin.qq.com/sns/oauth2/access_token?appid=APPID&secret=SECRET&code=CODE&grant_type=authorization_code".replace("APPID", WxPayConsts.APPID).replace("SECRET", WxPayConsts.APPSECRET).replace("CODE", code);
          // 发起GET请求获取凭证
          JSONObject jsonObject = HttpRequest.httpsRequest(requestUrl, "GET", null);
          if (null != jsonObject) {
              try {
-            	 return jsonObject.getString("openid");
+            	 return new SuccessBean(jsonObject.getString("openid")) ;
              } catch (JSONException e) {
+            	 return new ErrorBean();
                  // 获取token失败
                 // log.error("获取token失败 errcode:{} errmsg:{}", jsonObject.getInt("errcode"), jsonObject.getString("errmsg"));
              }
          }
-	     return null;
+         return new ErrorBean();
     }
 }
