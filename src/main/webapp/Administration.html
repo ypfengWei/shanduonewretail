@@ -13,10 +13,11 @@
     <meta name="apple-touch-fullscreen" content="yes"/>
     <!--苹果手机：如果把一个web app添加到了主屏幕中，那么从主屏幕中打开这个web app则全屏显示-->
     <link rel="stylesheet" type="text/css" href="css/Administration.css">
+    <script type="text/javascript" src="js/jquery-3.3.1.js"></script>
     <title></title>
 </head>
 <body>
-    <div id="vueDate">
+    <div id="vueData">
         <header class="dis_flex">
             <div class="title_header dis_flex">
                 <div class="dis_flex">
@@ -31,7 +32,7 @@
             <span>闪多新零售</span>
         </header>
         <div class="body">
-            <div class="category dis_flex ">
+            <div class="category dis_flex " @click="gotoStoreHomeView">
                 <div class="dis_flex">
                     <img src="img/shop.png">
                     <span>店铺管理</span>
@@ -97,4 +98,17 @@
         </div>
     </div>
 </body>
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script>
+let vm=new Vue({
+	el:'#vueData',
+	methods:{
+		gotoStoreHomeView(){
+			console.log(1);
+			lication.href="shopinformation.html";
+		}
+	}
+	
+});
+</script>
 </html>

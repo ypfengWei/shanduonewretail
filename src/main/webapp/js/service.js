@@ -30,12 +30,12 @@ function getStoreClassify(storeId,typeId,back) {
     });
 }
 // 根据类别id查询该商店某类别下的商品
-function getGoods(storeId,categoryId, pageIndex, pageCount, cbOk, cbErr) {
+function getGoods(storeId,categoryId,typeId, pageIndex, pageCount, cbOk, cbErr) {
     $.ajax({
         sync: false,
         url: "/shanduonewretail/jcommodity/selectcommodity",
         dataType: "JSON",
-        data: {id: storeId,categoryId:categoryId,page: pageIndex, pageSize: pageCount},
+        data: {id: storeId,categoryId:categoryId,typeId:tyepId,page: pageIndex, pageSize: pageCount},
         success: function (result) {
         	if(result.success){
         		cbOk && cbOk(result.result);

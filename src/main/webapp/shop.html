@@ -377,7 +377,7 @@ let storeId = GetQueryString('storeId');
     });
 
     function adapter(categoryId, cbOK, cbErr) {
-    	getGoods(storeId,categoryId, pageIndex, pageCount, function (res) {
+    	getGoods(storeId,categoryId,1, pageIndex, pageCount, function (res) {
             let newData = res.commodityInfoList;
             for (let i in newData) {
                 newData[i].picture = {
