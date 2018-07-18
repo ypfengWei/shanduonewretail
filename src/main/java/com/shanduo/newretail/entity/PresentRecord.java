@@ -12,6 +12,16 @@ public class PresentRecord {
 
     private BigDecimal amountCash;
 
+    private String typeid;
+
+    private String userName;
+
+    private String openingBank;
+
+    private String bankName;
+
+    private String cardNumber;
+
     private String state;
 
     private Date gmtCreate;
@@ -48,6 +58,46 @@ public class PresentRecord {
 
     public void setAmountCash(BigDecimal amountCash) {
         this.amountCash = amountCash;
+    }
+
+    public String getTypeid() {
+        return typeid;
+    }
+
+    public void setTypeid(String typeid) {
+        this.typeid = typeid == null ? null : typeid.trim();
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName == null ? null : userName.trim();
+    }
+
+    public String getOpeningBank() {
+        return openingBank;
+    }
+
+    public void setOpeningBank(String openingBank) {
+        this.openingBank = openingBank == null ? null : openingBank.trim();
+    }
+
+    public String getBankName() {
+        return bankName;
+    }
+
+    public void setBankName(String bankName) {
+        this.bankName = bankName == null ? null : bankName.trim();
+    }
+
+    public String getCardNumber() {
+        return cardNumber;
+    }
+
+    public void setCardNumber(String cardNumber) {
+        this.cardNumber = cardNumber == null ? null : cardNumber.trim();
     }
 
     public String getState() {

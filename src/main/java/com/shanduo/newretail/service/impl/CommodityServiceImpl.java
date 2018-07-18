@@ -69,16 +69,27 @@ public class CommodityServiceImpl implements CommodityService {
 	}
 
 	@Override
-	public Map<String, Object> selectCommodity(Integer categoryId, String id,Integer pageNum, Integer pageSize) {
-		List<CommodityInfo> commodityInfo = new ArrayList<CommodityInfo>(); 
-		int totalRecord = relationsMapper.selectCommodityNum(id, categoryId);
+	public Map<String, Object> selectCommodity(Integer categoryId, String id,Integer pageNum, Integer pageSize,String typeId) {
+		List<CommodityInfo> commodityInfo = new ArrayList<CommodityInfo>();
+		int totalRecord = 0;
+		if("1".equals(typeId)){
+			totalRecord = relationsMapper.selectCommodityNum(id, categoryId);
+		}else{
+			totalRecord = relationsMapper.selectCommodityNums(id, categoryId);
+		}
+		
 		Map<String, Object> resultMap = new HashMap<String, Object>(3);
 		if(0==totalRecord){
 			return resultMap;
 		}
 		Page page = new Page(totalRecord, pageSize, pageNum);
 		pageNum = (page.getPageNum() - 1) * page.getPageSize();
-		commodityInfo = commodityMapper.selectCommodity(categoryId, id,pageNum, page.getPageSize());
+		if("1".equals(typeId)){
+			commodityInfo = commodityMapper.selectCommodity(categoryId, id,pageNum, page.getPageSize());
+		}else{
+			commodityInfo = commodityMapper.selectCommodity(categoryId, id,pageNum, page.getPageSize());
+		}
+		
 		resultMap.put("page", page.getPageNum());
 		resultMap.put("totalPage", page.getTotalPage());
 		resultMap.put("commodityInfoList", commodityInfo);

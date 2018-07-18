@@ -160,4 +160,11 @@
     where user_id = #{0}
       and category_id = #{1} and visible=1 and is_deleted=0
   </select>
+  <select id="selectCommodityNums"  resultType="java.lang.Integer">
+    select 
+    count(commodity_id)
+    from relations
+    where user_id = #{0}
+      and category_id = #{1}  and is_deleted=0
+  </select>
 </mapper>

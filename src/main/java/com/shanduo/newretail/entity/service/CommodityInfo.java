@@ -12,6 +12,8 @@ public class CommodityInfo {
     private String picture;
 
     private BigDecimal price;
+    
+    private Integer visible;
    
 
 	public String getId() {
@@ -53,6 +55,15 @@ public class CommodityInfo {
 	public void setPrice(BigDecimal price) {
 		this.price = price;
 	}
+
+	public Integer getVisible() {
+		return visible;
+	}
+
+	public void setVisible(Integer visible) {
+		this.visible = visible;
+	}
+	
 
     
 }

@@ -22,6 +22,7 @@ import com.shanduo.newretail.mapper.UserSellerMapper;
 import com.shanduo.newretail.service.SellerService;
 import com.shanduo.newretail.util.DateUtils;
 import com.shanduo.newretail.util.LocationUtils;
+import com.shanduo.newretail.util.WxFileUtils;
 @Service
 public class SellerServiceImpl implements SellerService {
 	private static final Logger Log = LoggerFactory.getLogger(SellerServiceImpl.class);
@@ -105,7 +106,8 @@ public class SellerServiceImpl implements SellerService {
 		UserSeller userSeller = new UserSeller();
 		userSeller.setId(userSellerMap.get("id").toString());
 		userSeller.setSellerName(userSellerMap.get("sellerName").toString());
-		userSeller.setSellerPicture(userSellerMap.get("sellerPicture").toString());
+		String sellerPicture = WxFileUtils.downloadImage(userSellerMap.get("accessToken").toString(), userSellerMap.get("sellerPicture").toString());
+		userSeller.setSellerPicture(sellerPicture);
 		userSeller.setNotice(userSellerMap.get("notice").toString());
 		userSeller.setPhone(userSellerMap.get("phone").toString());
 		userSeller.setSellerType(userSellerMap.get("sellerType").toString());

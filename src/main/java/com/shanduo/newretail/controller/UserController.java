@@ -59,7 +59,7 @@ public class UserController {
 	@RequestMapping(value = "registeruser",method={RequestMethod.POST,RequestMethod.GET})
 	@ResponseBody
 	public ResultBean registerUser(HttpServletRequest request, String typeId, String phone, String code, String password,
-			String parentId, String openId) {
+			String parentId, String openId, String name) {
 		if(StringUtils.isNull(typeId) || !typeId.matches("^[234]$")) {
 			log.warn("typeId is error waith typeId:{}", typeId);
 			return new ErrorBean(ErrorConsts.CODE_10002, "注册类型错误");
@@ -79,12 +79,15 @@ public class UserController {
 		if(codeService.checkCode(phone, code, DefaultConsts.CODE_REGISTER)) {
 			return new ErrorBean(ErrorConsts.CODE_10003, "验证码错误或超时");
 		}
+		if(StringUtils.isNull(name)) {
+			return new ErrorBean(ErrorConsts.CODE_10002, "昵称不能为空");
+		}
 //		if(StringUtils.isNull(openId)) {
 //			log.warn("openId is null waith openId:{}", openId);
 //			return new ErrorBean(ErrorConsts.CODE_10002, "openId为空");
 //		}
 		try {
-			userService.saveUser(openId, phone, password, parentId, typeId);
+			userService.saveUser(openId, phone, password, parentId, typeId, name);
 		} catch (Exception e) {
 			return new ErrorBean(ErrorConsts.CODE_10003, "注册失败");
 		}
