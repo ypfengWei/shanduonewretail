@@ -38,10 +38,10 @@ public class UserServiceImpl implements UserService {
 	
 	@Override
 	@Transactional(rollbackFor = Exception.class)
-	public int saveUser(String openId, String phone, String password, String parentId, String typrId) {
+	public int saveUser(String openId, String phone, String password, String parentId, String typrId, String name) {
 		String id = UUIDGenerator.getUUID();
 		password = MD5Utils.getInstance().getMD5(password);
-		String name = phone.replaceAll("(\\d{3})\\d{4}(\\d{4})","$1****$2");
+//		String name = phone.replaceAll("(\\d{3})\\d{4}(\\d{4})","$1****$2");
 		ToUser user = new ToUser();
 		user.setId(id);
 		user.setOpenId(openId);

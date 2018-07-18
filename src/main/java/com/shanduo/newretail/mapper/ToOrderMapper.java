@@ -27,5 +27,6 @@ public interface ToOrderMapper {
     int countSellerOrder(@Param("sellerId")String sellerId,@Param("state")String state);
     
     List<OrderInfo> listSellerOrder(@Param("sellerId")String sellerId,@Param("state")String state,
+    		@Param("startDate")String startDate, @Param("endDate")String endDate,
     		@Param("pageNum")Integer pageNum,@Param("pageSize")Integer pageSize);
 }

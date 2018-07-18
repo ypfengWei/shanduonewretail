@@ -6,12 +6,18 @@
     <result column="user_id" jdbcType="VARCHAR" property="userId" />
     <result column="present_time" jdbcType="TIMESTAMP" property="presentTime" />
     <result column="amount_cash" jdbcType="DECIMAL" property="amountCash" />
+    <result column="typeId" jdbcType="CHAR" property="typeid" />
+    <result column="user_name" jdbcType="VARCHAR" property="userName" />
+    <result column="opening_bank" jdbcType="VARCHAR" property="openingBank" />
+    <result column="bank_name" jdbcType="VARCHAR" property="bankName" />
+    <result column="card_number" jdbcType="VARCHAR" property="cardNumber" />
     <result column="state" jdbcType="CHAR" property="state" />
     <result column="gmt_create" jdbcType="TIMESTAMP" property="gmtCreate" />
     <result column="gmt_modified" jdbcType="TIMESTAMP" property="gmtModified" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, user_id, present_time, amount_cash, state, gmt_create, gmt_modified
+    id, user_id, present_time, amount_cash, typeId, user_name, opening_bank, bank_name, 
+    card_number, state, gmt_create, gmt_modified
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
     select 
@@ -25,11 +31,15 @@
   </delete>
   <insert id="insert" parameterType="com.shanduo.newretail.entity.PresentRecord">
     insert into present_record (id, user_id, present_time, 
-      amount_cash, state, gmt_create, 
-      gmt_modified)
+      amount_cash, typeId, user_name, 
+      opening_bank, bank_name, card_number, 
+      state, gmt_create, gmt_modified
+      )
     values (#{id,jdbcType=VARCHAR}, #{userId,jdbcType=VARCHAR}, #{presentTime,jdbcType=TIMESTAMP}, 
-      #{amountCash,jdbcType=DECIMAL}, #{state,jdbcType=CHAR}, #{gmtCreate,jdbcType=TIMESTAMP}, 
-      #{gmtModified,jdbcType=TIMESTAMP})
+      #{amountCash,jdbcType=DECIMAL}, #{typeid,jdbcType=CHAR}, #{userName,jdbcType=VARCHAR}, 
+      #{openingBank,jdbcType=VARCHAR}, #{bankName,jdbcType=VARCHAR}, #{cardNumber,jdbcType=VARCHAR}, 
+      #{state,jdbcType=CHAR}, #{gmtCreate,jdbcType=TIMESTAMP}, #{gmtModified,jdbcType=TIMESTAMP}
+      )
   </insert>
   <insert id="insertSelective" parameterType="com.shanduo.newretail.entity.PresentRecord">
     insert into present_record
@@ -45,6 +55,21 @@
       </if>
       <if test="amountCash != null">
         amount_cash,
+      </if>
+      <if test="typeid != null">
+        typeId,
+      </if>
+      <if test="userName != null">
+        user_name,
+      </if>
+      <if test="openingBank != null">
+        opening_bank,
+      </if>
+      <if test="bankName != null">
+        bank_name,
+      </if>
+      <if test="cardNumber != null">
+        card_number,
       </if>
       <if test="state != null">
         state,
@@ -69,6 +94,21 @@
       <if test="amountCash != null">
         #{amountCash,jdbcType=DECIMAL},
       </if>
+      <if test="typeid != null">
+        #{typeid,jdbcType=CHAR},
+      </if>
+      <if test="userName != null">
+        #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="openingBank != null">
+        #{openingBank,jdbcType=VARCHAR},
+      </if>
+      <if test="bankName != null">
+        #{bankName,jdbcType=VARCHAR},
+      </if>
+      <if test="cardNumber != null">
+        #{cardNumber,jdbcType=VARCHAR},
+      </if>
       <if test="state != null">
         #{state,jdbcType=CHAR},
       </if>
@@ -92,6 +132,21 @@
       <if test="amountCash != null">
         amount_cash = #{amountCash,jdbcType=DECIMAL},
       </if>
+      <if test="typeid != null">
+        typeId = #{typeid,jdbcType=CHAR},
+      </if>
+      <if test="userName != null">
+        user_name = #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="openingBank != null">
+        opening_bank = #{openingBank,jdbcType=VARCHAR},
+      </if>
+      <if test="bankName != null">
+        bank_name = #{bankName,jdbcType=VARCHAR},
+      </if>
+      <if test="cardNumber != null">
+        card_number = #{cardNumber,jdbcType=VARCHAR},
+      </if>
       <if test="state != null">
         state = #{state,jdbcType=CHAR},
       </if>
@@ -109,6 +164,11 @@
     set user_id = #{userId,jdbcType=VARCHAR},
       present_time = #{presentTime,jdbcType=TIMESTAMP},
       amount_cash = #{amountCash,jdbcType=DECIMAL},
+      typeId = #{typeid,jdbcType=CHAR},
+      user_name = #{userName,jdbcType=VARCHAR},
+      opening_bank = #{openingBank,jdbcType=VARCHAR},
+      bank_name = #{bankName,jdbcType=VARCHAR},
+      card_number = #{cardNumber,jdbcType=VARCHAR},
       state = #{state,jdbcType=CHAR},
       gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
       gmt_modified = #{gmtModified,jdbcType=TIMESTAMP}

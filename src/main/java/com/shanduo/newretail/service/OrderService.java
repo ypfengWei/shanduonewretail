@@ -114,11 +114,13 @@ public interface OrderService {
 	 * @Description: TODO
 	 * @param @param sellerId
 	 * @param @param state
+	 * @param @param startDate
+	 * @param @param endDate
 	 * @param @param pageNum
 	 * @param @param pageSize
 	 * @param @return
 	 * @return Map<String,Object>
 	 * @throws
 	 */
-	Map<String, Object> listSellerOrder(String sellerId, String state, Integer pageNum, Integer pageSize);
+	Map<String, Object> listSellerOrder(String sellerId, String state, String startDate, String endDate, Integer pageNum, Integer pageSize);
 }

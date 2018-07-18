@@ -16,14 +16,17 @@ public interface UserService {
 	 * 注册
 	 * @Title: saveUser
 	 * @Description: TODO
+	 * @param @param openId
 	 * @param @param phone
 	 * @param @param password
 	 * @param @param parentId
+	 * @param @param typrId
+	 * @param @param name
 	 * @param @return
 	 * @return int
 	 * @throws
 	 */
-	int saveUser(String openId, String phone, String password, String parentId, String typrId);
+	int saveUser(String openId, String phone, String password, String parentId, String typrId, String name);
 	
 	/**
 	 * 检查手机号是否已存在
