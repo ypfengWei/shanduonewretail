@@ -102,4 +102,10 @@ public class CommodityServiceImpl implements CommodityService {
 		return relationsMapper.updateCommodityVisible(commodityId, id, visible);
 	}
 
+	@Override
+	public int insertCommodity(String name, String picture, String price, String stock, String categoryId) {
+		
+		return 0;
+	}
+
 }
