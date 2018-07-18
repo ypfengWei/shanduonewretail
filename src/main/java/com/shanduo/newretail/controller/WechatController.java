@@ -117,4 +117,26 @@ public class WechatController {
         }
         return null; 
     }
+    /**
+     * 远程请求微信服务器获取用户openid
+     * @throws IOException 
+     * @throws ClientProtocolException 
+     */
+    @ResponseBody
+	@RequestMapping(value = "getopenid")
+    //http://localhost:8081/shanduonewretail/jwechat/getopenid?code=
+    public  String getWXOpenId(String code)  {
+         String requestUrl = "https://api.weixin.qq.com/sns/oauth2/access_token?appid=APPID&secret=SECRET&code=CODE&grant_type=authorization_code".replace("APPID", WxPayConsts.APPID).replace("SECRET", WxPayConsts.APPSECRET).replace("CODE", code);
+         // 发起GET请求获取凭证
+         JSONObject jsonObject = HttpRequest.httpsRequest(requestUrl, "GET", null);
+         if (null != jsonObject) {
+             try {
+            	 return jsonObject.getString("openid");
+             } catch (JSONException e) {
+                 // 获取token失败
+                // log.error("获取token失败 errcode:{} errmsg:{}", jsonObject.getInt("errcode"), jsonObject.getString("errmsg"));
+             }
+         }
+	     return null;
+    }
 }
