@@ -25,10 +25,12 @@ import com.shanduo.newretail.entity.JsApiTicket;
 import com.shanduo.newretail.entity.common.ErrorBean;
 import com.shanduo.newretail.entity.common.ResultBean;
 import com.shanduo.newretail.entity.common.SuccessBean;
+import com.shanduo.newretail.service.AccessTokenService;
 import com.shanduo.newretail.service.JsApiTicketService;
 import com.shanduo.newretail.util.HttpRequest;
 import com.shanduo.newretail.util.SHA1;
 
+import net.sf.json.JSON;
 import net.sf.json.JSONException;
 import net.sf.json.JSONObject;
 @Controller
@@ -36,6 +38,8 @@ import net.sf.json.JSONObject;
 public class WechatController {
 	@Autowired
 	private JsApiTicketService jsApiTicketService;
+	@Autowired
+	private AccessTokenService accessTokenService;
 	/*配置微信网页jsapi调用环境*/
 	@RequestMapping(value = "selectinitjssdk",method={RequestMethod.POST,RequestMethod.GET})
 	@ResponseBody
@@ -141,4 +145,39 @@ public class WechatController {
          }
          return new ErrorBean();
     }
+  //创建自定义菜单
+   /* public ResultBean createMenu() {
+        try {
+            AccessToken token = accessTokenService.selectAccessToken(WxPayConsts.APPID);
+            if (token != null) {
+                JSONObject jsonObject = JSON.parseObject(getMenu(token.getAccessToken()));
+                if (jsonObject.containsKey("errcode")) {
+                    jsonObject.clear();
+                    Map<String, Object> map = new HashMap<>();
+                    map.put("appid", Config.APPID);
+                    map.put("host", Config.HOST);
+                    Template tpl = freeMarkerConfigurer.getConfiguration().getTemplate("menu.json");
+                    respJSON = JSON.parseObject(WebUtils.createMenu(token.getAccess_token(), FreeMarkerTemplateUtils.processTemplateIntoString(tpl, map)));
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return new SuccessBean() ;
+    }*/
+   /* @ResponseBody
+	@RequestMapping(value = "getopenid")
+    public  String getMenu(String token) throws IOException {
+    	 String requestUrl ="https://api.weixin.qq.com/cgi-bin/menu/get?access_token=" + token;
+    	 JSONObject jsonObject = HttpRequest.httpsRequest(requestUrl, "GET", null);
+        try {
+          //  if (response.getStatusLine().getStatusCode() == org.apache.http.HttpStatus.SC_OK) {
+                return null;
+           // }
+        } finally {
+            //closeConn(httpClient, response);
+        }
+      //  return null;
+    }
+*/
 }

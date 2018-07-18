@@ -1,0 +1,22 @@
+{
+  "touser":"${openid}",
+  "template_id":"${template_id}",
+  "data":{
+    "first": {
+      "value":"你购买的商品配送中",
+      "color":"#173177"
+    },
+    "delivername": {
+      "value":"${delivername}",
+      "color":"#173177"
+    },
+    "ordername":{
+      "value":"${ordername}",
+      "color":"#173177"
+    },
+    "remark":{
+      "value":"欢迎再次购买！",
+      "color":"#173177"
+    }
+  }
+}

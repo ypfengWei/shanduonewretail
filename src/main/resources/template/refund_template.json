@@ -1,0 +1,22 @@
+{
+  "touser":"${openid}",
+  "template_id":"${template_id}",
+  "data":{
+    "first": {
+      "value":"非常抱歉，你的购买未成功，已退款",
+      "color":"#173177"
+    },
+    "reason": {
+      "value":"${reason}",
+      "color":"#173177"
+    },
+    "refund":{
+      "value":"${price}",
+      "color":"#173177"
+    },
+    "remark":{
+      "value":"欢迎再次购买！",
+      "color":"#173177"
+    }
+  }
+}
