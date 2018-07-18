@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"/>
+    <meta content="telephone=no,email=no" name="format-detection">
+    <!--禁止自动识别电话号码和邮箱-->
+    <meta content="yes" name="apple-mobile-web-app-capable">
+    <!--苹果手机：会删除默认的工具栏和菜单栏，网站开启对web app程序的支持-->
+    <meta name="apple-mobile-web-app-status-bar-style" content="black"/>
+    <!--苹果手机：在web app应用下状态条（屏幕顶部条）的颜色,默认值为default（白色），可以定为black（黑色）和black-translucent（灰色半透明）。-->
+    <meta name="apple-touch-fullscreen" content="yes"/>
+    <!--苹果手机：如果把一个web app添加到了主屏幕中，那么从主屏幕中打开这个web app则全屏显示-->
+    <link rel="stylesheet" href="css/bootstrap.css">
+    <link rel="stylesheet" href="css/shop.css">
+    <link rel="stylesheet" href="css/Warehouse.css">
+    <link rel="stylesheet" type="text/css" href="css/mescroll.min.css">
+    <script src="js/jquery-3.3.1.js"></script>
+    <script src="js/layer.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/service.js"></script>
+    <script src="js/store_service.js"></script>
+    <title>商品选择</title>
+    <style type="text/css">
+        [v-cloak] {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+<div id="vueData" class="mescroll">
+    <div class="body">
+        <article id="menu">
+            <div class="swiper-container">
+                <div class="dis_flex">
+                    <div>
+                        <div class="swiper-container-div">
+                            <!--类别名-->
+                            <ul class="swiper-container-ul" id="OneTab">
+                                <!--类别名1切换-->
+                                <li v-for="(item,index) in classify"
+                                    :class="index==0?'swiper-container-ul-li active':'swiper-container-ul-li'">
+                                    <a href="#" data-toggle="tab"
+                                       @click.prevent="changer(item.id)">{{item.commodityType}}</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="swiper-wrapper tab-content">
+                        <!--类别1-->
+                        <div class="swiper-slide tab-pane fade in active" id="One1">
+                            <div class="content">
+                                <div class="right">
+                                    <ul>
+                                        <!--类别商品-->
+                                        <li v-for="(commodity,index) in commodityArray">
+                                            <div>
+                                                <div class="item">
+                                                    <div class="item-left" @click="onclick1(index)">
+                                                        <div class="item-img">
+                                                            <div class="dynamic_pic">
+                                                                <div :style="commodity.picture.myStyle"></div>
+                                                                <img class="dynamic_pic_img dis_none"
+                                                                     :src="commodity.picture.imgPath" alt="">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="item-right dis_flex">
+                                                        <div class="title" @click="onclick2(index)">{{commodity.name}}
+                                                        </div>
+                                                        <div class="subtitle" @click="onclick2(index)">
+                                                            {{commodity.introduceDetails}}
+                                                        </div>
+                                                        <div class="number dis_flex">
+                                                            <span class="price"
+                                                                  @click="onclick3(index)">￥{{commodity.price}}</span>
+                                                            <input type="checkbox" name="Drink" value="cola" checked="checked" />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div style="clear:both"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--商品详情-->
+            <div id="outerdiv" class="dis_flex" v-if="currentCommodity">
+                <div class="dis_flex">
+                    <img id="bigimg" :src="currentCommodity.picture.imgPath"/>
+                    <div class="title">{{currentCommodity.name}}</div>
+                    <div class="subtitle">{{currentCommodity.introduceDetails}}</div>
+                    <div class="number dis_flex">
+                        <span class="price">￥{{currentCommodity.price}}</span>
+                        <p class="plan dis_flex">
+                            <a href="javascript:"
+                               @click.prevent="addoff(currentCommodity.id)"
+                               class="add_left" v-if="currentCommodity.count>0"></a>
+                            <span v-if="currentCommodity.count>0">{{currentCommodity.count}}</span>
+                            <a href="javascript:"
+                               @click.prevent="addon(currentCommodity.id,currentCommodity.name,currentCommodity.price,currentCommodity.introduceDetails,currentCommodity.picture.imgPath)"
+                               class="add_right"></a>
+                        </p>
+                    </div>
+                </div>
+                <img src="img/pic_off.png" alt="" @click="closeDiglog">
+            </div>
+        </article>
+    </div>
+    <footer>
+        <div class="dis_flex">
+            <a href="javascript:" @click="submitOrderView">确认</a>
+        </div>
+        <div class="gwcTog">
+            <div class="dis_flex">
+                <div class="dis_flex" @click="emptyCart">
+                    <img src="img/delete.png" alt="">
+                    <span class="col_hui">清空购物车</span>
+                </div>
+                <!--购物车商品-->
+                <div class="dis_flex">
+                    <!--购物车单个商品-->
+                    <div v-for="item in cart" v-if="item.count>0" class="dis_flex">
+                        <div class="dis_flex">
+                            <div class="title">{{item.commodityName}}</div>
+                            <div class="subtitle">{{item.commodityDesc}}</div>
+                        </div>
+                        <div class="dis_flex">
+                            <div class="number dis_flex">
+                                <span class="price">￥{{item.commodityPrice}}</span>
+                                <p class="plan dis_flex">
+                                    <a href="javascript:" class="add_left"
+                                       @click="cartUpdate('del',item.commodityId)"></a>
+                                    <span>{{item.count}}</span>
+                                    <a href="javascript:" class="add_right"
+                                       @click="cartUpdate('add',item.commodityId)"></a>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+</div>
+</body>
+<script src="js/mescroll.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script type="text/javascript">
+    let code = GetQueryString('code');
+    let pageIndex = 1, pageCount = 20, totalPage = 0, itemIndex = 0, currentClassifyid;
+    var vm = new Vue({
+        el: '#vueData',
+        data: {
+            classify: [],
+            commodityArray: [],
+            currentCommodity: null,
+            cart: [],
+            totalPrice: 0,
+            totalCount: 0,
+            mescroll: null
+        },
+        mounted: function () {
+            let that = this;
+            that.mescroll = new MeScroll("vueData", { //请至少在vue的mounted生命周期初始化mescroll,以确保您配置的id能够被找到
+                up: {
+                    callback: that.upCallback, //
+                    auto: false
+                }, down: {
+                    callback: that.downCallback,
+                    auto: false
+                }
+            });
+            //隐藏购物车
+            $('.gwcTog').hide();
+            //图片放大
+            $('#outerdiv').hide();
+        },
+        methods: {
+            downCallback() {
+                let that = this;
+                emptyData();
+                adapter(currentClassifyid, function () {
+                    that.mescroll.endByPage(pageCount, totalPage);
+                }, function () {
+                    that.mescroll.endErr();
+                });
+            },
+            upCallback() {
+                let that = this;
+                if (totalPage > pageIndex) {
+                    pageIndex++;
+                    adapter(currentClassifyid, function () {
+                        that.mescroll.endByPage(pageCount, totalPage);
+                    }, function () {
+                        that.mescroll.endErr();
+                    });
+                } else {
+                    that.mescroll.endErr();
+                }
+            },
+            imgShow() {
+                $('#outerdiv').fadeIn("fast");
+            },
+            closeDiglog() {
+                $('#outerdiv').fadeOut("fast");
+            },
+            gwcToggle() {
+                if (this.totalPrice > 0) {
+                    $('.gwcTog').toggle();
+                }
+            },
+            addoff(commodityId) {
+                cartAction('del', {commodityId: commodityId}, function () {
+                    queryCartAll(function (res) {
+                        vm.cart = res;
+                    });
+                }, function () {
+                    queryCartAll(function (res) {
+                        vm.cart = res;
+                    });
+
+                });
+            },
+            emptyCart() {
+                emptyDB();
+                let ary = vm.cart;
+                ary.splice(0, ary.length);
+                vm.cart = ary;
+            },
+            cartUpdate(action, commodityId) {
+                cartAction(action, {commodityId: commodityId}, function () {
+                    queryCartAll(function (res) {
+                        vm.cart = res;
+                    });
+                }, function () {
+                    queryCartAll(function (res) {
+                        vm.cart = res;
+                    });
+                });
+            },
+            addon(commodityId, commodityName, commodityPrice, commodityDesc, commodityPicture) {
+                cartAction('add', {
+                    commodityId: commodityId,
+                    commodityName: commodityName,
+                    commodityPrice: commodityPrice,
+                    commodityDesc: commodityDesc,
+                    commodityPicture: commodityPicture,
+                    count: 1
+                }, function () {
+                    queryCartAll(function (res) {
+                        vm.cart = res;
+                    });
+                }, function () {
+                    queryCartAll(function (res) {
+                        vm.cart = res;
+                    });
+                });
+
+            },
+            changer(classifyId) {
+                let that = this;
+                let selectId = $(event.currentTarget).parent().index();
+                if (itemIndex === selectId) {
+                    return;
+                }
+                emptyData();
+                itemIndex = selectId;
+                pageIndex = 1;
+                totalPage = 1;
+                currentClassifyid = classifyId;
+                $(event.currentTarget).parent().addClass('active').siblings('li').removeClass('active');
+                adapter(classifyId, function () {
+                    if (totalPage > pageIndex) {
+                        pageIndex++;
+                        that.mescroll.endSuccess(pageCount, true);
+                    } else {
+                        that.mescroll.endSuccess(pageCount, false);
+                    }
+                }, function () {
+                    that.mescroll.endErr();
+                });
+            },
+            onclick1(index) {
+                vm.currentCommodity = vm.commodityArray[shop];
+                vm.imgShow();
+            },
+            onclick2(index) {
+                vm.currentCommodity = vm.commodityArray[shop];
+                vm.imgShow();
+            },
+            onclick3(index) {
+                vm.currentCommodity = vm.commodityArray[shop];
+                vm.imgShow()
+            },
+            submitOrderView() {
+                if (vm.totalCount > 0) {
+                    location.href = 'payment.html';
+                } else {
+                    toast('客官选一件吧!');
+                }
+            }
+
+        }
+    });
+    vm.$watch('cart', function () {
+        let price = 0;
+        let count = 0;
+        $.each(vm.cart, function (i, item) {
+            price += item.commodityPrice * item.count;
+            count += item.count;
+        });
+        vm.totalPrice = price.toFixed(2);
+        vm.totalCount = count;
+        if ($(".gwcTog").css("display") === 'block' && vm.totalCount === 0) {
+            $('.gwcTog').toggle();
+        }
+        notifyDataSetChanged();
+    });
+
+    function notifyDataSetChanged() {
+        if (vm.cart.length > 0) {
+            for (let i = 0; i < vm.cart.length; i++) {
+                for (let j = 0; j < vm.commodityArray.length; j++) {
+                    if (vm.cart[i].commodityId === vm.commodityArray[j].id) {
+                        vm.commodityArray[j].count = vm.cart[i].count;
+                        if (vm.cart[i].count === 0) {
+                            delCommodity(vm.cart[i].commodityId);
+                        }
+                        break;
+                    }
+                }
+            }
+        } else {
+            for (let i = 0; i < vm.commodityArray.length; i++) {
+                vm.commodityArray[i].count = 0;
+            }
+        }
+    }
+
+    $(function () {
+        init();
+        if (!openid) {
+            if (code) {
+                getOpenid(code);
+            } else {
+                location.href = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxe0870cb2d63b008d&redirect_uri=https://yapinkeji.com/yapingzh/shanduo_zahuopu/index.html&response_type=code&scope=snsapi_userinfo#wechat_redirect';
+            }
+        }
+        getClassify(function (result) {
+            vm.classify = result.classify;
+            currentClassifyid = vm.classify[0].id;
+            adapter(currentClassifyid);
+        });
+    });
+
+    function adapter(classifyId, cbOK, cbErr) {
+        getGoodsByClassifyId(classifyId, pageIndex, pageCount, function (res) {
+            let newData = res.commodityArray;
+            for (let i in newData) {
+                newData[i].picture = {
+                    myStyle: {backgroundImage: "url('/yapingzh/picture/" + newData[i].introducePicture + "')"},
+                    imgPath: '/yapingzh/picture/' + newData[i].introducePicture
+                };
+            }
+            vm.commodityArray = vm.commodityArray.concat(newData);
+            totalPage = res.totalPage;
+            queryCartAll(function (res) {
+                if (res.length > 0) {
+                    vm.cart = res;
+                }
+            });
+            cbOK && cbOK();
+        }, function () {
+            cbErr && cbErr();
+        });
+    }
+
+    function emptyData() {
+        let ary = vm.commodityArray;
+        ary.splice(0, ary.length);
+        vm.commodityArray = ary;
+        totalPage = 0;
+        pageIndex = 1;
+    }
+</script>
+</html>

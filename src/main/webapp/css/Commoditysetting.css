@@ -1,0 +1,6 @@
+footer>div:first-child>a:last-child{
+    width:100%;
+}
+.swiper-container>div:last-child>div:first-child>div{
+    top: 0;
+}
