@@ -25,7 +25,9 @@
             <div>
                 <span>店铺信息</span>
             </div>
-            <div></div>
+            <div>
+                <span class="col_cheng">修改</span>
+            </div>
         </div>
     </header>
     <div class="body">
@@ -38,27 +40,31 @@
         </div>
         <div class="div_li dis_flex">
             <span>店家姓名：</span>
-            <input type="text" value="芙蓉兴盛">
+            <input type="text" value="芙蓉兴盛" size="8">
         </div>
         <div class="div_li dis_flex">
             <span>余额：</span>
-            <input type="text" value="2.5(元)">
+            <span>￥2.5</span>
         </div>
         <div class="div_li dis_flex">
             <span>营业开始时间：</span>
-            <input type="text" value="早上6:00">
+            <input type="time">
         </div>
         <div class="div_li dis_flex">
             <span>营业结束时间：</span>
-            <input type="text" value="晚上6:00">
+            <input type="time">
         </div>
         <div class="div_li dis_flex">
             <span>电话：</span>
-            <input type="text" value="15873024296">
+            <input type="tel" value="15873024296" maxlength="11" size="8">
         </div>
         <div class="div_li dis_flex">
             <span>店铺类型：</span>
-            <input type="text" value="小卖部">
+            <select name="cars">
+                <option value="volvo">小卖部</option>
+                <option value="saab">超市</option>
+                <option value="fiat">水果店</option>
+            </select>
         </div>
     </div>
     <footer>

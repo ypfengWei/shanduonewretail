@@ -73,9 +73,20 @@
                                                             {{commodity.introduceDetails}}
                                                         </div>
                                                         <div class="number dis_flex">
-                                                            <span class="price"
-                                                                  @click="onclick3(index)">￥{{commodity.price}}</span>
+                                                            <span class="price" @click="onclick3(index)
+                                                            "><span class="col_hui">单价：</span>￥{{commodity.price}}</span>
                                                             <input type="checkbox" name="Drink" value="cola" checked="checked" />
+                                                        </div>
+                                                    </div>
+                                                    <div class="right_top_pot dis_flex">
+                                                        <div>
+                                                            <a href="">上架</a>/<a href="">下架</a>
+                                                        </div>
+                                                        <div>
+                                                            <a href="">修改</a>
+                                                        </div>
+                                                        <div>
+                                                            <a href="">删除</a>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -114,7 +125,8 @@
     </div>
     <footer>
         <div class="dis_flex">
-            <a href="javascript:" @click="submitOrderView">确认</a>
+            <a href="javascript:" @click="submitOrderView">去仓库</a>
+            <a href="javascript:" @click="submitOrderView">上传商品</a>
         </div>
         <div class="gwcTog">
             <div class="dis_flex">
@@ -349,7 +361,7 @@
             if (code) {
                 getOpenid(code);
             } else {
-/*                location.href = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxe0870cb2d63b008d&redirect_uri=https://yapinkeji.com/yapingzh/shanduo_zahuopu/index.html&response_type=code&scope=snsapi_userinfo#wechat_redirect';*/
+                location.href = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxe0870cb2d63b008d&redirect_uri=https://yapinkeji.com/yapingzh/shanduo_zahuopu/index.html&response_type=code&scope=snsapi_userinfo#wechat_redirect';
             }
         }
         getClassify(function (result) {
