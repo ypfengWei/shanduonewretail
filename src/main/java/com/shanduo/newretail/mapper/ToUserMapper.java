@@ -20,4 +20,6 @@ public interface ToUserMapper {
     ToUser getLogin(String mobilePhone,String password);
     
     int updatePassswordByPhone(String phone, String password);
+    
+    String selectAdministratorsId();
 }

@@ -176,4 +176,17 @@
     where user_id = #{0}
       and category_id = #{1}  and is_deleted=0
   </select>
+  <update id="updateRelations" parameterType="com.shanduo.newretail.entity.Relations">
+    update relations
+    set category_id = #{categoryId,jdbcType=INTEGER},
+      stock = #{stock,jdbcType=INTEGER}
+    where commodity_id = #{commodityId,jdbcType=VARCHAR}
+      and user_id = #{userId,jdbcType=VARCHAR}
+  </update>
+  <update id="deleteRelations" parameterType="java.lang.String">
+    update relations
+    set is_deleted = 1
+    where commodity_id = #{0}
+      and user_id = #{1}
+  </update>
 </mapper>

@@ -140,4 +140,10 @@
 	where re.category_id=#{0} and re.user_id=#{1}  and stock &gt;0
 	limit #{2},#{3}
   </select> 
+  <update id="deleteCommodity" parameterType="java.lang.String">
+    update commodity
+    set 
+      is_deleted = 1
+    where id = #{commodityId,jdbcType=VARCHAR}
+  </update>
 </mapper>

@@ -35,6 +35,16 @@ public interface CommodityService {
 	int insertCommodity(String name,String picture,String price,String stock,String categoryId,String userId);
 	
 	/*
+	 * 商品修改
+	 */
+	int updateCommodity(String name,String picture,String price,String stock,String categoryId,String userId,
+			String commodityId);
+	
+	/*
+	 * 商品删除
+	 */
+	int deleteCommodity(String id,String commodityId);
+	/*
 	 * 查询商品所有类别
 	 */
 	List<Map<String,Object>> selectCommodityType(String id);

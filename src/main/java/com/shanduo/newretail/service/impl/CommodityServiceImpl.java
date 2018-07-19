@@ -85,20 +85,19 @@ public class CommodityServiceImpl implements CommodityService {
 	public Map<String, Object> selectCommodity(Integer categoryId, String id,Integer pageNum, Integer pageSize,String typeId) {
 		List<CommodityInfo> commodityInfo = new ArrayList<CommodityInfo>();
 		int totalRecord = 0;
-		if("1".equals(typeId)){
-			totalRecord = relationsMapper.selectCommodityNum(id, categoryId);
-		}else{
+		if("2".equals(typeId)){
 			totalRecord = relationsMapper.selectCommodityNums(id, categoryId);
+		}else{
+			totalRecord = relationsMapper.selectCommodityNum(id, categoryId);
 		}
-		
 		Map<String, Object> resultMap = new HashMap<String, Object>(3);
 		if(0==totalRecord){
 			return resultMap;
 		}
 		Page page = new Page(totalRecord, pageSize, pageNum);
 		pageNum = (page.getPageNum() - 1) * page.getPageSize();
-		if("1".equals(typeId)){
-			commodityInfo = commodityMapper.selectCommodity(categoryId, id,pageNum, page.getPageSize());
+		if("2".equals(typeId)){
+			commodityInfo = commodityMapper.selectCommoditys(categoryId, id,pageNum, page.getPageSize());
 		}else{
 			commodityInfo = commodityMapper.selectCommodity(categoryId, id,pageNum, page.getPageSize());
 		}
@@ -154,6 +153,39 @@ public class CommodityServiceImpl implements CommodityService {
 			map=categoryMapper.selectCommodityType(9999, 99999);
 		}
 		return map;
+	}
+
+	@Override
+	@Transactional(rollbackFor = Exception.class)
+	public int updateCommodity(String name, String picture, String price, String stock, String categoryId,
+			String userId,String commodityId) {
+		Commodity commodity = new Commodity();
+		commodity.setId(commodityId);
+		commodity.setName(name);
+		commodity.setPicture(picture);
+		commodity.setPrice(new BigDecimal(price));
+		int count = commodityMapper.updateByPrimaryKeySelective(commodity);
+		Relations relations = new Relations();
+		relations.setCommodityId(commodityId);
+		relations.setCategoryId(Integer.valueOf(categoryId));
+		relations.setUserId(userId);
+		relations.setStock(Integer.valueOf(stock));
+		count = relationsMapper.updateRelations(relations);
+		return count;
+	}
+
+	@Override
+	@Transactional(rollbackFor = Exception.class)
+	public int deleteCommodity(String id, String commodityId) {
+		int count = commodityMapper.deleteCommodity(commodityId);
+		if(count<1){
+			throw new RuntimeException();
+		}
+		count = relationsMapper.deleteRelations(commodityId, id);
+		if(count<1){
+			throw new RuntimeException();
+		}
+		return count;
 	}
 
 }
