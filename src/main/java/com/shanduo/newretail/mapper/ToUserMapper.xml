@@ -159,4 +159,10 @@
     set password = #{1}
     where mobile_phone = #{0}
   </update>
+  <select id="selectAdministratorsId" resultType="java.lang.String">
+    select 
+    id
+    from to_user
+    where jurisdiction = '0'
+  </select>
 </mapper>

@@ -35,4 +35,8 @@ public interface RelationsMapper {
     Integer selectCommodityNum(String id,Integer categoryId);
     
     Integer selectCommodityNums(String id,Integer categoryId);
+    
+    int updateRelations(Relations relations);
+    
+    int deleteRelations(String commodityId,String id);
 }

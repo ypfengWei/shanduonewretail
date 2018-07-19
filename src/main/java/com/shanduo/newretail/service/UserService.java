@@ -98,4 +98,9 @@ public interface UserService {
 	 * @throws
 	 */
 	int updatePassswordByPhone(String phone, String password);
+	/**
+	 * 查询管理员账号
+	 * @return
+	 */
+	String selectAdministratorsId();
 }

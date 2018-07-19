@@ -29,6 +29,8 @@ public class UserSeller {
     private BigDecimal lat;
 
     private BigDecimal lon;
+    
+    private String address;
 
     private Date gmtCreate;
 
@@ -138,7 +140,15 @@ public class UserSeller {
         this.lon = lon;
     }
 
-    public Date getGmtCreate() {
+    public String getAddress() {
+		return address;
+	}
+
+	public void setAddress(String address) {
+		this.address = address;
+	}
+
+	public Date getGmtCreate() {
         return gmtCreate;
     }
 
