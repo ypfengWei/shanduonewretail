@@ -188,4 +188,27 @@ public class CommodityServiceImpl implements CommodityService {
 		return count;
 	}
 
+	@Override
+	public int insertWarehouseCommodity(List<String> commodityIdList,String userId) {
+		int count =0;
+		for(int i=0;i<commodityIdList.size();i++){
+			String commodityId = commodityIdList.get(i);
+			Commodity commodity =  commodityMapper.selectByPrimaryKey(commodityId);
+			String id = UUIDGenerator.getUUID();
+			commodity.setId(id);
+			count = commodityMapper.insertSelective(commodity);
+			if(count<1){
+				throw new RuntimeException();
+			}
+			Relations relations = relationsMapper.selectCommodity(commodityId);
+			relations.setCommodityId(id);
+			relations.setUserId(userId);
+			count = relationsMapper.insertSelective(relations);
+			if(count<1){
+				throw new RuntimeException();
+			}
+		}
+		return count;
+	}
+
 }

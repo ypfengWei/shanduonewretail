@@ -39,7 +39,7 @@ public interface CommodityService {
 	 */
 	int updateCommodity(String name,String picture,String price,String stock,String categoryId,String userId,
 			String commodityId);
-	
+	int insertWarehouseCommodity(List<String> commodityIdList,String userId);
 	/*
 	 * 商品删除
 	 */

@@ -189,4 +189,12 @@
     where commodity_id = #{0}
       and user_id = #{1}
   </update>
+  
+  <select id="selectCommodity" parameterType="java.lang.String"
+	resultMap="BaseResultMap">
+	select
+	<include refid="Base_Column_List" />
+	from relations
+	where commodity_id = #{1}
+  </select>
 </mapper>

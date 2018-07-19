@@ -24,8 +24,11 @@ import com.shanduo.newretail.service.AccessTokenService;
 import com.shanduo.newretail.service.BaseService;
 import com.shanduo.newretail.service.CommodityService;
 import com.shanduo.newretail.service.UserService;
+import com.shanduo.newretail.util.JsonStringUtils;
 import com.shanduo.newretail.util.StringUtils;
 import com.shanduo.newretail.util.WxFileUtils;
+
+import net.sf.json.JSONArray;
 
 @Controller
 @RequestMapping(value = "jcommodity")
@@ -240,6 +243,43 @@ public class CommodityController {
 		try {
 			picture = WxFileUtils.downloadImage(accessTokenService.selectAccessToken(WxPayConsts.APPID).getAccessToken(),picture);
 			int count = commodityService.insertCommodity(name, picture, price, stock, categoryId,userId);
+			if(count<1){
+				return new ErrorBean(ErrorConsts.CODE_10004,"上传失败");
+			}
+		} catch (Exception e) {
+			return new ErrorBean(ErrorConsts.CODE_10004,"上传失败");
+		}
+		return new SuccessBean("上传成功");	
+	}
+	/**
+	 * 在仓库选择商品
+	 * @param request
+	 * @param token
+	 * @return
+	 */
+	@RequestMapping(value = "insertwarehousecommodity",method={RequestMethod.POST,RequestMethod.GET})
+	@ResponseBody
+	//http://localhost:8081/shanduonewretail/jcommodity/insertwarehousecommodity?token=1&
+	public ResultBean insertWarehouseCommodity(HttpServletRequest request, String token) {
+		if(StringUtils.isNull(token)) {
+			Log.warn("token为空");
+			return new ErrorBean(ErrorConsts.CODE_10002,"token为空");
+		}
+		String userId = baseService.checkUserToken(token);
+		if(null==userId){
+			Log.warn("token失效");
+			return new ErrorBean(ErrorConsts.CODE_10001,"token失效");
+		}
+		String commodityId = request.getParameter("commodityIdList");
+		if(StringUtils.isNull(commodityId)) {
+			Log.warn("用户信息为空");
+			return new ErrorBean(ErrorConsts.CODE_10002,"用户信息为空");
+		}
+		JSONArray jsonArray = JSONArray.fromObject(commodityId);
+		@SuppressWarnings("unchecked")
+		List<String> commodityIdList = (List<String>) JSONArray.toCollection(jsonArray, String.class);
+		try {
+			int count = commodityService.insertWarehouseCommodity(commodityIdList,userId);
 			if(count<1){
 				return new ErrorBean(ErrorConsts.CODE_10004,"上传失败");
 			}
