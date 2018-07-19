@@ -6,7 +6,7 @@ import java.util.List;
 
 import com.shanduo.newretail.entity.ToOrderDetails;
 
-public class OrderInfo {
+public class OrderInfo{
 	private String id;
     private BigDecimal totalPrice;
     private String userName;
@@ -62,6 +62,13 @@ public class OrderInfo {
 	}
 	public void setDetails(List<ToOrderDetails> details) {
 		this.details = details;
+	}
+	
+	@Override
+	public String toString() {
+		return "OrderInfo [id=" + id + ", totalPrice=" + totalPrice + ", userName=" + userName + ", userPhone="
+				+ userPhone + ", userAddress=" + userAddress + ", remarks=" + remarks + ", gmtCreate=" + gmtCreate
+				+ ", details=" + details + "]";
 	}
     
 }
