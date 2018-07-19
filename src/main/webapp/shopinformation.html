@@ -27,7 +27,7 @@
                     <span>店铺信息</span>
                 </div>
                 <div>
-                    <span class="col_cheng" @click="editStoreView">修改</span>
+                    <span class="col_cheng" @click="editStoreInfo">完成修改</span>
                 </div>
             </div>
         </header>
@@ -76,7 +76,7 @@ let vm=new Vue({
 	el:'#vueData',
 	methods:{
 		editStoreView(){
-			lication.href="setshopinformation.html";
+			location.href="setshopinformation.html";
 		}
 	}
 	

@@ -15,6 +15,7 @@ function getClassifyBySellerType(lat, lon, sellerType, cbOk) {
         dataType: "JSON",
         data: {lat:lat,lon:lon,sellerType:sellerType},
         success: function (result) {
+            console.log(1)
         	if(result.success){
         		cbOk && cbOk(result);
         	}
@@ -35,7 +36,7 @@ function getGoods(storeId,categoryId,typeId, pageIndex, pageCount, cbOk, cbErr) 
         sync: false,
         url: "/shanduonewretail/jcommodity/selectcommodity",
         dataType: "JSON",
-        data: {id: storeId,categoryId:categoryId,typeId:tyepId,page: pageIndex, pageSize: pageCount},
+        data: {id: storeId,categoryId:categoryId,typeId:typeId,page: pageIndex, pageSize: pageCount},
         success: function (result) {
         	if(result.success){
         		cbOk && cbOk(result.result);
