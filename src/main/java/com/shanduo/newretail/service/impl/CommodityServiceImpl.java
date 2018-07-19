@@ -14,9 +14,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.shanduo.newretail.entity.Commodity;
 import com.shanduo.newretail.entity.Relations;
+import com.shanduo.newretail.entity.UserSeller;
 import com.shanduo.newretail.entity.service.CommodityInfo;
+import com.shanduo.newretail.mapper.CategoryMapper;
 import com.shanduo.newretail.mapper.CommodityMapper;
 import com.shanduo.newretail.mapper.RelationsMapper;
+import com.shanduo.newretail.mapper.UserSellerMapper;
 import com.shanduo.newretail.service.CommodityService;
 import com.shanduo.newretail.util.Page;
 import com.shanduo.newretail.util.UUIDGenerator;
@@ -27,11 +30,18 @@ public class CommodityServiceImpl implements CommodityService {
 	private RelationsMapper relationsMapper;
 	@Autowired
 	private CommodityMapper commodityMapper;
+	@Autowired
+	private UserSellerMapper userSellerMapper;
+	@Autowired
+	private CategoryMapper categoryMapper;
 
 	@Override
 	public List<Map<String,Object>> selectSellerCommodityType(String id,String typeId) {
 		if("1".equals(typeId)){
 			return relationsMapper.selectSellerCommodityType(id);
+		}
+		if("2".equals(typeId)){
+			return relationsMapper.selectSellerCommodityTypes(id);
 		}
 		return null;
 		
@@ -128,6 +138,22 @@ public class CommodityServiceImpl implements CommodityService {
 			throw new RuntimeException();
 		}
 		return count;
+	}
+
+	@Override
+	public List<Map<String, Object>> selectCommodityType(String id) {
+		UserSeller userSeller =userSellerMapper.selectByPrimaryKey(id);
+		List<Map<String, Object>> map = new ArrayList<Map<String, Object>>();
+		if("0".equals(userSeller.getSellerType())){
+			map=categoryMapper.selectCommodityType(99, 999);
+		}
+		if("1".equals(userSeller.getSellerType())){
+			map=categoryMapper.selectCommodityType(999, 9999);
+		}
+		if("2".equals(userSeller.getSellerType())){
+			map=categoryMapper.selectCommodityType(9999, 99999);
+		}
+		return map;
 	}
 
 }

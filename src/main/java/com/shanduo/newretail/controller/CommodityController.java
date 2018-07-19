@@ -36,8 +36,13 @@ public class CommodityController {
 	private BaseService baseService;
 	@Autowired
 	private AccessTokenService accessTokenService;
-	/*
+	/**
 	 * 查询店铺商品类别
+	 * @param request
+	 * @param id
+	 * @param typeId
+	 * @param token
+	 * @return
 	 */
 	@RequestMapping(value = "selectcommoditytype",method={RequestMethod.POST,RequestMethod.GET})
 	@ResponseBody
@@ -64,6 +69,17 @@ public class CommodityController {
 				return new ErrorBean(ErrorConsts.CODE_10001,"token失效");
 			}
 		}
+		if("3".equals(typeId)){
+			if(StringUtils.isNull(token)) {
+				Log.warn("token为空");
+				return new ErrorBean(ErrorConsts.CODE_10002,"token为空");
+			}
+			id = baseService.checkUserToken(token);
+			if(null==id){
+				Log.warn("token失效");
+				return new ErrorBean(ErrorConsts.CODE_10001,"token失效");
+			}
+		}
 		List<Map<String,Object>> categoryIdList = new ArrayList<Map<String,Object>>();
 		try {
 			categoryIdList = commodityService.selectSellerCommodityType(id,typeId);
@@ -76,8 +92,16 @@ public class CommodityController {
 		return new SuccessBean(categoryIdList);
 		
 	}
-	/*
+	/**
 	 * 查询店铺所有商品
+	 * @param request
+	 * @param id
+	 * @param categoryId
+	 * @param page
+	 * @param pageSize
+	 * @param typeId
+	 * @param token
+	 * @return
 	 */
 	@RequestMapping(value = "selectcommodity",method={RequestMethod.POST,RequestMethod.GET})
 	@ResponseBody
@@ -128,8 +152,13 @@ public class CommodityController {
 			return new ErrorBean(ErrorConsts.CODE_10004,"查询失败");
 		}
 	}
-	/*
+	/**
 	 * 商品上下架
+	 * @param request
+	 * @param token
+	 * @param visible
+	 * @param commodityId
+	 * @return
 	 */
 	@RequestMapping(value = "updatecommodityvisible",method={RequestMethod.POST,RequestMethod.GET})
 	@ResponseBody
@@ -163,9 +192,18 @@ public class CommodityController {
 		return new SuccessBean("修改成功");
 		
 	}
-	/*
+	/**
 	 * 商品上传
+	 * @param request
+	 * @param token
+	 * @param name
+	 * @param picture
+	 * @param price
+	 * @param stock
+	 * @param categoryId
+	 * @return
 	 */
+	
 	@RequestMapping(value = "insertcommodity",method={RequestMethod.POST,RequestMethod.GET})
 	@ResponseBody
 	//http://localhost:8081/shanduonewretail/jcommodity/insertcommodity?token=1&name=adsds&picture=11111&price=2.3&stock=1&categoryId=100
@@ -186,15 +224,10 @@ public class CommodityController {
 			Log.warn("price为空");
 			return new ErrorBean(ErrorConsts.CODE_10002,"price为空");
 		}
-		try{
-			if(StringUtils.isNull(stock) || Integer.valueOf(stock)<0) {
-				Log.warn("stock为空");
-				return new ErrorBean(ErrorConsts.CODE_10002,"stock为空");
-			}
-		}catch (Exception e) {
+		if(StringUtils.isNull(stock) || !stock.matches("^[1-9]\\d*$")) {
+			Log.warn("stock不合法");
 			return new ErrorBean(ErrorConsts.CODE_10002,"stock不合法");
 		}
-		
 		if(StringUtils.isNull(categoryId)) {
 			Log.warn("categoryId为空");
 			return new ErrorBean(ErrorConsts.CODE_10002,"categoryId为空");
@@ -213,8 +246,37 @@ public class CommodityController {
 		} catch (Exception e) {
 			return new ErrorBean(ErrorConsts.CODE_10004,"上传失败");
 		}
-		return new SuccessBean("上传成功");
-		
+		return new SuccessBean("上传成功");	
+	}
+	/**
+	 * 查询所有商品类别
+	 * @param request
+	 * @param token
+	 * @return
+	 */
+	@RequestMapping(value = "selectcommodityalltype",method={RequestMethod.POST,RequestMethod.GET})
+	@ResponseBody
+	//http://localhost:8081/shanduonewretail/jcommodity/selectcommodityalltype?token=1
+	public ResultBean selectCommodityAllType(HttpServletRequest request, String token) {
+		if(StringUtils.isNull(token)) {
+			Log.warn("token为空");
+			return new ErrorBean(ErrorConsts.CODE_10002,"token为空");
+		}
+		String id = baseService.checkUserToken(token);
+		if(null==id){
+			Log.warn("token失效");
+			return new ErrorBean(ErrorConsts.CODE_10001,"token失效");
+		}
+		List<Map<String,Object>> categoryIdList = new ArrayList<Map<String,Object>>();
+		try {
+			categoryIdList = commodityService.selectCommodityType(id);
+			if(categoryIdList.isEmpty()){
+				return new ErrorBean();
+			}
+	} catch (Exception e) {
+		return new ErrorBean(ErrorConsts.CODE_10004,"查询失败");
+	}
+		return new SuccessBean(categoryIdList);
 	}
 
 }

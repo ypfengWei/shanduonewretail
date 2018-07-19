@@ -39,6 +39,14 @@ public class SellerController {
 	private BaseService baseService;
 	@Autowired
 	private AccessTokenService accessTokenService;
+	
+	/**
+	 * 
+	 * @param request
+	 * @param lat
+	 * @param lon
+	 * @return
+	 */
 	@RequestMapping(value = "selectsellertype",method={RequestMethod.POST,RequestMethod.GET})
 	@ResponseBody
 	//http://localhost:8081/shanduonewretail/jseller/selectsellertype?lon=113.074815&lat=28.227615
@@ -63,6 +71,14 @@ public class SellerController {
 		
 		return new SuccessBean(sellerTypeList);
 	}
+	/**
+	 * 
+	 * @param request
+	 * @param lat
+	 * @param lon
+	 * @param sellerType
+	 * @return
+	 */
 	@RequestMapping(value = "selectseller",method={RequestMethod.POST,RequestMethod.GET})
 	@ResponseBody
 	//http://localhost:8081/shanduonewretail/jseller/selectseller?lon=113.074815&lat=28.227615&sellerType=[0,1,2]
@@ -91,8 +107,13 @@ public class SellerController {
 		}
 		return new SuccessBean(sellerInfoMap);
 	}
-	/*
+	/**
 	 * 查询店铺详情
+	 * @param request
+	 * @param token
+	 * @param id
+	 * @param typeId
+	 * @return
 	 */
 	@RequestMapping(value = "selectsellerdetails",method={RequestMethod.POST,RequestMethod.GET})
 	@ResponseBody
@@ -126,10 +147,13 @@ public class SellerController {
 		}
 		return new SuccessBean(userSeller);
 	}
-	
-	/*
-	 * 修改店铺详情
+	/**
+	 *  修改店铺详情
+	 * @param request
+	 * @param token
+	 * @return
 	 */
+	
 	@RequestMapping(value = "updatesellerdetails",method={RequestMethod.POST,RequestMethod.GET})
 	@ResponseBody
 	//http://localhost:8081/shanduonewretail/jseller/selectsellerdetails?token=1
@@ -167,9 +191,12 @@ public class SellerController {
 		}
 		return new SuccessBean("修改成功");
 	}
-	
-	/*
+	/**
 	 * 开店关店
+	 * @param request
+	 * @param token
+	 * @param businessSign
+	 * @return
 	 */
 	@RequestMapping(value = "updatebusinesssign",method={RequestMethod.POST,RequestMethod.GET})
 	@ResponseBody
@@ -194,9 +221,10 @@ public class SellerController {
 		}
 		return new SuccessBean("修改成功");
 	}
-	
-	/*
+	/**
 	 * 查询店铺所有类型
+	 * @param request
+	 * @return
 	 */
 	@RequestMapping(value = "selectselleralltype",method={RequestMethod.POST,RequestMethod.GET})
 	@ResponseBody

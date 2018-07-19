@@ -22,6 +22,8 @@ public interface RelationsMapper {
     
     List<Map<String,Object>> selectSellerCommodityType(String id);
     
+    List<Map<String,Object>> selectSellerCommodityTypes(String id);
+    
     Relations selectCommodityStock(String id,String commodityId);
     
     int updateCommodityStock(Relations relations);
