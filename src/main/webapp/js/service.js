@@ -24,7 +24,9 @@ function getClassifyBySellerType(lat, lon, sellerType, cbOk) {
 }
 /* 查询某个店铺的商品种类 */
 function getStoreClassify(storeId,typeId,back) {
+    console.log(storeId)
     $.getJSON("/shanduonewretail/jcommodity/selectcommoditytype",{id:storeId,typeId:typeId}, function (result) {
+        console.log(result)
         if (result.success) {
         	back&&back(result.result);
         }

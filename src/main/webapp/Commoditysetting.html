@@ -128,43 +128,13 @@
             <a href="javascript:" @click="submitOrderView">去仓库</a>
             <a href="javascript:" @click="submitOrderView">上传商品</a>
         </div>
-        <div class="gwcTog">
-            <div class="dis_flex">
-                <div class="dis_flex" @click="emptyCart">
-                    <img src="img/delete.png" alt="">
-                    <span class="col_hui">清空购物车</span>
-                </div>
-                <!--购物车商品-->
-                <div class="dis_flex">
-                    <!--购物车单个商品-->
-                    <div v-for="item in cart" v-if="item.count>0" class="dis_flex">
-                        <div class="dis_flex">
-                            <div class="title">{{item.commodityName}}</div>
-                            <div class="subtitle">{{item.commodityDesc}}</div>
-                        </div>
-                        <div class="dis_flex">
-                            <div class="number dis_flex">
-                                <span class="price">￥{{item.commodityPrice}}</span>
-                                <p class="plan dis_flex">
-                                    <a href="javascript:" class="add_left"
-                                       @click="cartUpdate('del',item.commodityId)"></a>
-                                    <span>{{item.count}}</span>
-                                    <a href="javascript:" class="add_right"
-                                       @click="cartUpdate('add',item.commodityId)"></a>
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
     </footer>
 </div>
 </body>
 <script src="js/mescroll.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 <script type="text/javascript">
-    let code = GetQueryString('code');
+    let localStore = JSON.parse(localStorage.localStore);
     let pageIndex = 1, pageCount = 20, totalPage = 0, itemIndex = 0, currentClassifyid;
     var vm = new Vue({
         el: '#vueData',
@@ -172,9 +142,6 @@
             classify: [],
             commodityArray: [],
             currentCommodity: null,
-            cart: [],
-            totalPrice: 0,
-            totalCount: 0,
             mescroll: null
         },
         mounted: function () {
@@ -188,8 +155,6 @@
                     auto: false
                 }
             });
-            //隐藏购物车
-            $('.gwcTog').hide();
             //图片放大
             $('#outerdiv').hide();
         },
@@ -222,59 +187,6 @@
             closeDiglog() {
                 $('#outerdiv').fadeOut("fast");
             },
-            gwcToggle() {
-                if (this.totalPrice > 0) {
-                    $('.gwcTog').toggle();
-                }
-            },
-            addoff(commodityId) {
-                cartAction('del', {commodityId: commodityId}, function () {
-                    queryCartAll(function (res) {
-                        vm.cart = res;
-                    });
-                }, function () {
-                    queryCartAll(function (res) {
-                        vm.cart = res;
-                    });
-
-                });
-            },
-            emptyCart() {
-                emptyDB();
-                let ary = vm.cart;
-                ary.splice(0, ary.length);
-                vm.cart = ary;
-            },
-            cartUpdate(action, commodityId) {
-                cartAction(action, {commodityId: commodityId}, function () {
-                    queryCartAll(function (res) {
-                        vm.cart = res;
-                    });
-                }, function () {
-                    queryCartAll(function (res) {
-                        vm.cart = res;
-                    });
-                });
-            },
-            addon(commodityId, commodityName, commodityPrice, commodityDesc, commodityPicture) {
-                cartAction('add', {
-                    commodityId: commodityId,
-                    commodityName: commodityName,
-                    commodityPrice: commodityPrice,
-                    commodityDesc: commodityDesc,
-                    commodityPicture: commodityPicture,
-                    count: 1
-                }, function () {
-                    queryCartAll(function (res) {
-                        vm.cart = res;
-                    });
-                }, function () {
-                    queryCartAll(function (res) {
-                        vm.cart = res;
-                    });
-                });
-
-            },
             changer(classifyId) {
                 let that = this;
                 let selectId = $(event.currentTarget).parent().index();
@@ -299,86 +211,38 @@
                 });
             },
             onclick1(index) {
-                vm.currentCommodity = vm.commodityArray[shop];
+                vm.currentCommodity = vm.commodityArray[index];
                 vm.imgShow();
             },
             onclick2(index) {
-                vm.currentCommodity = vm.commodityArray[shop];
+                vm.currentCommodity = vm.commodityArray[index];
                 vm.imgShow();
             },
             onclick3(index) {
-                vm.currentCommodity = vm.commodityArray[shop];
+                vm.currentCommodity = vm.commodityArray[index];
                 vm.imgShow()
-            },
-            submitOrderView() {
-                if (vm.totalCount > 0) {
-                    location.href = 'payment.html';
-                } else {
-                    toast('客官选一件吧!');
-                }
-            }
+            },submitOrderView(){
 
+            }
         }
     });
-    vm.$watch('cart', function () {
-        let price = 0;
-        let count = 0;
-        $.each(vm.cart, function (i, item) {
-            price += item.commodityPrice * item.count;
-            count += item.count;
-        });
-        vm.totalPrice = price.toFixed(2);
-        vm.totalCount = count;
-        if ($(".gwcTog").css("display") === 'block' && vm.totalCount === 0) {
-            $('.gwcTog').toggle();
-        }
-        notifyDataSetChanged();
-    });
-
-    function notifyDataSetChanged() {
-        if (vm.cart.length > 0) {
-            for (let i = 0; i < vm.cart.length; i++) {
-                for (let j = 0; j < vm.commodityArray.length; j++) {
-                    if (vm.cart[i].commodityId === vm.commodityArray[j].id) {
-                        vm.commodityArray[j].count = vm.cart[i].count;
-                        if (vm.cart[i].count === 0) {
-                            delCommodity(vm.cart[i].commodityId);
-                        }
-                        break;
-                    }
-                }
-            }
-        } else {
-            for (let i = 0; i < vm.commodityArray.length; i++) {
-                vm.commodityArray[i].count = 0;
-            }
-        }
-    }
-
     $(function () {
-        init();
-        if (!openid) {
-            if (code) {
-                getOpenid(code);
-            } else {
-                location.href = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxe0870cb2d63b008d&redirect_uri=https://yapinkeji.com/yapingzh/shanduo_zahuopu/index.html&response_type=code&scope=snsapi_userinfo#wechat_redirect';
-            }
-        }
-        getClassify(function (result) {
-            vm.classify = result.classify;
+        getStoreClassify(localStore.token,2,function (result) {
+            vm.classify = result;
             currentClassifyid = vm.classify[0].id;
             adapter(currentClassifyid);
         });
     });
 
-    function adapter(classifyId, cbOK, cbErr) {
-        getGoodsByClassifyId(classifyId, pageIndex, pageCount, function (res) {
-            let newData = res.commodityArray;
+    function adapter(categoryId, cbOK, cbErr) {
+        getGoods(localStore.token,categoryId,1, pageIndex, pageCount, function (res) {
+            let newData = res.commodityInfoList;
             for (let i in newData) {
                 newData[i].picture = {
-                    myStyle: {backgroundImage: "url('/yapingzh/picture/" + newData[i].introducePicture + "')"},
-                    imgPath: '/yapingzh/picture/' + newData[i].introducePicture
+                    myStyle: {backgroundImage: "url('/yapingzh/picture/" + newData[i].picture + "')"},
+                    imgPath: '/yapingzh/picture/' + newData[i].picture
                 };
+                newData[i].count=0;
             }
             vm.commodityArray = vm.commodityArray.concat(newData);
             totalPage = res.totalPage;
