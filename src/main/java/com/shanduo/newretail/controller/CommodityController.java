@@ -54,7 +54,7 @@ public class CommodityController {
 	@RequestMapping(value = "selectcommoditytype",method={RequestMethod.POST,RequestMethod.GET})
 	@ResponseBody
 	//http://localhost:8081/shanduonewretail/jcommodity/selectcommoditytype?id=1&typeId=1
-	public ResultBean selectCommodityType(HttpServletRequest request, String id,String typeId,String token) {
+	public ResultBean selectCommodityType(HttpServletRequest request, String id,String typeId) {
 		if(StringUtils.isNull(typeId) ) {
 			Log.warn("typeId错误");
 			return new ErrorBean(ErrorConsts.CODE_10002,"参数为空");
@@ -66,11 +66,11 @@ public class CommodityController {
 			}
 		}
 		if("2".equals(typeId)){
-			if(StringUtils.isNull(token)) {
+			if(StringUtils.isNull(id)) {
 				Log.warn("token为空");
 				return new ErrorBean(ErrorConsts.CODE_10002,"token为空");
 			}
-			id = baseService.checkUserToken(token);
+			id = baseService.checkUserToken(id);
 			if(null==id){
 				Log.warn("token失效");
 				return new ErrorBean(ErrorConsts.CODE_10001,"token失效");
@@ -115,11 +115,11 @@ public class CommodityController {
 			}
 		}
 		if("2".equals(typeId)){
-			if(StringUtils.isNull(token)) {
+			if(StringUtils.isNull(id)) {
 				Log.warn("token为空");
 				return new ErrorBean(ErrorConsts.CODE_10002,"token为空");
 			}
-			id = baseService.checkUserToken(token);
+			id = baseService.checkUserToken(id);
 			if(null==id){
 				Log.warn("token失效");
 				return new ErrorBean(ErrorConsts.CODE_10001,"token失效");
