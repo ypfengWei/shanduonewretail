@@ -39,4 +39,6 @@ public interface RelationsMapper {
     int updateRelations(Relations relations);
     
     int deleteRelations(String commodityId,String id);
+    
+    Relations selectCommodity(String commodityId);
 }

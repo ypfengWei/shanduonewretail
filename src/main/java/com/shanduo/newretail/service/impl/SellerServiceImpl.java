@@ -115,8 +115,8 @@ public class SellerServiceImpl implements SellerService {
 		userSeller.setSellerType(userSellerMap.get("sellerType").toString());
 		userSeller.setLat(new BigDecimal(userSellerMap.get("lat").toString()));
 		userSeller.setLon(new BigDecimal(userSellerMap.get("lon").toString()));
-		userSeller.setStartDate(new Timestamp(Long.parseLong(userSellerMap.get("startDate").toString())));
-		userSeller.setEndDate(new Timestamp(Long.parseLong(userSellerMap.get("endDate").toString())));
+		userSeller.setStartDate(Timestamp.valueOf(userSellerMap.get("startDate").toString()));
+		userSeller.setEndDate(Timestamp.valueOf(userSellerMap.get("endDate").toString()));
 		return userSellerMapper.updateByPrimaryKeySelective(userSeller);
 	}
 	@Override
@@ -170,7 +170,7 @@ public class SellerServiceImpl implements SellerService {
 	public int selectMoney(BigDecimal money, String id) {
 		UserSeller userSeller = userSellerMapper.selectBusinessSign(id);
 		money = (userSeller.getMoney()).subtract(money);
-		if(BigDecimal.valueOf(0).compareTo(money)==1){
+		if(BigDecimal.valueOf(0).compareTo(money)==1){//0>money
 			return 0;
 		}
 		return 1;
