@@ -16,6 +16,7 @@
     <title>店铺信息</title>
     <script src="js/jquery-3.3.1.js"></script>
     <script src="js/utils.js"></script>
+    <script src="https://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
 </head>
 <body>
 <div id="vueData">
@@ -28,13 +29,14 @@
                 <span>店铺信息</span>
             </div>
             <div>
-                <span class="col_cheng">修改</span>
+                <span class="col_cheng" @click="saveStoreInfo">修改</span>
             </div>
         </div>
     </header>
     <div class="body">
         <div class="div_li">
-            <img src="img/rectangle_3.png">
+            <img :src="storeImg?storeImg:'img/rectangle_3.png'"
+                 @click="onLoadImg">
             <div class="dis_flex">
                 <span>闪多新零售</span>
                 <input type="text" v-model="storeInfo.notice">
@@ -62,25 +64,27 @@
         </div>
         <div class="div_li dis_flex">
             <span>店铺类型：</span>
-            <select v-model="storeTypeIndex" name="cars">
+            <select v-model="storeTypeIndex" name="cars" @change="seleStoreType">
                 <option value="-1">请选择</option>
-                <option v-for="(item,index) in storeType" :value="item.id">{{item.category_name}}</option>
+                <option v-for="(item,index) in storeType" :value="index">{{item.category_name}}</option>
             </select>
         </div>
         <div class="div_li dis_flex">
             <span>地址:</span>
-            <span class="col_hui" @click="chooseAddress">长沙县</span>
+            <span class="col_hui" @click="chooseAddress" v-if="storeInfo.address">{{storeInfo.address}}</span>
+            <span class="col_hui" @click="chooseAddress" v-else>请选择地址</span>
         </div>
     </div>
     <footer>
-        <div class="first_div">营业中</div>
-        <div>休息中</div>
+        <div class="first_div" v-if="storeInfo.businessSign=='0'" @click="switchBusinessSign('1')">营业中</div>
+        <div @click="switchBusinessSign('0')" v-else>休息中</div>
     </footer>
 </div>
 </body>
 <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 <script>
     let localStore = JSON.parse(localStorage.localStore);
+    let href = location.href.split('#')[0];
     let addrName = GetQueryString('name');
     let addr = GetQueryString('addr');
     let latng = GetQueryString('latng');
@@ -93,33 +97,94 @@
         data: {
             storeInfo: {},
             storeType: [],
-            storeTypeIndex: 0
+            storeTypeIndex: 0,
+            avatarUrl: null,
+            storeImg: ''
+        }, watch: {
+            storeInfo: {
+                handler(val, oldVal) {
+                    localStorage.localStoreInfo = JSON.stringify(val);
+                    this.storeImg = imagePath + val.sellerPicture;
+                },
+                deep: true
+            }, storeType: {
+                handler(val, oldVal) {
+                    localStorage.localStoreType = JSON.stringify(val);
+                },
+                deep: true
+            }, 'storeTypeIndex': function (res) {
+                localStorage.localStoreTypeIndex = res;
+            }, 'avatarUrl': function (res) {
+                wx.uploadImage({
+                    localId: res, // 需要上传的图片的本地ID，由chooseImage接口获得
+                    success: function (res) {
+                        vm.storeInfo.sellerPicture = res.serverId; // 返回图片的服务器端ID
+                    }
+                })
+            }
         }, methods: {
             goBack() {
-                history.back();
+                location.href = 'Administration.html';
             }, chooseAddress() {
                 //todo
                 location.href = 'https://3gimg.qq.com/lightmap/components/locationPicker2/index.html?type=0&backurl=http://lixinrong.vicp.io/shanduonewretail/shopinformation.html&key=Q74BZ-4AT34-QCUU5-XADLJ-XTGQZ-65FQM&referer=near-store';
+            }, seleStoreType(e) {
+                let index = e.target.value;
+                vm.storeTypeIndex = index;
+                vm.storeInfo.sellerType = vm.storeType[index].category_name;
+            }, onLoadImg() {
+                wx.chooseImage({
+                    count: 1,
+                    sizeType: ['compressed'],
+                    success: function (res) {
+                        vm.avatarUrl = res.localIds[0];
+                        let u = navigator.userAgent;//手机类型android或ios
+                        //if (u.indexOf('Android') > -1 || u.indexOf('Linux') > -1) {//安卓手机
+                        if (u.indexOf('iPhone') > -1) {
+                            vm.avatarUrl.push(res.localIds[0]);
+                            wx.getLocalImgData({
+                                localId: res.localIds[0], // 图片的localID
+                                success: function (res) {
+                                    vm.storeInfo.sellerPicture = res.localData;
+                                }
+                            });
+                        } else {
+                            vm.storeImg = res.localIds[0];
+                        }
+                    }
+                });
+            }, saveStoreInfo() {
+                $.ajax({
+                    url: '/shanduonewretail/jseller/updatesellerdetails',
+                    data: {
+                        token: localStore.token,
+                        userSeller: JSON.stringify(vm.storeInfo)
+                    }, success: function (res) {
+                        console.log(res);
+                    }
+                });
+            }, switchBusinessSign(businessSign) {
+                vm.storeInfo.businessSign = businessSign;
             }
         }
     });
     if (addrName) {
+        initData();
         if ('我的位置' === addrName) {
-            vm.activity.activityAddress = addr;
+            vm.storeInfo.address = addr;
         } else {
-            vm.activity.activityAddress = addrName;
+            vm.storeInfo.address = addrName;
         }
-        vm.activity.lon = latng.split(',')[1];
-        vm.activity.lat = latng.split(',')[0];
+        vm.storeInfo.lon = latng.split(',')[1];
+        vm.storeInfo.lat = latng.split(',')[0];
     }
 
     function getMyDate(str) {
-        var oDate = new Date(str),
+        let oDate = new Date(str),
             oHour = oDate.getHours(),
             oMin = oDate.getMinutes(),
-            oSen = oDate.getSeconds(),
-            oTime = getzf(oHour) + ':' + getzf(oMin) + ':' + getzf(oSen);//最后拼接时间
-        return oTime;
+            oSen = oDate.getSeconds();
+        return getzf(oHour) + ':' + getzf(oMin) + ':' + getzf(oSen);
     }
 
     //补0操作
@@ -130,32 +195,61 @@
         return num;
     }
 
-    $(function () {
-        $.ajax({
-            url: '/shanduonewretail/jseller/selectsellerdetails',
-            data: {
-                token: localStore.token,
-                typeId: 1
-            }, success: function (res) {
-                if (res.success) {
-                    vm.storeInfo = res.result;
-                }
-                vm.storeInfo.endDate = getMyDate(vm.storeInfo.endDate);
-                vm.storeInfo.startDate = getMyDate(vm.storeInfo.startDate);
-            }
-        });
-
-        $.getJSON('/shanduonewretail/jseller/selectselleralltype', function (res) {
-            if (res.success) {
-                vm.storeType = res.result;
-                $.each(vm.storeType, function (i, item) {
-                    if (item.category_name === vm.storeInfo.sellerType) {
-                        vm.storeIndex = i;
-                        return false;
+    function initData() {
+        if (localStorage.localStoreInfo) {
+            vm.storeInfo = JSON.parse(localStorage.localStoreInfo);
+        } else {
+            $.ajax({
+                url: '/shanduonewretail/jseller/selectsellerdetails',
+                data: {
+                    token: localStore.token,
+                    typeId: 1
+                }, success: function (res) {
+                    if (res.success) {
+                        vm.storeInfo = res.result;
                     }
-                });
+                    vm.storeInfo.endDate = getMyDate(vm.storeInfo.endDate);
+                    vm.storeInfo.startDate = getMyDate(vm.storeInfo.startDate);
+                }
+            });
+        }
+        if (localStorage.localStoreType) {
+            vm.storeType = JSON.parse(localStorage.localStoreType);
+        } else {
+            $.getJSON('/shanduonewretail/jseller/selectselleralltype', function (res) {
+                if (res.success) {
+                    vm.storeType = res.result;
+                    $.each(vm.storeType, function (i, item) {
+                        if (item.category_name === vm.storeInfo.sellerType) {
+                            vm.storeIndex = i;
+                            return false;
+                        }
+                    });
 
-            }
+                }
+            });
+        }
+        if (localStorage.localStoreTypeIndex) {
+            vm.storeTypeIndex = localStorage.localStoreTypeIndex;
+        }
+    }
+
+    $(function () {
+        initData();
+        init_wx_js_sdk(href, function (result) {
+            //初始化接口环境
+            wx.config({
+                appId: result.appid,
+                timestamp: result.timestamp,
+                nonceStr: result.noncestr,
+                signature: result.signature,
+                jsApiList: ['chooseImage', 'uploadImage', 'hideMenuItems']
+            });
+            wx.ready(function () {
+                wx.hideMenuItems({
+                    menuList: ['menuItem:copyUrl', 'menuItem:share:qq', 'menuItem:share:QZone', 'menuItem:openWithQQBrowser', 'menuItem:openWithSafari', 'menuItem:share:email', 'menuItem:readMode']
+                });
+            });
         });
     });
 </script>

@@ -56,7 +56,7 @@
                     },
                     success: function (res) {
                         if (res.success) {
-                        	localStorage.setItem('localStore',JSON.stringify(res.result));
+                        	localStorage.setItem('localStore',JSON.stringify(res));
                         	toast('登录成功!');
                             setTimeout(function () {
                                     location.href = 'Administration.html';
