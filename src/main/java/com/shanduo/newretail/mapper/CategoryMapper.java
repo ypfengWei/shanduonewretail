@@ -1,5 +1,8 @@
 package com.shanduo.newretail.mapper;
 
+import java.util.List;
+import java.util.Map;
+
 import com.shanduo.newretail.entity.Category;
 
 public interface CategoryMapper {
@@ -14,4 +17,6 @@ public interface CategoryMapper {
     int updateByPrimaryKeySelective(Category record);
 
     int updateByPrimaryKey(Category record);
+    
+    List<Map<String,Object>> selectSellerType();
 }

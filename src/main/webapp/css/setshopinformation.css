@@ -32,6 +32,11 @@ body{
     display: flex;
     flex-shrink:0;
 }
+.col_cheng{
+    color: #ff5b2b;
+    text-decoration: underline;
+    margin-right: 14px;
+}
 header{
     height: 53px;
 }
@@ -139,8 +144,9 @@ footer>div{
     text-align: center;
     line-height: 40px;
     font-size: 16px;
+    border: 1px solid #999;
 }
-footer>div:first-child{
+footer>div.first_div{
     background: linear-gradient(to right, #FF9254 , #FF5B2B);
     color: #fff;
     margin-bottom: 25px;

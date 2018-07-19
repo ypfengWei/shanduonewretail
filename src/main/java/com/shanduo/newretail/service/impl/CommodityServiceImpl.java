@@ -1,5 +1,6 @@
 package com.shanduo.newretail.service.impl;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -11,12 +12,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.shanduo.newretail.entity.Commodity;
 import com.shanduo.newretail.entity.Relations;
 import com.shanduo.newretail.entity.service.CommodityInfo;
 import com.shanduo.newretail.mapper.CommodityMapper;
 import com.shanduo.newretail.mapper.RelationsMapper;
 import com.shanduo.newretail.service.CommodityService;
 import com.shanduo.newretail.util.Page;
+import com.shanduo.newretail.util.UUIDGenerator;
 @Service
 public class CommodityServiceImpl implements CommodityService {
 	private static final Logger Log = LoggerFactory.getLogger(CommodityServiceImpl.class);
@@ -103,9 +106,28 @@ public class CommodityServiceImpl implements CommodityService {
 	}
 
 	@Override
-	public int insertCommodity(String name, String picture, String price, String stock, String categoryId) {
-		
-		return 0;
+	@Transactional(rollbackFor = Exception.class)
+	public int insertCommodity(String name, String picture, String price, String stock, String categoryId,String userId) {
+		String id= UUIDGenerator.getUUID();
+		Commodity commodity = new Commodity();
+		commodity.setId(id);
+		commodity.setName(name);
+		commodity.setPicture(picture);
+		commodity.setPrice(new BigDecimal(price));
+		int count = commodityMapper.insertSelective(commodity);
+		if(count<1){
+			throw new RuntimeException();
+		}
+		Relations relations = new Relations();
+		relations.setCommodityId(id);
+		relations.setCategoryId(Integer.valueOf(categoryId));
+		relations.setUserId(userId);
+		relations.setStock(Integer.valueOf(stock));
+		count = relationsMapper.insertSelective(relations);
+		if(count<1){
+			throw new RuntimeException();
+		}
+		return count;
 	}
 
 }

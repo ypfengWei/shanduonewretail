@@ -12,74 +12,100 @@
     <!--苹果手机：在web app应用下状态条（屏幕顶部条）的颜色,默认值为default（白色），可以定为black（黑色）和black-translucent（灰色半透明）。-->
     <meta name="apple-touch-fullscreen" content="yes"/>
     <!--苹果手机：如果把一个web app添加到了主屏幕中，那么从主屏幕中打开这个web app则全屏显示-->
-    <link rel="stylesheet" type="text/css" href="css/shopinformation.css">
-     <script type="text/javascript" src="js/jquery-3.3.1.js"></script>
+    <link rel="stylesheet" type="text/css" href="css/setshopinformation.css">
     <title>店铺信息</title>
+    <script src="js/jquery-3.3.1.js"></script>
 </head>
 <body>
-    <div id="vueData">
-        <header>
-            <div class="title_header dis_flex">
-                <div class="dis_flex">
-                    <img src="img/return_2.png">
-                </div>
-                <div>
-                    <span>店铺信息</span>
-                </div>
-                <div>
-                    <span class="col_cheng" @click="editStoreInfo">完成修改</span>
-                </div>
+<div id="vueData">
+    <header>
+        <div class="title_header dis_flex">
+            <div class="dis_flex" @click="goBack">
+                <img src="img/return_2.png">
             </div>
-        </header>
-        <div class="body">
-            <div class="div_li">
-                <img src="img/rectangle_3.png">
-                <div class="dis_flex">
-                    <span>闪多新零售</span>
-                    <span class="col_hui">公告：需要香烟请在备注栏备注，谢谢！</span>
-                </div>
+            <div>
+                <span>店铺信息</span>
             </div>
-            <div class="div_li dis_flex">
-                <span>店家姓名：</span>
-                <span class="col_hui">芙蓉兴盛</span>
-            </div>
-            <div class="div_li dis_flex">
-                <span>余额：</span>
-                <span class="col_hui">2.5(元)</span>
-            </div>
-            <div class="div_li dis_flex">
-                <span>营业开始时间：</span>
-                <span class="col_hui">早上6:00</span>
-            </div>
-            <div class="div_li dis_flex">
-                <span>营业结束时间：</span>
-                <span class="col_hui">晚上6:00</span>
-            </div>
-            <div class="div_li dis_flex">
-                <span>电话：</span>
-                <span class="col_hui">15873024296</span>
-            </div>
-            <div class="div_li dis_flex">
-                <span>店铺类型：</span>
-                <span class="col_hui">小卖部</span>
+            <div>
+                <span class="col_cheng">修改</span>
             </div>
         </div>
-        <footer>
-            <div>营业中</div>
-            <div>休息中</div>
-        </footer>
+    </header>
+    <div class="body">
+        <div class="div_li">
+            <img src="img/rectangle_3.png">
+            <div class="dis_flex">
+                <span>闪多新零售</span>
+                <input type="text" v-model="storeInfo.notice">
+            </div>
+        </div>
+        <div class="div_li dis_flex">
+            <span>店家姓名：</span>
+            <span class="col_hui">{{storeInfo.name}}</span>
+        </div>
+        <div class="div_li dis_flex">
+            <span>余额：</span>
+            <span class="col_hui">{{storeInfo.money}}</span>
+        </div>
+        <div class="div_li dis_flex">
+            <span>营业开始时间：</span>
+            <input type="time">
+        </div>
+        <div class="div_li dis_flex">
+            <span>营业结束时间：</span>
+            <input type="time">
+        </div>
+        <div class="div_li dis_flex">
+            <span>电话：</span>
+            <span class="col_hui">{{storeInfo.phone}}</span>
+        </div>
+        <div class="div_li dis_flex">
+            <span>店铺类型：</span>
+            <select name="cars">
+                <option value="-1">请选择</option>
+            </select>
+        </div>
+        <div class="div_li dis_flex">
+            <span>地址:</span>
+            <span class="col_hui">长沙县</span>
+        </div>
     </div>
+    <footer>
+        <div class="first_div">营业中</div>
+        <div>休息中</div>
+    </footer>
+</div>
 </body>
 <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 <script>
-let vm=new Vue({
-	el:'#vueData',
-	methods:{
-		editStoreView(){
-			location.href="setshopinformation.html";
-		}
-	}
-	
-});
+    let localStore = JSON.parse(localStorage.localStore);
+    let vm = new Vue({
+        el: '#vueData',
+        data: {
+            storeInfo: {},
+            storeType:[]
+        }, methods: {
+            goBack() {
+                history.back();
+            }
+        }
+    });
+    $(function () {
+        $.ajax({
+            url: '/shanduonewretail/jseller/selectsellerdetails',
+            data: {
+                token: localStore.token,
+                typeId: 1
+            }, success: function (res) {
+                if (res.success) {
+                    vm.storeInfo = res.result;
+                }
+            }
+        });
+
+        $.getJSON('/shanduonewretail/jseller/selectselleralltype',function (res) {
+            console.log(res)
+        });
+    });
 </script>
 </html>
