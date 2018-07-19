@@ -33,4 +33,9 @@ public interface CommodityService {
 	 * 商品上传
 	 */
 	int insertCommodity(String name,String picture,String price,String stock,String categoryId,String userId);
+	
+	/*
+	 * 查询商品所有类别
+	 */
+	List<Map<String,Object>> selectCommodityType(String id);
 }

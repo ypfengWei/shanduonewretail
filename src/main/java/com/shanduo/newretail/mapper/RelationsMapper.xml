@@ -126,6 +126,15 @@
 	group by category_id
 	order by category_id
   </select>
+  <select id="selectSellerCommodityTypes" 
+	resultType="map">
+	select
+	category.category_name,category.id
+	from relations join category on relations.category_id=category.id
+	where user_id = #{0} and  relations.is_deleted = 0 
+	group by category_id
+	order by category_id
+  </select>
   
   <select id="selectCommodityStock" parameterType="java.lang.String"
 	resultMap="BaseResultMap">
