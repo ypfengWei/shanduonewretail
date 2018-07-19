@@ -1,6 +1,31 @@
-footer>div:first-child>a:last-child{
-    width:100%;
+footer>div:first-child>a:last-child,footer>div:first-child>a:first-child{
+    width:50%;
+    background-color: #333333;
+    text-align: center;
+    font-size: 16px;
 }
 .swiper-container>div:last-child>div:first-child>div{
     top: 0;
+}
+footer>div:first-child>a:first-child{
+    padding-left: 0;
+    font-size: 16px;
+}
+.price>span{
+    font-size: 15px;
+}
+.item{
+    position: relative;
+}
+.right_top_pot{
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    flex-direction: column;
+    align-items: flex-end;
+    justify-content: center;
+    color: #999999;
+}
+.right_top_pot a{
+    color: #999999;
 }
