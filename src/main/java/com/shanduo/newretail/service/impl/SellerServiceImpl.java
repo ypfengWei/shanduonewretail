@@ -18,16 +18,19 @@ import org.springframework.transaction.annotation.Transactional;
 import com.shanduo.newretail.entity.UserSeller;
 import com.shanduo.newretail.entity.service.SellerDetails;
 import com.shanduo.newretail.entity.service.SellerInfo;
+import com.shanduo.newretail.mapper.CategoryMapper;
 import com.shanduo.newretail.mapper.UserSellerMapper;
 import com.shanduo.newretail.service.SellerService;
 import com.shanduo.newretail.util.DateUtils;
 import com.shanduo.newretail.util.LocationUtils;
+import com.shanduo.newretail.util.WxFileUtils;
 @Service
 public class SellerServiceImpl implements SellerService {
 	private static final Logger Log = LoggerFactory.getLogger(SellerServiceImpl.class);
 	@Autowired
 	private UserSellerMapper userSellerMapper;
-
+	@Autowired
+	private CategoryMapper categoryMapper;
 	
 	
 	/*
@@ -105,7 +108,8 @@ public class SellerServiceImpl implements SellerService {
 		UserSeller userSeller = new UserSeller();
 		userSeller.setId(userSellerMap.get("id").toString());
 		userSeller.setSellerName(userSellerMap.get("sellerName").toString());
-		userSeller.setSellerPicture(userSellerMap.get("sellerPicture").toString());
+		String sellerPicture = WxFileUtils.downloadImage(userSellerMap.get("accessToken").toString(), userSellerMap.get("sellerPicture").toString());
+		userSeller.setSellerPicture(sellerPicture);
 		userSeller.setNotice(userSellerMap.get("notice").toString());
 		userSeller.setPhone(userSellerMap.get("phone").toString());
 		userSeller.setSellerType(userSellerMap.get("sellerType").toString());
@@ -170,6 +174,13 @@ public class SellerServiceImpl implements SellerService {
 			return 0;
 		}
 		return 1;
+	}
+
+
+	@Override
+	public List<Map<String,Object>> selectSellerType() {
+		
+		return categoryMapper.selectSellerType();
 	}
 
 }

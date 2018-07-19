@@ -79,4 +79,10 @@
       is_deleted = #{isDeleted,jdbcType=BIT}
     where id = #{id,jdbcType=INTEGER}
   </update>
+  <select id="selectSellerType" resultType="map">
+    select 
+     id, category_name
+    from category
+    where id &lt; 99
+  </select>
 </mapper>

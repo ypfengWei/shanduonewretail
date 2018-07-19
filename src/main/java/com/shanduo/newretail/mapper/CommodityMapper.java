@@ -19,4 +19,6 @@ public interface CommodityMapper {
     int updateByPrimaryKey(Commodity record);
     
     List<CommodityInfo> selectCommodity(Integer categoryId,String id,Integer pageNum, Integer pageSize);
+    
+    List<CommodityInfo> selectCommoditys(Integer categoryId,String id,Integer pageNum, Integer pageSize);
 }

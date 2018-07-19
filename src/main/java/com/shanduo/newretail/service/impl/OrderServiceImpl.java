@@ -22,8 +22,8 @@ import com.shanduo.newretail.mapper.ToOrderMapper;
 import com.shanduo.newretail.service.CommodityService;
 import com.shanduo.newretail.service.OrderService;
 import com.shanduo.newretail.service.SellerService;
+import com.shanduo.newretail.util.OrderIdUtils;
 import com.shanduo.newretail.util.Page;
-import com.shanduo.newretail.util.UUIDGenerator;
 
 /**
  * 
@@ -52,12 +52,8 @@ public class OrderServiceImpl implements OrderService {
 	@Override
 	@Transactional(rollbackFor = Exception.class)
 	public String saveOrder(Map<String, Object> parameterMap) {
-		String orderId = UUIDGenerator.getUUID();
+		String orderId = OrderIdUtils.getId();
 		String sellerId = parameterMap.get("sellerId").toString();
-		//检查店铺是否休息或不在营业时间段内
-		if(!sellerService.selectBusinessSign(sellerId)) {
-			return "0";
-		}
 		BigDecimal totalPrice = new BigDecimal("0");
 		@SuppressWarnings("unchecked")
 		List<Map<String, Object>> parameterList = (List<Map<String, Object>>) parameterMap.get("list");
@@ -177,11 +173,11 @@ public class OrderServiceImpl implements OrderService {
 	}
 
 	@Override
-	public Map<String, Object> listSellerOrder(String sellerId, String state, Integer pageNum, Integer pageSize) {
+	public Map<String, Object> listSellerOrder(String sellerId, String state, String startDate, String endDate, Integer pageNum, Integer pageSize) {
 		int totalRecord = orderMapper.countSellerOrder(sellerId, state);
 		Page page = new Page(totalRecord, pageSize, pageNum);
 		pageNum = (page.getPageNum() - 1) * page.getPageSize();
-		List<OrderInfo> listOrderInfo = orderMapper.listSellerOrder(sellerId, state, pageNum, page.getPageSize());
+		List<OrderInfo> listOrderInfo = orderMapper.listSellerOrder(sellerId, state, startDate, endDate, pageNum, page.getPageSize());
 		for (OrderInfo order : listOrderInfo) {
 			List<ToOrderDetails> details = listOrderId(order.getId());
 			order.setDetails(details);

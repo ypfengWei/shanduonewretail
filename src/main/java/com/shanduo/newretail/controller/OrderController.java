@@ -1,6 +1,8 @@
 package com.shanduo.newretail.controller;
 
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,6 +26,7 @@ import com.shanduo.newretail.entity.common.ResultBean;
 import com.shanduo.newretail.entity.common.SuccessBean;
 import com.shanduo.newretail.service.BaseService;
 import com.shanduo.newretail.service.OrderService;
+import com.shanduo.newretail.service.SellerService;
 import com.shanduo.newretail.util.ClientCustomSSL;
 import com.shanduo.newretail.util.IpUtils;
 import com.shanduo.newretail.util.JsonStringUtils;
@@ -49,6 +52,8 @@ public class OrderController {
 	private BaseService baseService;
 	@Autowired
 	private OrderService orderService;
+	@Autowired
+	private SellerService sellerService;
 	
 	/**
 	 * 支付订单
@@ -74,6 +79,10 @@ public class OrderController {
 		}
 		if(parameter.isEmpty()) {
 			return new ErrorBean(ErrorConsts.CODE_10002, "参数错误");
+		}
+		//检查店铺是否休息或不在营业时间段内
+		if(!sellerService.selectBusinessSign(parameter.get("sellerId").toString())) {
+			return new ErrorBean(ErrorConsts.CODE_10002, "店铺休息");
 		}
 		String orderId = "";
 		try {
@@ -231,6 +240,8 @@ public class OrderController {
 	 * @param @param request
 	 * @param @param token
 	 * @param @param state
+	 * @param @param startDate
+	 * @param @param endDate
 	 * @param @param page
 	 * @param @param pageSize
 	 * @param @return
@@ -239,14 +250,41 @@ public class OrderController {
 	 */
 	@RequestMapping(value = "orderList",method={RequestMethod.POST,RequestMethod.GET})
 	@ResponseBody
-	public ResultBean orderList(HttpServletRequest request, String token, String state, String page, String pageSize) {
+	public ResultBean orderList(HttpServletRequest request, String token, String state, String startDate, 
+			String endDate, String page, String pageSize) {
 		String sellerId = baseService.checkUserToken(token);
 		if(sellerId == null) {
 			return new ErrorBean(ErrorConsts.CODE_10001, "请重新登录");
 		}
-		if(StringUtils.isNull(state) || !state.matches("^[2346]$")) {
+		if(StringUtils.isNull(state) || !state.matches("^[1-6]$")) {
 			log.warn("state is error waith state:{}", state);
-			return new ErrorBean(ErrorConsts.CODE_10002, "请重新登录");
+			return new ErrorBean(ErrorConsts.CODE_10002, "状态错误");
+		}
+		if(!StringUtils.isNull(startDate) && !startDate.matches("^\\d{4}-\\d{1,2}-\\d{1,2}$")) {
+			log.warn("startDate is error waith startDate:{}", startDate);
+			return new ErrorBean(ErrorConsts.CODE_10002, "开始时间错误");
+		}else {
+			long start = convertTimeToLong(startDate);
+			long time = System.currentTimeMillis();
+			if(start > time) {
+				return new ErrorBean(ErrorConsts.CODE_10003, "开始时间不能大于当前时间");
+			}
+		}
+		if(!StringUtils.isNull(endDate) && !endDate.matches("^\\d{4}-\\d{1,2}-\\d{1,2}$")) {
+			log.warn("endDate is error waith endDate:{}", endDate);
+			return new ErrorBean(ErrorConsts.CODE_10002, "结束时间错误");
+		}else {
+			endDate += " 23:59:59";
+		}
+		if(!StringUtils.isNull(endDate) && StringUtils.isNull(startDate)) {
+			return new ErrorBean(ErrorConsts.CODE_10002, "开始时间不能为空");
+		}
+		if(!StringUtils.isNull(startDate) && !StringUtils.isNull(endDate)) {
+			long start = convertTimeToLong(startDate);
+			long end = convertTimeToLong(endDate);
+			if(start > end) {
+				return new ErrorBean(ErrorConsts.CODE_10003,"输入时间开始时间不能晚于结束时间");
+			}
 		}
 		if(StringUtils.isNull(page) || !page.matches("^\\d*$")) {
 			log.warn("page is error waith page:{}", page);
@@ -260,13 +298,25 @@ public class OrderController {
 		Integer pageSizes = Integer.valueOf(pageSize);
 		Map<String, Object> resultMap = new HashMap<>(3);
 		try {
-			resultMap = orderService.listSellerOrder(sellerId, state, pages, pageSizes);
+			resultMap = orderService.listSellerOrder(sellerId, state, startDate, endDate, pages, pageSizes);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return new ErrorBean(ErrorConsts.CODE_10002, "查询错误");
 		}
 		return new SuccessBean(resultMap);
 	}
+	
+	private Long convertTimeToLong(String time) {  
+	    Date date = null;
+	    try {  
+	        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+	        date = sdf.parse(time);
+	        return date.getTime();
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        return 0L;
+	    }  
+	}  
 	
 	/**
 	 * 微信统一下单
