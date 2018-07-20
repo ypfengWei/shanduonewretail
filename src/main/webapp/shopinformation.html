@@ -65,7 +65,7 @@
         </div>
         <div class="div_li dis_flex">
             <span>店铺类型：</span>
-            <select v-model="storeTypeIndex" name="cars" @change="seleStoreType">
+            <select v-model="storeTypeIndex" name="cars" @change="selStoreType">
                 <option value="-1">请选择</option>
                 <option v-for="(item,index) in storeType" :value="index">{{item.category_name}}</option>
             </select>
@@ -132,10 +132,10 @@
             }, chooseAddress() {
                 //todo
                 location.href = 'https://3gimg.qq.com/lightmap/components/locationPicker2/index.html?type=0&backurl=http://lixinrong.vicp.io/shanduonewretail/shopinformation.html&key=Q74BZ-4AT34-QCUU5-XADLJ-XTGQZ-65FQM&referer=near-store';
-            }, seleStoreType(e) {
+            }, selStoreType(e) {
                 let index = e.target.value;
                 vm.storeTypeIndex = index;
-                vm.storeInfo.sellerType = vm.storeType[index].category_name;
+                vm.storeInfo.sellerType = vm.storeType[index].id;
             }, onLoadImg() {
                 wx.chooseImage({
                     count: 1,
@@ -164,7 +164,8 @@
                         token: localStore.token,
                         userSeller: JSON.stringify(vm.storeInfo)
                     }, success: function (res) {
-                        if(res.success){
+                        console.log(res);
+                        if (res.success) {
                             localStorage.removeItem('localStoreInfo');
                             localStorage.removeItem('localStoreTypeIndex');
                             localStorage.removeItem('localStoreType');
@@ -204,9 +205,8 @@
     function getMyDate(str) {
         let oDate = new Date(str),
             oHour = oDate.getHours(),
-            oMin = oDate.getMinutes(),
-            oSen = oDate.getSeconds();
-        return getzf(oHour) + ':' + getzf(oMin) + ':' + getzf(oSen);
+            oMin = oDate.getMinutes();
+        return getzf(oHour) + ':' + getzf(oMin);
     }
 
     //补0操作
@@ -216,6 +216,7 @@
         }
         return num;
     }
+
     function initData() {
         if (localStorage.localStoreInfo) {
             vm.storeInfo = JSON.parse(localStorage.localStoreInfo);
@@ -272,6 +273,22 @@
                 });
             });
         });
+
+        pushHistory();
+        window.addEventListener("popstate", function (e) {
+            localStorage.removeItem('localStoreInfo');
+            localStorage.removeItem('localStoreTypeIndex');
+            localStorage.removeItem('localStoreType');
+            location.href = 'Administration.html';
+        }, false);
+
     });
+
+    function pushHistory() {
+        window.history.pushState({
+            title: "title",
+            url: "#"
+        }, "title", "#");
+    }
 </script>
 </html>
