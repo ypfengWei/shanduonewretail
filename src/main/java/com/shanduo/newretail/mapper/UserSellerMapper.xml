@@ -7,7 +7,7 @@
     <result column="seller_picture" jdbcType="VARCHAR" property="sellerPicture" />
     <result column="notice" jdbcType="VARCHAR" property="notice" />
     <result column="phone" jdbcType="VARCHAR" property="phone" />
-    <result column="seller_type" jdbcType="CHAR" property="sellerType" />
+    <result column="seller_type" jdbcType="INTEGER" property="sellerType" />
     <result column="start_date" jdbcType="TIME" property="startDate" />
     <result column="end_date" jdbcType="TIME" property="endDate" />
     <result column="business_sign" jdbcType="CHAR" property="businessSign" />
@@ -30,7 +30,7 @@
     <result column="seller_picture" jdbcType="VARCHAR" property="sellerPicture" />
     <result column="notice" jdbcType="VARCHAR" property="notice" />
     <result column="phone" jdbcType="VARCHAR" property="phone" />
-    <result column="seller_type" jdbcType="CHAR" property="sellerType" />
+    <result column="seller_type" jdbcType="INTEGER" property="sellerType" />
     <result column="start_date" jdbcType="TIME" property="startDate" />
     <result column="end_date" jdbcType="TIME" property="endDate" />
     <result column="lat" jdbcType="DECIMAL" property="lat" />
@@ -69,7 +69,7 @@
       lon,address, gmt_create, gmt_modified
       )
     values (#{id,jdbcType=VARCHAR}, #{sellerName,jdbcType=VARCHAR}, #{sellerPicture,jdbcType=VARCHAR}, 
-      #{notice,jdbcType=VARCHAR}, #{phone,jdbcType=VARCHAR}, #{sellerType,jdbcType=CHAR}, 
+      #{notice,jdbcType=VARCHAR}, #{phone,jdbcType=VARCHAR}, #{sellerType,jdbcType=INTEGER}, 
       #{startDate,jdbcType=TIME}, #{endDate,jdbcType=TIME}, #{businessSign,jdbcType=CHAR}, 
       #{money,jdbcType=DECIMAL}, #{parentId,jdbcType=VARCHAR}, #{lat,jdbcType=DECIMAL}, 
       #{lon,jdbcType=DECIMAL},#{address,jdbcType=VARCHAR}, #{gmtCreate,jdbcType=TIMESTAMP}, #{gmtModified,jdbcType=TIMESTAMP}
@@ -144,7 +144,7 @@
         #{phone,jdbcType=VARCHAR},
       </if>
       <if test="sellerType != null">
-        #{sellerType,jdbcType=CHAR},
+        #{sellerType,jdbcType=INTEGER},
       </if>
       <if test="startDate != null">
         #{startDate,jdbcType=TIME},
@@ -194,7 +194,7 @@
         phone = #{phone,jdbcType=VARCHAR},
       </if>
       <if test="sellerType != null">
-        seller_type = #{sellerType,jdbcType=CHAR},
+        seller_type = #{sellerType,jdbcType=INTEGER},
       </if>
       <if test="startDate != null">
         start_date = #{startDate,jdbcType=TIME},
@@ -235,7 +235,7 @@
       seller_picture = #{sellerPicture,jdbcType=VARCHAR},
       notice = #{notice,jdbcType=VARCHAR},
       phone = #{phone,jdbcType=VARCHAR},
-      seller_type = #{sellerType,jdbcType=CHAR},
+      seller_type = #{sellerType,jdbcType=INTEGER},
       start_date = #{startDate,jdbcType=TIME},
       end_date = #{endDate,jdbcType=TIME},
       business_sign = #{businessSign,jdbcType=CHAR},
