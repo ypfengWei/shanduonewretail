@@ -144,9 +144,19 @@ footer>div{
     text-align: center;
     line-height: 40px;
     font-size: 16px;
+    border: 1px solid #999999;
 }
-footer>div:first-child{
+footer>div.first_div{
     background: linear-gradient(to right, #FF9254 , #FF5B2B);
     color: #fff;
+    border: 0;
     margin-bottom: 25px;
+}
+.pic_address{
+    align-items: center;
+}
+.pic_address>img{
+    height: 15px;
+    margin-left: 5px;
+
 }
