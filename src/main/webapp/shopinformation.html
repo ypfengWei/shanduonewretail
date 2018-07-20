@@ -65,7 +65,7 @@
         </div>
         <div class="div_li dis_flex">
             <span>店铺类型：</span>
-            <select v-model="storeTypeIndex" name="cars" @change="selStoreType">
+            <select v-model="storeTypeIndex" name="cars" @change="seleStoreType">
                 <option value="-1">请选择</option>
                 <option v-for="(item,index) in storeType" :value="index">{{item.category_name}}</option>
             </select>
@@ -132,7 +132,7 @@
             }, chooseAddress() {
                 //todo
                 location.href = 'https://3gimg.qq.com/lightmap/components/locationPicker2/index.html?type=0&backurl=http://lixinrong.vicp.io/shanduonewretail/shopinformation.html&key=Q74BZ-4AT34-QCUU5-XADLJ-XTGQZ-65FQM&referer=near-store';
-            }, selStoreType(e) {
+            }, seleStoreType(e) {
                 let index = e.target.value;
                 vm.storeTypeIndex = index;
                 vm.storeInfo.sellerType = vm.storeType[index].id;
@@ -164,11 +164,13 @@
                         token: localStore.token,
                         userSeller: JSON.stringify(vm.storeInfo)
                     }, success: function (res) {
-                        console.log(res);
                         if (res.success) {
                             localStorage.removeItem('localStoreInfo');
                             localStorage.removeItem('localStoreTypeIndex');
                             localStorage.removeItem('localStoreType');
+                            location.href = 'Administration.html';
+                        } else {
+                            toast('修改未完成');
                         }
                     }
                 });
@@ -220,6 +222,8 @@
     function initData() {
         if (localStorage.localStoreInfo) {
             vm.storeInfo = JSON.parse(localStorage.localStoreInfo);
+            vm.storeType = JSON.parse(localStorage.localStoreType);
+            vm.storeTypeIndex = localStorage.localStoreTypeIndex;
         } else {
             $.ajax({
                 url: '/shanduonewretail/jseller/selectsellerdetails',
@@ -227,32 +231,28 @@
                     token: localStore.token,
                     typeId: 1
                 }, success: function (res) {
+                    console.log(res)
                     if (res.success) {
                         vm.storeInfo = res.result;
                     }
                     vm.storeInfo.endDate = getMyDate(vm.storeInfo.endDate);
                     vm.storeInfo.startDate = getMyDate(vm.storeInfo.startDate);
-                }
-            });
-        }
-        if (localStorage.localStoreType) {
-            vm.storeType = JSON.parse(localStorage.localStoreType);
-        } else {
-            $.getJSON('/shanduonewretail/jseller/selectselleralltype', function (res) {
-                if (res.success) {
-                    vm.storeType = res.result;
-                    $.each(vm.storeType, function (i, item) {
-                        if (item.category_name === vm.storeInfo.sellerType) {
-                            vm.storeIndex = i;
-                            return false;
+                    $.getJSON('/shanduonewretail/jseller/selectselleralltype', function (res) {
+                        console.log(res)
+                        if (res.success) {
+                            vm.storeType = res.result;
+                            $.each(vm.storeType, function (i, item) {
+                                if (item.id == vm.storeInfo.sellerType) {
+                                    vm.storeTypeIndex = i;
+                                    return false;
+                                }
+                            });
+
                         }
                     });
 
                 }
             });
-        }
-        if (localStorage.localStoreTypeIndex) {
-            vm.storeTypeIndex = localStorage.localStoreTypeIndex;
         }
     }
 
@@ -281,7 +281,6 @@
             localStorage.removeItem('localStoreType');
             location.href = 'Administration.html';
         }, false);
-
     });
 
     function pushHistory() {

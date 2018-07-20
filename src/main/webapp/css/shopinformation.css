@@ -149,5 +149,14 @@ footer>div{
 footer>div.first_div{
     background: linear-gradient(to right, #FF9254 , #FF5B2B);
     color: #fff;
+    border: 0;
     margin-bottom: 25px;
+}
+.pic_address{
+    align-items: center;
+}
+.pic_address>img{
+    height: 15px;
+    margin-left: 5px;
+
 }

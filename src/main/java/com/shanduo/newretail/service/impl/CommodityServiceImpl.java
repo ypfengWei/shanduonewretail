@@ -87,7 +87,8 @@ public class CommodityServiceImpl implements CommodityService {
 		int totalRecord = 0;
 		if("2".equals(typeId)){
 			totalRecord = relationsMapper.selectCommodityNums(id, categoryId);
-		}else{
+		}
+		if("1".equals(typeId)){
 			totalRecord = relationsMapper.selectCommodityNum(id, categoryId);
 		}
 		Map<String, Object> resultMap = new HashMap<String, Object>(3);
