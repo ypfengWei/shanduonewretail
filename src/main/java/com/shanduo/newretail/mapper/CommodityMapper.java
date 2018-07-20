@@ -21,4 +21,8 @@ public interface CommodityMapper {
     List<CommodityInfo> selectCommodity(Integer categoryId,String id,Integer pageNum, Integer pageSize);
     
     List<CommodityInfo> selectCommoditys(Integer categoryId,String id,Integer pageNum, Integer pageSize);
+    
+    int deleteCommodity(String commodityId);
+    
+    CommodityInfo selectOneCommodity(String id,String commodityId);
 }

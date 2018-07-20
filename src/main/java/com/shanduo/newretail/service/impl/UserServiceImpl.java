@@ -137,4 +137,10 @@ public class UserServiceImpl implements UserService {
 		return userMapper.updatePassswordByPhone(phone, password);
 	}
 
+	@Override
+	public String selectAdministratorsId() {
+		
+		return userMapper.selectAdministratorsId();
+	}
+
 }

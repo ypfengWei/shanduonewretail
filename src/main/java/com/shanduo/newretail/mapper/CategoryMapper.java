@@ -19,4 +19,6 @@ public interface CategoryMapper {
     int updateByPrimaryKey(Category record);
     
     List<Map<String,Object>> selectSellerType();
+    
+    List<Map<String,Object>> selectCommodityType(Integer start,Integer end);
 }

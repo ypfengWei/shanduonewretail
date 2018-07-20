@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.shanduo.newretail.entity.Commodity;
+import com.shanduo.newretail.entity.service.CommodityInfo;
 
 
 public interface CommodityService {
@@ -33,4 +34,21 @@ public interface CommodityService {
 	 * 商品上传
 	 */
 	int insertCommodity(String name,String picture,String price,String stock,String categoryId,String userId);
+	
+	/*
+	 * 商品修改
+	 */
+	int updateCommodity(String name,String picture,String price,String stock,String categoryId,String userId,
+			String commodityId);
+	int insertWarehouseCommodity(List<String> commodityIdList,String userId);
+	/*
+	 * 商品删除
+	 */
+	int deleteCommodity(String id,String commodityId);
+	/*
+	 * 查询商品所有类别
+	 */
+	List<Map<String,Object>> selectCommodityType(String id);
+	
+	CommodityInfo selectOneCommodity(String id,String commodityId);
 }

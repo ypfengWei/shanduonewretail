@@ -14,9 +14,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.shanduo.newretail.entity.Commodity;
 import com.shanduo.newretail.entity.Relations;
+import com.shanduo.newretail.entity.UserSeller;
 import com.shanduo.newretail.entity.service.CommodityInfo;
+import com.shanduo.newretail.mapper.CategoryMapper;
 import com.shanduo.newretail.mapper.CommodityMapper;
 import com.shanduo.newretail.mapper.RelationsMapper;
+import com.shanduo.newretail.mapper.UserSellerMapper;
 import com.shanduo.newretail.service.CommodityService;
 import com.shanduo.newretail.util.Page;
 import com.shanduo.newretail.util.UUIDGenerator;
@@ -27,11 +30,18 @@ public class CommodityServiceImpl implements CommodityService {
 	private RelationsMapper relationsMapper;
 	@Autowired
 	private CommodityMapper commodityMapper;
+	@Autowired
+	private UserSellerMapper userSellerMapper;
+	@Autowired
+	private CategoryMapper categoryMapper;
 
 	@Override
 	public List<Map<String,Object>> selectSellerCommodityType(String id,String typeId) {
 		if("1".equals(typeId)){
 			return relationsMapper.selectSellerCommodityType(id);
+		}
+		if("2".equals(typeId)){
+			return relationsMapper.selectSellerCommodityTypes(id);
 		}
 		return null;
 		
@@ -75,20 +85,19 @@ public class CommodityServiceImpl implements CommodityService {
 	public Map<String, Object> selectCommodity(Integer categoryId, String id,Integer pageNum, Integer pageSize,String typeId) {
 		List<CommodityInfo> commodityInfo = new ArrayList<CommodityInfo>();
 		int totalRecord = 0;
-		if("1".equals(typeId)){
-			totalRecord = relationsMapper.selectCommodityNum(id, categoryId);
-		}else{
+		if("2".equals(typeId)){
 			totalRecord = relationsMapper.selectCommodityNums(id, categoryId);
+		}else{
+			totalRecord = relationsMapper.selectCommodityNum(id, categoryId);
 		}
-		
 		Map<String, Object> resultMap = new HashMap<String, Object>(3);
 		if(0==totalRecord){
 			return resultMap;
 		}
 		Page page = new Page(totalRecord, pageSize, pageNum);
 		pageNum = (page.getPageNum() - 1) * page.getPageSize();
-		if("1".equals(typeId)){
-			commodityInfo = commodityMapper.selectCommodity(categoryId, id,pageNum, page.getPageSize());
+		if("2".equals(typeId)){
+			commodityInfo = commodityMapper.selectCommoditys(categoryId, id,pageNum, page.getPageSize());
 		}else{
 			commodityInfo = commodityMapper.selectCommodity(categoryId, id,pageNum, page.getPageSize());
 		}
@@ -128,6 +137,84 @@ public class CommodityServiceImpl implements CommodityService {
 			throw new RuntimeException();
 		}
 		return count;
+	}
+
+	@Override
+	public List<Map<String, Object>> selectCommodityType(String id) {
+		UserSeller userSeller =userSellerMapper.selectByPrimaryKey(id);
+		List<Map<String, Object>> map = new ArrayList<Map<String, Object>>();
+		if("0".equals(userSeller.getSellerType())){
+			map=categoryMapper.selectCommodityType(99, 999);
+		}
+		if("1".equals(userSeller.getSellerType())){
+			map=categoryMapper.selectCommodityType(999, 9999);
+		}
+		if("2".equals(userSeller.getSellerType())){
+			map=categoryMapper.selectCommodityType(9999, 99999);
+		}
+		return map;
+	}
+
+	@Override
+	@Transactional(rollbackFor = Exception.class)
+	public int updateCommodity(String name, String picture, String price, String stock, String categoryId,
+			String userId,String commodityId) {
+		Commodity commodity = new Commodity();
+		commodity.setId(commodityId);
+		commodity.setName(name);
+		commodity.setPicture(picture);
+		commodity.setPrice(new BigDecimal(price));
+		int count = commodityMapper.updateByPrimaryKeySelective(commodity);
+		Relations relations = new Relations();
+		relations.setCommodityId(commodityId);
+		relations.setCategoryId(Integer.valueOf(categoryId));
+		relations.setUserId(userId);
+		relations.setStock(Integer.valueOf(stock));
+		count = relationsMapper.updateRelations(relations);
+		return count;
+	}
+
+	@Override
+	@Transactional(rollbackFor = Exception.class)
+	public int deleteCommodity(String id, String commodityId) {
+		int count = commodityMapper.deleteCommodity(commodityId);
+		if(count<1){
+			throw new RuntimeException();
+		}
+		count = relationsMapper.deleteRelations(commodityId, id);
+		if(count<1){
+			throw new RuntimeException();
+		}
+		return count;
+	}
+
+	@Override
+	public int insertWarehouseCommodity(List<String> commodityIdList,String userId) {
+		int count =0;
+		for(int i=0;i<commodityIdList.size();i++){
+			String commodityId = commodityIdList.get(i);
+			Commodity commodity =  commodityMapper.selectByPrimaryKey(commodityId);
+			String id = UUIDGenerator.getUUID();
+			commodity.setId(id);
+			count = commodityMapper.insertSelective(commodity);
+			if(count<1){
+				throw new RuntimeException();
+			}
+			Relations relations = relationsMapper.selectCommodity(commodityId);
+			relations.setCommodityId(id);
+			relations.setUserId(userId);
+			count = relationsMapper.insertSelective(relations);
+			if(count<1){
+				throw new RuntimeException();
+			}
+		}
+		return count;
+	}
+
+	@Override
+	public CommodityInfo selectOneCommodity(String id,String commodityId) {
+		
+		return commodityMapper.selectOneCommodity(id,commodityId);
 	}
 
 }

@@ -126,13 +126,22 @@
 	group by category_id
 	order by category_id
   </select>
+  <select id="selectSellerCommodityTypes" 
+	resultType="map">
+	select
+	category.category_name,category.id
+	from relations join category on relations.category_id=category.id
+	where user_id = #{0} and  relations.is_deleted = 0 
+	group by category_id
+	order by category_id
+  </select>
   
   <select id="selectCommodityStock" parameterType="java.lang.String"
 	resultMap="BaseResultMap">
 	select
 	<include refid="Base_Column_List" />
 	from relations
-	where user_id = #{0} and commodity_id = #{1}
+	where user_id = #{0} and commodity_id = #{1} and is_deleted = 0 
   </select>
   
   <update id="updateCommodityStock" parameterType="com.shanduo.newretail.entity.Relations">
@@ -142,7 +151,7 @@
         sales_volume = #{salesVolume,jdbcType=INTEGER}
     </set>
     where commodity_id = #{commodityId,jdbcType=VARCHAR}
-      and user_id = #{userId,jdbcType=VARCHAR}
+      and user_id = #{userId,jdbcType=VARCHAR} and is_deleted = 0 
   </update>
   <update id="updateCommodityVisible" >
     update relations
@@ -150,7 +159,7 @@
        visible = #{2}
     </set>
     where commodity_id = #{0}
-      and user_id = #{1}
+      and user_id = #{1} and is_deleted = 0 
   </update>
   
   <select id="selectCommodityNum"  resultType="java.lang.Integer">
@@ -166,5 +175,26 @@
     from relations
     where user_id = #{0}
       and category_id = #{1}  and is_deleted=0
+  </select>
+  <update id="updateRelations" parameterType="com.shanduo.newretail.entity.Relations">
+    update relations
+    set category_id = #{categoryId,jdbcType=INTEGER},
+      stock = #{stock,jdbcType=INTEGER}
+    where commodity_id = #{commodityId,jdbcType=VARCHAR}
+      and user_id = #{userId,jdbcType=VARCHAR} and is_deleted = 0 
+  </update>
+  <update id="deleteRelations" parameterType="java.lang.String">
+    update relations
+    set is_deleted = 1
+    where commodity_id = #{0}
+      and user_id = #{1}
+  </update>
+  
+  <select id="selectCommodity" parameterType="java.lang.String"
+	resultMap="BaseResultMap">
+	select
+	<include refid="Base_Column_List" />
+	from relations
+	where commodity_id = #{1} and is_deleted = 0 
   </select>
 </mapper>

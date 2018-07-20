@@ -12,15 +12,15 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.shanduo.newretail.consts.DefaultConsts;
 import com.shanduo.newretail.consts.ErrorConsts;
-import com.shanduo.newretail.entity.common.ErrorBean;
-import com.shanduo.newretail.entity.common.ResultBean;
-import com.shanduo.newretail.entity.common.SuccessBean;
 import com.shanduo.newretail.entity.service.TokenInfo;
 import com.shanduo.newretail.service.BaseService;
 import com.shanduo.newretail.service.CodeService;
 import com.shanduo.newretail.service.UserService;
 import com.shanduo.newretail.util.PatternUtils;
+import com.shanduo.newretail.util.ResultUtils;
 import com.shanduo.newretail.util.StringUtils;
+
+import com.alibaba.fastjson.JSONObject;
 
 /**
  * 用户操作接口层
@@ -48,54 +48,57 @@ public class UserController {
 	 * @Title: registerUser
 	 * @Description: TODO
 	 * @param @param request
+	 * @param @param typeId 注册类型:2.区域管理;3.店铺;4.业务员;
 	 * @param @param phone 手机号
 	 * @param @param code 验证码
 	 * @param @param password 密码
 	 * @param @param parentId 推荐人ID
+	 * @param @param openId 
+	 * @param @param name 昵称
 	 * @param @return
-	 * @return ResultBean
+	 * @return JSONObject
 	 * @throws
 	 */
 	@RequestMapping(value = "registeruser",method={RequestMethod.POST,RequestMethod.GET})
 	@ResponseBody
-	public ResultBean registerUser(HttpServletRequest request, String typeId, String phone, String code, String password,
+	public JSONObject registerUser(HttpServletRequest request, String typeId, String phone, String code, String password,
 			String parentId, String openId, String name) {
 		if(StringUtils.isNull(typeId) || !typeId.matches("^[234]$")) {
 			log.warn("typeId is error waith typeId:{}", typeId);
-			return new ErrorBean(ErrorConsts.CODE_10002, "注册类型错误");
+			return ResultUtils.error(ErrorConsts.CODE_10002, "注册类型错误");
 		}
 		if(StringUtils.isNull(phone) || PatternUtils.patternPhone(phone)) {
 			log.warn("phone is error waith phone:{}", phone);
-			return new ErrorBean(ErrorConsts.CODE_10002, "手机号输入错误");
+			return ResultUtils.error(ErrorConsts.CODE_10002, "手机号输入错误");
 		}
 		if(StringUtils.isNull(code) || PatternUtils.patternCode(code)) {
 			log.warn("code is error waith code:{}", code);
-			return new ErrorBean(ErrorConsts.CODE_10002, "验证码输入错误");
+			return ResultUtils.error(ErrorConsts.CODE_10002, "验证码输入错误");
 		}
 		if(StringUtils.isNull(password) || PatternUtils.patternPassword(password)) {
 			log.warn("password is error waith password:{}", password);
-			return new ErrorBean(ErrorConsts.CODE_10002, "密码输入错误");
+			return ResultUtils.error(ErrorConsts.CODE_10002, "密码输入错误");
 		}
 		if(codeService.checkCode(phone, code, DefaultConsts.CODE_REGISTER)) {
-			return new ErrorBean(ErrorConsts.CODE_10003, "验证码错误或超时");
+			return ResultUtils.error(ErrorConsts.CODE_10003, "验证码错误或超时");
 		}
 		if(StringUtils.isNull(name)) {
-			return new ErrorBean(ErrorConsts.CODE_10002, "昵称不能为空");
+			return ResultUtils.error(ErrorConsts.CODE_10002, "昵称不能为空");
 		}
 //		if(StringUtils.isNull(openId)) {
 //			log.warn("openId is null waith openId:{}", openId);
-//			return new ErrorBean(ErrorConsts.CODE_10002, "openId为空");
+//			return ResultUtils.error(ErrorConsts.CODE_10002, "openId为空");
 //		}
 		try {
 			userService.saveUser(openId, phone, password, parentId, typeId, name);
 		} catch (Exception e) {
-			return new ErrorBean(ErrorConsts.CODE_10003, "注册失败");
+			return ResultUtils.error(ErrorConsts.CODE_10003, "注册失败");
 		}
 		TokenInfo token = userService.loginUser(phone, password);
 		if(token == null) {
-			return new SuccessBean("注册成功");
+			return ResultUtils.success("注册成功");
 		}
-		return new SuccessBean(token);
+		return ResultUtils.success(token);
 	}
 	
 	/**
@@ -106,25 +109,25 @@ public class UserController {
 	 * @param @param phone 手机号
 	 * @param @param password 密码
 	 * @param @return
-	 * @return ResultBean
+	 * @return JSONObject
 	 * @throws
 	 */
 	@RequestMapping(value = "loginuser",method={RequestMethod.POST,RequestMethod.GET})
 	@ResponseBody
-	public ResultBean loginUser(HttpServletRequest request, String phone, String password) {
+	public JSONObject loginUser(HttpServletRequest request, String phone, String password) {
 		if(StringUtils.isNull(phone) || PatternUtils.patternPhone(phone)) {
 			log.warn("phone is error waith phone:{}", phone);
-			return new ErrorBean(ErrorConsts.CODE_10002, "手机号输入错误");
+			return ResultUtils.error(ErrorConsts.CODE_10002, "手机号输入错误");
 		}
 		if(StringUtils.isNull(password) || PatternUtils.patternPassword(password)) {
 			log.warn("password is error waith password:{}", password);
-			return new ErrorBean(ErrorConsts.CODE_10002, "密码输入错误");
+			return ResultUtils.error(ErrorConsts.CODE_10002, "密码输入错误");
 		}
 		TokenInfo token = userService.loginUser(phone, password);
 		if(token == null) {
-			return new ErrorBean(ErrorConsts.CODE_10003, "账号或密码错误");
+			return ResultUtils.error(ErrorConsts.CODE_10003, "账号或密码错误");
 		}
-		return new SuccessBean(token);
+		return ResultUtils.success(token);
 	}
 	
 	/**
@@ -133,36 +136,36 @@ public class UserController {
 	 * @Description: TODO
 	 * @param @param request
 	 * @param @param token
-	 * @param @param phone
-	 * @param @param code
+	 * @param @param phone 手机号
+	 * @param @param code 验证码
 	 * @param @return
-	 * @return ResultBean
+	 * @return JSONObject
 	 * @throws
 	 */
 	@RequestMapping(value = "updatephone",method={RequestMethod.POST,RequestMethod.GET})
 	@ResponseBody
-	public ResultBean updatePhone(HttpServletRequest request, String token, String phone, String code) {
+	public JSONObject updatePhone(HttpServletRequest request, String token, String phone, String code) {
 		String userId = baseService.checkUserToken(token);
 		if(userId == null) {
-			return new ErrorBean(ErrorConsts.CODE_10001, "请重新登录");
+			return ResultUtils.error(ErrorConsts.CODE_10001, "请重新登录");
 		}
 		if(StringUtils.isNull(phone) || PatternUtils.patternPhone(phone)) {
 			log.warn("phone is error waith phone:{}", phone);
-			return new ErrorBean(ErrorConsts.CODE_10002, "手机号输入错误");
+			return ResultUtils.error(ErrorConsts.CODE_10002, "手机号输入错误");
 		}
 		if(StringUtils.isNull(code) || PatternUtils.patternCode(code)) {
 			log.warn("code is error waith code:{}", code);
-			return new ErrorBean(ErrorConsts.CODE_10002, "验证码输入错误");
+			return ResultUtils.error(ErrorConsts.CODE_10002, "验证码输入错误");
 		}
 		if(codeService.checkCode(phone, code, DefaultConsts.CODE_PHONE)) {
-			return new ErrorBean(ErrorConsts.CODE_10003, "验证码错误或超时");
+			return ResultUtils.error(ErrorConsts.CODE_10003, "验证码错误或超时");
 		}
 		int i = userService.updateUser(userId, phone, DefaultConsts.NUMBER_1);
 		if(i < 1) {
 			log.warn("updatephone is error waith userId:{} and phone:{}", userId, phone);
-			return new ErrorBean(ErrorConsts.CODE_10004, "修改失败");
+			return ResultUtils.error(ErrorConsts.CODE_10004, "修改失败");
 		}
-		return new SuccessBean("修改成功");
+		return ResultUtils.success("修改成功");
 	}
 	
 	/**
@@ -172,62 +175,62 @@ public class UserController {
 	 * @param @param request
 	 * @param @param token
 	 * @param @param typeId 类型:1.验证码修改;2.老密码修改;
-	 * @param @param phone
-	 * @param @param code
-	 * @param @param password
-	 * @param @param newPassword
+	 * @param @param phone 手机号
+	 * @param @param code 验证码
+	 * @param @param password 旧密码
+	 * @param @param newPassword 新密码
 	 * @param @return
-	 * @return ResultBean
+	 * @return JSONObject
 	 * @throws
 	 */
 	@RequestMapping(value = "updatepassword",method={RequestMethod.POST,RequestMethod.GET})
 	@ResponseBody
-	public ResultBean updatePassword(HttpServletRequest request,String token,String typeId, String phone,
+	public JSONObject updatePassword(HttpServletRequest request,String token,String typeId, String phone,
 			String code, String password, String newPassword) {
 		if(StringUtils.isNull(typeId) || !typeId.matches("^[12]$")) {
 			log.warn("typeId is error waith typeId:{}", typeId);
-			return new ErrorBean(ErrorConsts.CODE_10002, "类型错误");
+			return ResultUtils.error(ErrorConsts.CODE_10002, "类型错误");
 		}
 		if(StringUtils.isNull(newPassword) || PatternUtils.patternPassword(newPassword)) {
 			log.warn("newpassword is error waith newpassword:{}", newPassword);
-			return new ErrorBean(ErrorConsts.CODE_10002, "新密码输入错误");
+			return ResultUtils.error(ErrorConsts.CODE_10002, "新密码输入错误");
 		}
 		if(typeId.equals(DefaultConsts.NUMBER_1)) {
 			if(StringUtils.isNull(phone) || PatternUtils.patternPhone(phone)) {
 				log.warn("phone is error waith phone:{}", phone);
-				return new ErrorBean(ErrorConsts.CODE_10002, "手机号输入错误");
+				return ResultUtils.error(ErrorConsts.CODE_10002, "手机号输入错误");
 			}
 			if(StringUtils.isNull(code) || PatternUtils.patternCode(code)) {
 				log.warn("code is error waith code:{}", code);
-				return new ErrorBean(ErrorConsts.CODE_10002, "验证码输入错误");
+				return ResultUtils.error(ErrorConsts.CODE_10002, "验证码输入错误");
 			}
 			if(codeService.checkCode(phone, code, DefaultConsts.CODE_PASSWORD)) {
-				return new ErrorBean(ErrorConsts.CODE_10003, "验证码错误或超时");
+				return ResultUtils.error(ErrorConsts.CODE_10003, "验证码错误或超时");
 			}
 			int i = userService.updatePassswordByPhone(phone, newPassword);
 			if(i < 1) {
 				log.warn("updatephone is error waith phone:{} and newpassword:{}", phone, newPassword);
-				return new ErrorBean(ErrorConsts.CODE_10004, "修改失败");
+				return ResultUtils.error(ErrorConsts.CODE_10004, "修改失败");
 			}
 		}else {
 			String userId = baseService.checkUserToken(token);
 			if(userId == null) {
-				return new ErrorBean(ErrorConsts.CODE_10001, "请重新登录");
+				return ResultUtils.error(ErrorConsts.CODE_10001, "请重新登录");
 			}
 			if(StringUtils.isNull(password) || PatternUtils.patternPassword(password)) {
 				log.warn("password is error waith password:{}", password);
-				return new ErrorBean(ErrorConsts.CODE_10002, "密码输入错误");
+				return ResultUtils.error(ErrorConsts.CODE_10002, "密码输入错误");
 			}
 			if(userService.checkUserPassword(userId, password)) {
 				log.warn("password is error waith password:{}", password);
-				return new ErrorBean(ErrorConsts.CODE_10003, "旧密码输入错误");
+				return ResultUtils.error(ErrorConsts.CODE_10003, "旧密码输入错误");
 			}
 			int i = userService.updateUser(userId, newPassword, DefaultConsts.NUMBER_2);
 			if(i < 1) {
 				log.warn("updatephone is error waith userId:{} and phone:{}", userId, phone);
-				return new ErrorBean(ErrorConsts.CODE_10004, "修改失败");
+				return ResultUtils.error(ErrorConsts.CODE_10004, "修改失败");
 			}
 		}
-		return new SuccessBean("修改成功");
+		return ResultUtils.success("修改成功");
 	}
 }

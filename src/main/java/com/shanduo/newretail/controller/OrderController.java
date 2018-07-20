@@ -17,19 +17,18 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.alibaba.fastjson.JSONObject;
 import com.shanduo.newretail.consts.ErrorConsts;
 import com.shanduo.newretail.consts.WxPayConsts;
 import com.shanduo.newretail.entity.ToOrder;
 import com.shanduo.newretail.entity.ToOrderDetails;
-import com.shanduo.newretail.entity.common.ErrorBean;
-import com.shanduo.newretail.entity.common.ResultBean;
-import com.shanduo.newretail.entity.common.SuccessBean;
 import com.shanduo.newretail.service.BaseService;
 import com.shanduo.newretail.service.OrderService;
 import com.shanduo.newretail.service.SellerService;
 import com.shanduo.newretail.util.ClientCustomSSL;
 import com.shanduo.newretail.util.IpUtils;
 import com.shanduo.newretail.util.JsonStringUtils;
+import com.shanduo.newretail.util.ResultUtils;
 import com.shanduo.newretail.util.StringUtils;
 import com.shanduo.newretail.util.UUIDGenerator;
 import com.shanduo.newretail.util.WxPayUtils;
@@ -62,33 +61,33 @@ public class OrderController {
 	 * @param @param request
 	 * @param @param data
 	 * @param @return
-	 * @return ResultBean
+	 * @return JSONObject
 	 * @throws
 	 */
 	@RequestMapping(value = "payorder",method={RequestMethod.POST,RequestMethod.GET})
 	@ResponseBody
-	public ResultBean payOrder(HttpServletRequest request, String data) {
+	public JSONObject payOrder(HttpServletRequest request, String data) {
 		if(StringUtils.isNull(data)) {
-			return new ErrorBean(ErrorConsts.CODE_10002, "参数为空");
+			return ResultUtils.error(ErrorConsts.CODE_10002, "参数为空");
 		}
 		Map<String, Object> parameter = new HashMap<>();
 		try {
 			parameter = JsonStringUtils.getMap(data);
 		} catch (Exception e) {
-			return new ErrorBean(ErrorConsts.CODE_10002, "参数错误");
+			return ResultUtils.error(ErrorConsts.CODE_10002, "参数错误");
 		}
 		if(parameter.isEmpty()) {
-			return new ErrorBean(ErrorConsts.CODE_10002, "参数错误");
+			return ResultUtils.error(ErrorConsts.CODE_10002, "参数错误");
 		}
 		//检查店铺是否休息或不在营业时间段内
 		if(!sellerService.selectBusinessSign(parameter.get("sellerId").toString())) {
-			return new ErrorBean(ErrorConsts.CODE_10002, "店铺休息");
+			return ResultUtils.error(ErrorConsts.CODE_10002, "店铺休息");
 		}
 		String orderId = "";
 		try {
 			orderId = orderService.saveOrder(parameter);
 		} catch (Exception e) {
-			return new ErrorBean(ErrorConsts.CODE_10004, "订单错误");
+			return ResultUtils.error(ErrorConsts.CODE_10004, "订单错误");
 		}
 		return payOrder(orderId, request);
 	}
@@ -99,33 +98,33 @@ public class OrderController {
 	 * @Description: TODO
 	 * @param @param request
 	 * @param @param token
-	 * @param @param orderId
+	 * @param @param orderId 订单Id
 	 * @param @return
-	 * @return ResultBean
+	 * @return JSONObject
 	 * @throws
 	 */
 	@RequestMapping(value = "receivingorder",method={RequestMethod.POST,RequestMethod.GET})
 	@ResponseBody
-	public ResultBean receivingOrder(HttpServletRequest request, String token, String orderId) {
+	public JSONObject receivingOrder(HttpServletRequest request, String token, String orderId) {
 		String sellerId = baseService.checkUserToken(token);
 		if(sellerId == null) {
-			return new ErrorBean(ErrorConsts.CODE_10001, "请重新登录");
+			return ResultUtils.error(ErrorConsts.CODE_10001, "请重新登录");
 		}
 		if(StringUtils.isNull(orderId)) {
 			log.warn("orderId is null");
-			return new ErrorBean(ErrorConsts.CODE_10002, "参数错误");
+			return ResultUtils.error(ErrorConsts.CODE_10002, "参数错误");
 		}
 		ToOrder order = orderService.getOrder(orderId, "2");
 		if(order == null) {
 			log.warn("orderId is error waith orderId:{}", orderId);
-			return new ErrorBean(ErrorConsts.CODE_10003, "订单错误");
+			return ResultUtils.error(ErrorConsts.CODE_10003, "订单错误");
 		}
 		int i = orderService.updateReceivingOrder(orderId, sellerId);
 		if(i < 1) {
 			log.warn("orderId is error waith orderId:{}", orderId);
-			return new ErrorBean(ErrorConsts.CODE_10004, "接单失败");
+			return ResultUtils.error(ErrorConsts.CODE_10004, "接单失败");
 		}
-		return new SuccessBean("接单成功");
+		return ResultUtils.success("接单成功");
 	}
 	
 	/**
@@ -136,32 +135,32 @@ public class OrderController {
 	 * @param @param token
 	 * @param @param orderId
 	 * @param @return
-	 * @return ResultBean
+	 * @return JSONObject
 	 * @throws
 	 */
 	@RequestMapping(value = "finishorder",method={RequestMethod.POST,RequestMethod.GET})
 	@ResponseBody
-	public ResultBean finishOrder(HttpServletRequest request, String token, String orderId) {
+	public JSONObject finishOrder(HttpServletRequest request, String token, String orderId) {
 		String sellerId = baseService.checkUserToken(token);
 		if(sellerId == null) {
-			return new ErrorBean(ErrorConsts.CODE_10001, "请重新登录");
+			return ResultUtils.error(ErrorConsts.CODE_10001, "请重新登录");
 		}
 		if(StringUtils.isNull(orderId)) {
 			log.warn("orderId is null");
-			return new ErrorBean(ErrorConsts.CODE_10002, "参数错误");
+			return ResultUtils.error(ErrorConsts.CODE_10002, "参数错误");
 		}
 		ToOrder order = orderService.getOrder(orderId, "3");
 		if(order == null) {
 			log.warn("orderId is error waith orderId:{}", orderId);
-			return new ErrorBean(ErrorConsts.CODE_10003, "订单错误");
+			return ResultUtils.error(ErrorConsts.CODE_10003, "订单错误");
 		}
 		try {
 			orderService.updateFinishOrder(orderId, sellerId);
 		} catch (Exception e) {
 			log.warn("orderId is error waith orderId:{}", orderId);
-			return new ErrorBean(ErrorConsts.CODE_10004, "完成失败");
+			return ResultUtils.error(ErrorConsts.CODE_10004, "完成失败");
 		}
-		return new SuccessBean("订单完成");
+		return ResultUtils.success("订单完成");
 	}
 	
 	/**
@@ -173,24 +172,24 @@ public class OrderController {
 	 * @param @param orderId
 	 * @param @return
 	 * @param @throws Exception
-	 * @return ResultBean
+	 * @return JSONObject
 	 * @throws
 	 */
 	@RequestMapping(value = "cancelorder",method={RequestMethod.POST,RequestMethod.GET})
 	@ResponseBody
-	public ResultBean cancelOrder(HttpServletRequest request, String token, String orderId) throws Exception {
+	public JSONObject cancelOrder(HttpServletRequest request, String token, String orderId) throws Exception {
 		String sellerId = baseService.checkUserToken(token);
 		if(sellerId == null) {
-			return new ErrorBean(ErrorConsts.CODE_10001, "请重新登录");
+			return ResultUtils.error(ErrorConsts.CODE_10001, "请重新登录");
 		}
 		if(StringUtils.isNull(orderId)) {
 			log.warn("orderId is null");
-			return new ErrorBean(ErrorConsts.CODE_10002, "参数错误");
+			return ResultUtils.error(ErrorConsts.CODE_10002, "参数错误");
 		}
 		ToOrder order = orderService.getOrder(orderId, "2");
 		if(order == null) {
 			log.warn("orderId is error waith orderId:{}", orderId);
-			return new ErrorBean(ErrorConsts.CODE_10003, "订单错误");
+			return ResultUtils.error(ErrorConsts.CODE_10003, "订单错误");
 		}
 		//价格，单位为分
 		BigDecimal amount = order.getTotalPrice();
@@ -218,19 +217,19 @@ public class OrderController {
 		String returnCode = resultMap.get("return_code").toString();
 		if(!returnCode.equals("SUCCESS")) {
 			log.error(resultMap.get("return_msg").toString());
-			return new ErrorBean(ErrorConsts.CODE_10004,"申请失败");
+			return ResultUtils.error(ErrorConsts.CODE_10004,"申请失败");
 		}
 		String resultCode = resultMap.get("result_code").toString();
 		if(!resultCode.equals("SUCCESS")) {
 			log.error(resultMap.get("err_code_des").toString());
-			return new ErrorBean(ErrorConsts.CODE_10004,"申请失败");
+			return ResultUtils.error(ErrorConsts.CODE_10004,"申请失败");
 		}
 		int i = orderService.updateCancelOrder(orderId, sellerId);
 		if(i < 1) {
 			log.warn("orderId is error waith orderId:{}", orderId);
-			return new ErrorBean(ErrorConsts.CODE_10004, "申请失败");
+			return ResultUtils.error(ErrorConsts.CODE_10004, "申请失败");
 		}
-		return new SuccessBean("申请成功");
+		return ResultUtils.success("申请成功");
 	}
 	
 	/**
@@ -239,60 +238,62 @@ public class OrderController {
 	 * @Description: TODO
 	 * @param @param request
 	 * @param @param token
-	 * @param @param state
-	 * @param @param startDate
-	 * @param @param endDate
-	 * @param @param page
-	 * @param @param pageSize
+	 * @param @param state 订单状态
+	 * @param @param startDate 开始时间
+	 * @param @param endDate 结束时间
+	 * @param @param page 页数
+	 * @param @param pageSize 记录数
 	 * @param @return
-	 * @return ResultBean
+	 * @return JSONObject
 	 * @throws
 	 */
 	@RequestMapping(value = "orderList",method={RequestMethod.POST,RequestMethod.GET})
 	@ResponseBody
-	public ResultBean orderList(HttpServletRequest request, String token, String state, String startDate, 
+	public JSONObject orderList(HttpServletRequest request, String token, String state, String startDate, 
 			String endDate, String page, String pageSize) {
 		String sellerId = baseService.checkUserToken(token);
 		if(sellerId == null) {
-			return new ErrorBean(ErrorConsts.CODE_10001, "请重新登录");
+			return ResultUtils.error(ErrorConsts.CODE_10001, "请重新登录");
 		}
 		if(StringUtils.isNull(state) || !state.matches("^[1-6]$")) {
 			log.warn("state is error waith state:{}", state);
-			return new ErrorBean(ErrorConsts.CODE_10002, "状态错误");
+			return ResultUtils.error(ErrorConsts.CODE_10002, "状态错误");
 		}
-		if(!StringUtils.isNull(startDate) && !startDate.matches("^\\d{4}-\\d{1,2}-\\d{1,2}$")) {
-			log.warn("startDate is error waith startDate:{}", startDate);
-			return new ErrorBean(ErrorConsts.CODE_10002, "开始时间错误");
-		}else {
+		if(!StringUtils.isNull(startDate)) {
+			if(!startDate.matches("^\\d{4}-\\d{1,2}-\\d{1,2}$")) {
+				log.warn("startDate is error waith startDate:{}", startDate);
+				return ResultUtils.error(ErrorConsts.CODE_10002, "开始时间错误");
+			}
 			long start = convertTimeToLong(startDate);
 			long time = System.currentTimeMillis();
 			if(start > time) {
-				return new ErrorBean(ErrorConsts.CODE_10003, "开始时间不能大于当前时间");
+				return ResultUtils.error(ErrorConsts.CODE_10003, "开始时间不能大于当前时间");
 			}
 		}
-		if(!StringUtils.isNull(endDate) && !endDate.matches("^\\d{4}-\\d{1,2}-\\d{1,2}$")) {
-			log.warn("endDate is error waith endDate:{}", endDate);
-			return new ErrorBean(ErrorConsts.CODE_10002, "结束时间错误");
-		}else {
+		if(!StringUtils.isNull(endDate)) {
+			if(StringUtils.isNull(startDate)) {
+				return ResultUtils.error(ErrorConsts.CODE_10002, "开始时间不能为空");
+			}
+			if(!endDate.matches("^\\d{4}-\\d{1,2}-\\d{1,2}$")) {
+				log.warn("endDate is error waith endDate:{}", endDate);
+				return ResultUtils.error(ErrorConsts.CODE_10002, "结束时间错误");
+			}
 			endDate += " 23:59:59";
-		}
-		if(!StringUtils.isNull(endDate) && StringUtils.isNull(startDate)) {
-			return new ErrorBean(ErrorConsts.CODE_10002, "开始时间不能为空");
 		}
 		if(!StringUtils.isNull(startDate) && !StringUtils.isNull(endDate)) {
 			long start = convertTimeToLong(startDate);
 			long end = convertTimeToLong(endDate);
 			if(start > end) {
-				return new ErrorBean(ErrorConsts.CODE_10003,"输入时间开始时间不能晚于结束时间");
+				return ResultUtils.error(ErrorConsts.CODE_10003,"输入时间开始时间不能晚于结束时间");
 			}
 		}
 		if(StringUtils.isNull(page) || !page.matches("^\\d*$")) {
 			log.warn("page is error waith page:{}", page);
-			return new ErrorBean(ErrorConsts.CODE_10002, "页码错误");
+			return ResultUtils.error(ErrorConsts.CODE_10002, "页码错误");
 		}
 		if(StringUtils.isNull(pageSize) || !pageSize.matches("^\\d*$")) {
 			log.warn("pageSize is error waith pageSize:{}", pageSize);
-			return new ErrorBean(ErrorConsts.CODE_10002, "记录错误");
+			return ResultUtils.error(ErrorConsts.CODE_10002, "记录错误");
 		}
 		Integer pages = Integer.valueOf(page);
 		Integer pageSizes = Integer.valueOf(pageSize);
@@ -301,12 +302,12 @@ public class OrderController {
 			resultMap = orderService.listSellerOrder(sellerId, state, startDate, endDate, pages, pageSizes);
 		} catch (Exception e) {
 			e.printStackTrace();
-			return new ErrorBean(ErrorConsts.CODE_10002, "查询错误");
+			return ResultUtils.error(ErrorConsts.CODE_10002, "查询错误");
 		}
-		return new SuccessBean(resultMap);
+		return ResultUtils.success(resultMap);
 	}
 	
-	private Long convertTimeToLong(String time) {  
+	private Long convertTimeToLong(String time) {
 	    Date date = null;
 	    try {  
 	        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -325,10 +326,10 @@ public class OrderController {
 	 * @param @param orderId
 	 * @param @param request
 	 * @param @return
-	 * @return ResultBean
+	 * @return JSONObject
 	 * @throws
 	 */
-	private ResultBean payOrder(String orderId, HttpServletRequest request) {
+	private JSONObject payOrder(String orderId, HttpServletRequest request) {
 		ToOrder order = orderService.getOrder(orderId, "1");
 		List<ToOrderDetails> list = orderService.listOrderId(orderId);
 		StringBuilder body = new StringBuilder();
@@ -367,12 +368,12 @@ public class OrderController {
 		String returnCode = resultMap.get("return_code").toString();
 		if(!returnCode.equals("SUCCESS")) {
 			log.error(resultMap.get("return_msg").toString());
-			return new ErrorBean(ErrorConsts.CODE_10004,"支付失败");
+			return ResultUtils.error(ErrorConsts.CODE_10004,"支付失败");
 		}
 		String resultCode = resultMap.get("result_code").toString();
 		if(!resultCode.equals("SUCCESS")) {
 			log.error(resultMap.get("err_code_des").toString());
-			return new ErrorBean(ErrorConsts.CODE_10004,"支付失败");
+			return ResultUtils.error(ErrorConsts.CODE_10004,"支付失败");
 		}
 		String prepayId = resultMap.get("prepay_id").toString();
 		Map<String, String> responseMap = new HashMap<String, String>(7);
@@ -387,6 +388,6 @@ public class OrderController {
 		//MD5运算生成签名
 		String responseSign = WxPayUtils.sign(responseString, WxPayConsts.KEY, "utf-8").toUpperCase();
 		responseMap.put("sign", responseSign);
-		return new SuccessBean(responseMap);
+		return ResultUtils.success(responseMap);
 	}
 }

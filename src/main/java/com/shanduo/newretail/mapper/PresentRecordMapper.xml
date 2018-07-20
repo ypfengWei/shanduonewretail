@@ -174,4 +174,42 @@
       gmt_modified = #{gmtModified,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=VARCHAR}
   </update>
+  
+   <select id="getPresentRecord" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from present_record
+    where id = #{0}
+    and state = #{1}
+  </select>
+  <select id="countPresentRecord" parameterType="java.lang.String" resultType="java.lang.Integer">
+    select 
+    count(id)
+    from present_record
+    where state = #{state,jdbcType=CHAR}
+  </select>
+  <select id="listPresentRecord" resultMap="BaseResultMap">
+    select 
+    id, user_id, present_time, amount_cash, typeId, user_name, opening_bank, bank_name, 
+    card_number, state, gmt_create, gmt_modified
+    from present_record
+    where state = #{0}
+    order by gmt_create
+    limit #{1},#{2}
+  </select>
+  <select id="countUserPresentRecord" parameterType="java.lang.String" resultType="java.lang.Integer">
+    select 
+    count(id)
+    from present_record
+    where user_id = #{userId,jdbcType=VARCHAR}
+  </select>
+  <select id="listUserPresentRecord" resultMap="BaseResultMap">
+    select 
+    id, user_id, present_time, amount_cash, typeId, user_name, opening_bank, bank_name, 
+    card_number, state, gmt_create, gmt_modified
+    from present_record
+    where user_id = #{0}
+    order by gmt_create desc
+    limit #{1},#{2}
+  </select>
 </mapper>
