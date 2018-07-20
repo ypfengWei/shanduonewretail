@@ -15,6 +15,7 @@
     <link rel="stylesheet" type="text/css" href="css/setshopinformation.css">
     <title>店铺信息</title>
     <script src="js/jquery-3.3.1.js"></script>
+    <script src="js/layer.js"></script>
     <script src="js/utils.js"></script>
     <script src="https://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
 </head>
@@ -124,6 +125,9 @@
             }
         }, methods: {
             goBack() {
+                localStorage.removeItem('localStoreInfo');
+                localStorage.removeItem('localStoreTypeIndex');
+                localStorage.removeItem('localStoreType');
                 location.href = 'Administration.html';
             }, chooseAddress() {
                 //todo
@@ -160,11 +164,29 @@
                         token: localStore.token,
                         userSeller: JSON.stringify(vm.storeInfo)
                     }, success: function (res) {
-                        console.log(res);
+                        if(res.success){
+                            localStorage.removeItem('localStoreInfo');
+                            localStorage.removeItem('localStoreTypeIndex');
+                            localStorage.removeItem('localStoreType');
+                        }
                     }
                 });
             }, switchBusinessSign(businessSign) {
-                vm.storeInfo.businessSign = businessSign;
+                layer.open({
+                    content: vm.storeInfo.businessSign === '0' ? "打烊关店?" : "开店营业?"
+                    , btn: ['是的', '取消']
+                    , yes: function (index) {
+                        $.get('/shanduonewretail/jseller/updatebusinesssign', {
+                            token: localStore.token, businessSign: vm.storeInfo.businessSign === '0' ? '1' : '0'
+                        }, function (res) {
+                            if (res.success) {
+                                vm.storeInfo.businessSign = businessSign;
+                            }
+                        });
+                        layer.close(index);
+                    }
+                });
+
             }
         }
     });
@@ -194,7 +216,6 @@
         }
         return num;
     }
-
     function initData() {
         if (localStorage.localStoreInfo) {
             vm.storeInfo = JSON.parse(localStorage.localStoreInfo);
