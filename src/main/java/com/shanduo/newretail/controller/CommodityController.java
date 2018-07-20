@@ -20,6 +20,7 @@ import com.shanduo.newretail.consts.WxPayConsts;
 import com.shanduo.newretail.entity.common.ErrorBean;
 import com.shanduo.newretail.entity.common.ResultBean;
 import com.shanduo.newretail.entity.common.SuccessBean;
+import com.shanduo.newretail.entity.service.CommodityInfo;
 import com.shanduo.newretail.service.AccessTokenService;
 import com.shanduo.newretail.service.BaseService;
 import com.shanduo.newretail.service.CommodityService;
@@ -410,6 +411,41 @@ public class CommodityController {
 		return new ErrorBean(ErrorConsts.CODE_10004,"查询失败");
 	}
 		return new SuccessBean(categoryIdList);
+	}
+	/**
+	 * 查询单个商品详情
+	 * @param request
+	 * @param token
+	 * @param commodityId
+	 * @return
+	 */
+	@RequestMapping(value = "selectonecommodity",method={RequestMethod.POST,RequestMethod.GET})
+	@ResponseBody
+	//http://localhost:8081/shanduonewretail/jcommodity/selectonecommodity?token=1&commodityId=
+	public ResultBean selectOneCommodity(HttpServletRequest request, String token,String commodityId) {
+		if(StringUtils.isNull(commodityId)) {
+			Log.warn("commodityId为空");
+			return new ErrorBean(ErrorConsts.CODE_10002,"commodityId为空");
+		}
+		if(StringUtils.isNull(token)) {
+			Log.warn("token为空");
+			return new ErrorBean(ErrorConsts.CODE_10002,"token为空");
+		}
+		String id = baseService.checkUserToken(token);
+		if(null==id){
+			Log.warn("token失效");
+			return new ErrorBean(ErrorConsts.CODE_10001,"token失效");
+		}
+		CommodityInfo  commodityInfo = new CommodityInfo ();
+		try {
+			commodityInfo = commodityService.selectOneCommodity(id, commodityId);
+			if(commodityInfo==null){
+				return new ErrorBean();
+			}
+	} catch (Exception e) {
+		return new ErrorBean(ErrorConsts.CODE_10004,"查询失败");
+	}
+		return new SuccessBean(commodityInfo);
 	}
 
 }

@@ -13,6 +13,8 @@ public class CommodityInfo {
 
     private BigDecimal price;
     
+    private Integer categoryId;
+    
     private Integer visible;
    
 
@@ -54,6 +56,14 @@ public class CommodityInfo {
 
 	public void setPrice(BigDecimal price) {
 		this.price = price;
+	}
+
+	public Integer getCategoryId() {
+		return categoryId;
+	}
+
+	public void setCategoryId(Integer categoryId) {
+		this.categoryId = categoryId;
 	}
 
 	public Integer getVisible() {

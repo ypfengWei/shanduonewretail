@@ -1,9 +1,14 @@
 package com.shanduo.newretail.controller;
 
+import java.sql.Timestamp;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TimeZone;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -123,6 +128,7 @@ public class SellerController {
 			Log.warn("typeId为空");
 			return new ErrorBean(ErrorConsts.CODE_10002,"typeId为空");
 		}
+        
 		if("1".equals(typeId)){
 			if(StringUtils.isNull(token)) {
 				Log.warn("token为空");
@@ -156,7 +162,7 @@ public class SellerController {
 	
 	@RequestMapping(value = "updatesellerdetails",method={RequestMethod.POST,RequestMethod.GET})
 	@ResponseBody
-	//http://localhost:8081/shanduonewretail/jseller/selectsellerdetails?token=1
+	//http://localhost:8081/shanduonewretail/jseller/updatesellerdetails?token=1
 	public ResultBean updateSellerDetails(HttpServletRequest request,String token) {
 		if(StringUtils.isNull(token)) {
 			Log.warn("token为空");
