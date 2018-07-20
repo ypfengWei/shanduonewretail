@@ -52,6 +52,12 @@ public class ResultUtils {
 		return jsonObject;
 	}
 	
+	public static JSONObject success(String str,Object object) {
+		JSONObject jsonObject = new JSONObject();
+		jsonObject.put("success", "true");
+		jsonObject.put(str, object);
+		return jsonObject;
+	}
 	/**
 	 * 出错返回
 	 * @Title: error

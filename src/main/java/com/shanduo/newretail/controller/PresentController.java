@@ -51,12 +51,12 @@ public class PresentController {
 	 * @Description: TODO
 	 * @param @param request
 	 * @param @param token
-	 * @param @param money
-	 * @param @param typeId
-	 * @param @param name
-	 * @param @param openingBank
-	 * @param @param bankName
-	 * @param @param cardNumber
+	 * @param @param money 提现金额
+	 * @param @param typeId 1:微信提现2：银行卡提现
+	 * @param @param name 持卡人姓名
+	 * @param @param openingBank 开户行名称
+	 * @param @param bankName 所在卡银行名称
+	 * @param @param cardNumber 银行卡号
 	 * @param @return
 	 * @return JSONObject
 	 * @throws
@@ -76,8 +76,8 @@ public class PresentController {
 			return ResultUtils.error(ErrorConsts.CODE_10002, "提现类型错误");
 		}
 		if(StringUtils.isNull(money) || !money.matches("^\\d+(\\.\\d{0,2})$")) {
-			log.warn("充值金额错误");
-			return ResultUtils.error(ErrorConsts.CODE_10002, "充值金额错误");
+			log.warn("提现金额错误");
+			return ResultUtils.error(ErrorConsts.CODE_10002, "提现金额错误");
 		}
 		if(typeId.equals("1")) {
 			return ResultUtils.error(ErrorConsts.CODE_10003, "微信提现维护中");
@@ -113,7 +113,7 @@ public class PresentController {
 	 * @Description: TODO
 	 * @param @param request
 	 * @param @param token
-	 * @param @param presentId
+	 * @param @param presentId 提现订单ID
 	 * @param @return
 	 * @return JSONObject
 	 * @throws
@@ -148,7 +148,7 @@ public class PresentController {
 	 * @Description: TODO
 	 * @param @param request
 	 * @param @param token
-	 * @param @param presentId
+	 * @param @param presentId 提现订单ID
 	 * @param @return
 	 * @return JSONObject
 	 * @throws
@@ -184,9 +184,9 @@ public class PresentController {
 	 * @Description: TODO
 	 * @param @param request
 	 * @param @param token
-	 * @param @param state
-	 * @param @param page
-	 * @param @param pageSize
+	 * @param @param state 订单状态:1:申请提现2:同意t提现;3.拒绝提现;
+	 * @param @param page 页码
+	 * @param @param pageSize 记录数
 	 * @param @return
 	 * @return JSONObject
 	 * @throws

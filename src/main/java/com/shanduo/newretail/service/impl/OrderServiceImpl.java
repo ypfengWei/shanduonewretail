@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.shanduo.newretail.entity.Commodity;
 import com.shanduo.newretail.entity.ToOrder;
 import com.shanduo.newretail.entity.ToOrderDetails;
+import com.shanduo.newretail.entity.service.CommodityInfos;
 import com.shanduo.newretail.entity.service.OrderInfo;
 import com.shanduo.newretail.mapper.CommodityMapper;
 import com.shanduo.newretail.mapper.ToOrderDetailsMapper;
@@ -173,7 +174,8 @@ public class OrderServiceImpl implements OrderService {
 	}
 
 	@Override
-	public Map<String, Object> listSellerOrder(String sellerId, String state, String startDate, String endDate, Integer pageNum, Integer pageSize) {
+	public Map<String, Object> listSellerOrder(String sellerId, String state, String startDate, String endDate, Integer pageNum,
+			Integer pageSize) {
 		int totalRecord = orderMapper.countSellerOrder(sellerId, state);
 		Page page = new Page(totalRecord, pageSize, pageNum);
 		pageNum = (page.getPageNum() - 1) * page.getPageSize();
@@ -187,6 +189,26 @@ public class OrderServiceImpl implements OrderService {
 		resultMap.put("totalPage", page.getTotalPage());
 		resultMap.put("data", listOrderInfo);
 		return resultMap;
+	}
+
+	@Override
+	public Map<String, Object> listSellerCommodity(String sellerId, String categoryId, String startDate, String endDate,
+			Integer pageNum, Integer pageSize) {
+		int totalRecord = orderDetailsMapper.countSellerCommodity(sellerId, categoryId, startDate, endDate);
+		Page page = new Page(totalRecord, pageSize, pageNum);
+		pageNum = (page.getPageNum() - 1) * page.getPageSize();
+		List<CommodityInfos> listCommodityInfos = orderDetailsMapper.listSellerCommodity(sellerId, categoryId ,startDate, 
+				endDate, pageNum, page.getPageSize());
+		Map<String, Object> resultMap = new HashMap<String, Object>(3);
+		resultMap.put("page", page.getPageNum());
+		resultMap.put("totalPage", page.getTotalPage());
+		resultMap.put("data", listCommodityInfos);
+		return resultMap;
+	}
+
+	@Override
+	public Double sumSellerMoney(String sellerId, String categoryId, String startDate, String endDate) {
+		return orderDetailsMapper.sumSellerMoney(sellerId, categoryId, startDate, endDate);
 	}
 
 }
