@@ -14,7 +14,7 @@ public class UserSeller {
 
     private String phone;
 
-    private String sellerType;
+    private Integer sellerType;
 
     private Date startDate;
 
@@ -76,15 +76,17 @@ public class UserSeller {
         this.phone = phone == null ? null : phone.trim();
     }
 
-    public String getSellerType() {
-        return sellerType;
-    }
+    
 
-    public void setSellerType(String sellerType) {
-        this.sellerType = sellerType == null ? null : sellerType.trim();
-    }
+    public Integer getSellerType() {
+		return sellerType;
+	}
 
-    public Date getStartDate() {
+	public void setSellerType(Integer sellerType) {
+		this.sellerType = sellerType;
+	}
+
+	public Date getStartDate() {
         return startDate;
     }
 

@@ -23,7 +23,7 @@
     <result column="visible" jdbcType="INTEGER" property="visible" />
   </resultMap>
   <sql id="Commodity_Column_List">
-    id, name, picture, price, stock,category_id,svisible
+    id, name, picture, price, stock,category_id,visible
   </sql> 
   <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
     select 

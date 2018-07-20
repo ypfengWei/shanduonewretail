@@ -105,7 +105,7 @@ public class SellerServiceImpl implements SellerService {
 		userSeller.setSellerPicture(sellerPicture);
 		userSeller.setNotice(userSellerMap.get("notice").toString());
 		userSeller.setPhone(userSellerMap.get("phone").toString());
-		userSeller.setSellerType(userSellerMap.get("sellerType").toString());
+		userSeller.setSellerType(Integer.valueOf(userSellerMap.get("sellerType").toString()));
 		userSeller.setLat(new BigDecimal(userSellerMap.get("lat").toString()));
 		userSeller.setLon(new BigDecimal(userSellerMap.get("lon").toString()));
 		userSeller.setStartDate(Timestamp.valueOf("1970-01-01 "+userSellerMap.get("startDate").toString()+":00"));
