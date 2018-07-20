@@ -18,7 +18,9 @@
     <script src="js/layer.js"></script>
     <script src="js/utils.js"></script>
     <script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-    <title>上传商品</title>
+    <script src="https://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
+    <script src="js/service.js"></script>
+    <title>修改商品</title>
 </head>
 <body>
 <div id="vueData">
@@ -28,7 +30,7 @@
                 <img src="img/return_2.png">
             </div>
             <div>
-                <span>上传商品</span>
+                <span>{{titleName}}</span>
             </div>
             <div></div>
         </div>
@@ -37,31 +39,30 @@
         <form action="">
             <div class="div_inp">
                 <label for="name">名称：</label>
-                <input type="text" id="name">
+                <input type="text" id="name" v-model="commodity.name">
             </div>
-            <div class="pic_div">
-                <span>添加图片</span>
+            <div class="pic_div" @click="onLoadImg">
+                <img v-if="storeImg" :src="storeImg">
+                <span v-else>添加图片</span>
             </div>
             <div class="btn-group">
                 <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
                     类别：饮料
                 </button>
                 <ul class="dropdown-menu" role="menu">
-                    <li><a href="#">饮料</a></li>
-                    <li><a href="#">水果</a></li>
-                    <li><a href="#">其他</a></li>
+                    <li v-for="(item,index) in classify"><a href="#">{{item.category_name}}</a></li>
                 </ul>
             </div>
             <div class="div_inp">
                 <label for="price">价格：</label>
-                <input type="text" id="price">
+                <input type="text" id="price" v-model="commodity.price">
             </div>
             <div class="div_inp">
                 <label for="stock">库存：</label>
-                <input type="text" id="stock">
+                <input type="text" id="stock" v-model="commodity.stock">
             </div>
             <div class="foot_inp">
-                <input type="submit" value="立即上传">
+                <input type="submit" v-model="submitName" @click="submitDone">
             </div>
         </form>
     </div>
@@ -69,27 +70,106 @@
 </body>
 <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 <script>
-    let localStore=localStorage.localStore;
+    let localStore = JSON.parse(localStorage.localStore);
     let commodityId = GetQueryString('commodityId');
+    let href = location.href.split('#')[0];
     let vm = new Vue({
         el: '#vueData',
         data: {
-            commodity:{}
+            storeImg: null,
+            classify: [],
+            commodity: {},
+            titleName: '修改商品',
+            submitName: '保存修改',
+            categoryName: ''
         }, methods: {
             goBack() {
                 history.back();
+            }, submitDone() {
+                let commodity = {
+                    token: localStore.token,
+                    name: vm.commodity.name,
+                    picture: vm.commodity.picture,
+                    price: vm.commodity.price,
+                    stock: vm.commodity.stock,
+                    categoryId: vm.commodity.categoryId
+                };
+                if (commodityId) {
+                    commodity.commodityId = commodityId;
+                    excute('/shanduonewretail/jcommodity/updatecommodity', commodity);
+                } else {
+                    excute('/shanduonewretail/jcommodity/insertcommodity', commodity);
+                }
+            }, onLoadImg() {
+                wx.chooseImage({
+                    count: 1,
+                    sizeType: ['compressed'],
+                    success: function (res) {
+                        vm.avatarUrl = res.localIds[0];
+                        let u = navigator.userAgent;//手机类型android或ios
+                        //if (u.indexOf('Android') > -1 || u.indexOf('Linux') > -1) {//安卓手机
+                        if (u.indexOf('iPhone') > -1) {
+                            vm.avatarUrl.push(res.localIds[0]);
+                            wx.getLocalImgData({
+                                localId: res.localIds[0], // 图片的localID
+                                success: function (res) {
+                                    vm.storeInfo.sellerPicture = res.localData;
+                                }
+                            });
+                        } else {
+                            vm.storeImg = res.localIds[0];
+                        }
+                    }
+                });
             }
         }
     });
-    $(function () {
-        if(commodityId){
-            $.getJSON('/shanduonewretail/jcommodity/selectonecommodity',{
-                token
-                commodityId  商品id
-            },function (res) {
 
+    function excute(url, obj) {
+        $.ajax({
+            url: url,
+            data: JSON.stringify(obj),
+            success: function (res) {
+                console.log(res);
+            }
+        });
+    }
+
+    $(function () {
+        if (commodityId) {
+            $.getJSON('/shanduonewretail/jcommodity/selectonecommodity', {
+                token: localStore.token,
+                commodityId: commodityId
+            }, function (res) {
+                console.log(res)
+                if (res.success) {
+                    vm.commodity = res.result;
+                    vm.storeImg = imagePath + vm.commodity.picture;
+                }
             });
+        } else {
+            document.title = '添加商品';
+            vm.titleName = '添加商品';
+            vm.submitName = '添加上传';
         }
+        $.get('/shanduonewretail/jcommodity/selectcommodityalltype', {token: localStore.token}, function (res) {
+            vm.classify = res.result;
+        });
+        init_wx_js_sdk(href, function (result) {
+            //初始化接口环境
+            wx.config({
+                appId: result.appid,
+                timestamp: result.timestamp,
+                nonceStr: result.noncestr,
+                signature: result.signature,
+                jsApiList: ['chooseImage', 'uploadImage', 'hideMenuItems']
+            });
+            wx.ready(function () {
+                wx.hideMenuItems({
+                    menuList: ['menuItem:copyUrl', 'menuItem:share:qq', 'menuItem:share:QZone', 'menuItem:openWithQQBrowser', 'menuItem:openWithSafari', 'menuItem:share:email', 'menuItem:readMode']
+                });
+            });
+        });
     });
 </script>
 </html>

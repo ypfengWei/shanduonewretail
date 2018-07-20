@@ -39,7 +39,6 @@ function getGoods(storeId, categoryId, typeId, pageIndex, pageCount, cbOk, cbErr
         dataType: "JSON",
         data: {id: storeId, categoryId: categoryId, typeId: typeId, page: pageIndex, pageSize: pageCount},
         success: function (result) {
-            console.log(result)
             if (result.success) {
                 cbOk && cbOk(result.result);
             }

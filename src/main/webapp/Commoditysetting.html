@@ -117,8 +117,8 @@
     </div>
     <footer>
         <div class="dis_flex">
-            <a href="javascript:" @click="submitOrderView">去仓库</a>
-            <a href="javascript:" @click="submitOrderView">上传商品</a>
+            <a href="javascript:" @click="gotoWarehouseView">去仓库</a>
+            <a href="javascript:" @click="addCommodityView">上传商品</a>
         </div>
     </footer>
 </div>
@@ -141,7 +141,8 @@
             that.mescroll = new MeScroll("vueData", { //请至少在vue的mounted生命周期初始化mescroll,以确保您配置的id能够被找到
                 up: {
                     callback: that.upCallback, //
-                    auto: false
+                    auto: false,
+                    noMoreSize: 20
                 }, down: {
                     callback: that.downCallback,
                     auto: false
@@ -213,8 +214,10 @@
             onclick3(index) {
                 vm.currentCommodity = vm.commodityArray[index];
                 vm.imgShow()
-            }, submitOrderView() {
+            }, gotoWarehouseView() {
                 location.href = 'Warehouse.html';
+            }, addCommodityView() {
+                location.href = 'UploadingGoods.html'
             }, commodityVisible(key) {
                 let commodity = vm.commodityArray[key];
                 layer.open({
@@ -252,6 +255,9 @@
                                 oldData.splice(key, 1);
                                 vm.commodityArray = oldData;
                                 toast('操作成功');
+                                if (vm.commodityArray.length === 0) {
+                                    location.reload();
+                                }
                             } else {
                                 toast('操作失败');
                             }
@@ -272,7 +278,6 @@
 
     function adapter(categoryId, cbOK, cbErr) {
         getGoods(localStore.token, categoryId, 2, pageIndex, pageCount, function (res) {
-            console.log(res);
             let newData = res.commodityInfoList;
             for (let i in newData) {
                 newData[i].picture = {
