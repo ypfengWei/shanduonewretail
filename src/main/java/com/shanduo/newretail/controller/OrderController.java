@@ -305,8 +305,6 @@ public class OrderController {
 			return ResultUtils.error(ErrorConsts.CODE_10002, "查询错误");
 		}
 		return ResultUtils.success(resultMap);
-//		return new JSONObject().accumulate("dasa", new Date());
-//		return new Date();
 	}
 	
 	private Long convertTimeToLong(String time) {
