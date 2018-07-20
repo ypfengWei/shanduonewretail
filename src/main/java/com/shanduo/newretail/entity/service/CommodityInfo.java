@@ -15,6 +15,8 @@ public class CommodityInfo {
     
     private Integer categoryId;
     
+    private String categoryName;
+    
     private Integer visible;
    
 
@@ -64,6 +66,14 @@ public class CommodityInfo {
 
 	public void setCategoryId(Integer categoryId) {
 		this.categoryId = categoryId;
+	}
+
+	public String getCategoryName() {
+		return categoryName;
+	}
+
+	public void setCategoryName(String categoryName) {
+		this.categoryName = categoryName;
 	}
 
 	public Integer getVisible() {

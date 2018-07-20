@@ -163,6 +163,6 @@
     select 
     id
     from to_user
-    where jurisdiction = '0'
+    where jurisdiction = '1'
   </select>
 </mapper>

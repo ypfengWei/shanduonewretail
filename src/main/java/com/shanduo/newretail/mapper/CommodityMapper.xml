@@ -20,10 +20,11 @@
     <result column="price" jdbcType="DECIMAL" property="price" />
     <result column="stock" jdbcType="INTEGER" property="stock" />
     <result column="category_id" jdbcType="INTEGER" property="categoryId" />
+    <result column="category_name" jdbcType="VARCHAR" property="categoryName" />
     <result column="visible" jdbcType="INTEGER" property="visible" />
   </resultMap>
   <sql id="Commodity_Column_List">
-    id, name, picture, price, stock,category_id,visible
+    co.id, name, picture, price, stock,category_id,category_name,visible
   </sql> 
   <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
     select 
@@ -130,6 +131,7 @@
 	select
 	<include refid="Commodity_Column_List" />
 	from relations as re join commodity as co on co.id=re.commodity_id
+	join category as ca on ca.id=re.category_id
 	where co.id=#{1} and re.user_id=#{0} and  re.is_deleted = 0
   </select> 
   
@@ -147,6 +149,19 @@
 	from relations as re join commodity as co on co.id=re.commodity_id
 	where re.category_id=#{0} and re.user_id=#{1}  and stock &gt;0 and  re.is_deleted = 0
 	limit #{2},#{3}
+  </select> 
+  <select id="selectWarehouseCommodity" resultMap="CommodityResultMap">
+	select
+	<include refid="Commodity_Column_List" />
+	from relations as re join commodity as co on co.id=re.commodity_id
+	where re.category_id=#{0} and re.user_id=#{1} and re.visible='1' and stock &gt;0
+	and  re.is_deleted = 0
+  </select> 
+  <select id="selectWarehouseCommoditys" resultType="java.lang.String">
+	select
+	name
+	from relations as re join commodity as co on co.id=re.commodity_id
+	where re.category_id=#{0} and re.user_id=#{1}  and stock &gt;0 and  re.is_deleted = 0
   </select> 
   <update id="deleteCommodity" parameterType="java.lang.String">
     update commodity
