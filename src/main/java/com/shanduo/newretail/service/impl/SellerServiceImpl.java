@@ -115,8 +115,8 @@ public class SellerServiceImpl implements SellerService {
 		userSeller.setSellerType(userSellerMap.get("sellerType").toString());
 		userSeller.setLat(new BigDecimal(userSellerMap.get("lat").toString()));
 		userSeller.setLon(new BigDecimal(userSellerMap.get("lon").toString()));
-		userSeller.setStartDate(Timestamp.valueOf(userSellerMap.get("startDate").toString()));
-		userSeller.setEndDate(Timestamp.valueOf(userSellerMap.get("endDate").toString()));
+		userSeller.setStartDate(Timestamp.valueOf("1970-01-01 "+userSellerMap.get("startDate").toString()+":00"));
+		userSeller.setEndDate(Timestamp.valueOf("1970-01-01 "+userSellerMap.get("endDate").toString()+":00"));
 		return userSellerMapper.updateByPrimaryKeySelective(userSeller);
 	}
 	@Override

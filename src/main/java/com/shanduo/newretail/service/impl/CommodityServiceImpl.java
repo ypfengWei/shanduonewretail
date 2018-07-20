@@ -211,4 +211,10 @@ public class CommodityServiceImpl implements CommodityService {
 		return count;
 	}
 
+	@Override
+	public CommodityInfo selectOneCommodity(String id,String commodityId) {
+		
+		return commodityMapper.selectOneCommodity(id,commodityId);
+	}
+
 }
