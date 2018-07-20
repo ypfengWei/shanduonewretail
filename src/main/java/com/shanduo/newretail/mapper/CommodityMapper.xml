@@ -19,10 +19,11 @@
     <result column="picture" jdbcType="VARCHAR" property="picture" />
     <result column="price" jdbcType="DECIMAL" property="price" />
     <result column="stock" jdbcType="INTEGER" property="stock" />
+    <result column="category_id" jdbcType="INTEGER" property="categoryId" />
     <result column="visible" jdbcType="INTEGER" property="visible" />
   </resultMap>
   <sql id="Commodity_Column_List">
-    id, name, picture, price, stock,visible
+    id, name, picture, price, stock,category_id,visible
   </sql> 
   <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
     select 
@@ -125,19 +126,26 @@
       is_deleted = #{isDeleted,jdbcType=BIT}
     where id = #{id,jdbcType=VARCHAR}
   </update>
+  <select id="selectOneCommodity" resultMap="CommodityResultMap">
+	select
+	<include refid="Commodity_Column_List" />
+	from relations as re join commodity as co on co.id=re.commodity_id
+	where co.id=#{1} and re.user_id=#{0} and  re.is_deleted = 0
+  </select> 
   
   <select id="selectCommodity" resultMap="CommodityResultMap">
 	select
 	<include refid="Commodity_Column_List" />
 	from relations as re join commodity as co on co.id=re.commodity_id
 	where re.category_id=#{0} and re.user_id=#{1} and re.visible='1' and stock &gt;0
+	and  re.is_deleted = 0
 	limit #{2},#{3}
   </select> 
   <select id="selectCommoditys" resultMap="CommodityResultMap">
 	select
 	<include refid="Commodity_Column_List" />
 	from relations as re join commodity as co on co.id=re.commodity_id
-	where re.category_id=#{0} and re.user_id=#{1}  and stock &gt;0
+	where re.category_id=#{0} and re.user_id=#{1}  and stock &gt;0 and  re.is_deleted = 0
 	limit #{2},#{3}
   </select> 
   <update id="deleteCommodity" parameterType="java.lang.String">

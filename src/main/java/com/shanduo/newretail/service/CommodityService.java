@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.shanduo.newretail.entity.Commodity;
+import com.shanduo.newretail.entity.service.CommodityInfo;
 
 
 public interface CommodityService {
@@ -48,4 +49,6 @@ public interface CommodityService {
 	 * 查询商品所有类别
 	 */
 	List<Map<String,Object>> selectCommodityType(String id);
+	
+	CommodityInfo selectOneCommodity(String id,String commodityId);
 }

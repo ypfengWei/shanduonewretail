@@ -26,6 +26,7 @@ body *{
 }
 body{
     height: 100%;
+    background-color: #F4F4F4;
 }
 
 .dis_flex{
@@ -33,7 +34,7 @@ body{
     flex-shrink:0;
 }
 header{
-    height: 53px;
+    height: 50px;
 }
 /*标题*/
 div.title_header {
@@ -44,7 +45,6 @@ div.title_header {
     left: 0;
     z-index: 1000;
     background-color: #fff;
-    border-bottom: 3px solid #F4F4F4;
 }
 div.title_header>div{
     width: 33%;
@@ -76,4 +76,48 @@ div.title_header>div:last-child>img{
     width: 24px;
     height: 24px;
 
+}
+.body>div{
+    background-color: #fff;
+    border-bottom: 1px solid #F4F4F4;
+}
+.body>.div_mode{
+    height: 150px;
+    border-bottom: 3px solid #F4F4F4;
+    justify-content: center;
+}
+.body>.div_mode>div{
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+    background-color: #fff;
+    margin-left: 50px;
+    margin-right: 50px;
+}
+.body>.div_mode>div>img{
+    width: 80px;
+    margin-bottom: 5px;
+}
+.body>.div_mode>div>span{
+    font-size: 16px;
+}
+.body>.div_Record{
+    justify-content: space-between;
+    align-items: center;
+    height: 40px;
+    font-size: 17px;
+    padding: 0 10px;
+}
+.body>.div_bankCard{
+    flex-direction: column;
+    justify-content: center;
+    font-size: 14px;
+    padding: 0 10px;
+    height: 60px;
+}
+.body>.div_bankCard>div{
+    justify-content: space-between;
+    color: #999999;
+    margin-top: 7px;
 }

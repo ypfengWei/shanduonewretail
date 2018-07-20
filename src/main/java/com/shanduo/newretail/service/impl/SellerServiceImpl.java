@@ -93,13 +93,6 @@ public class SellerServiceImpl implements SellerService {
 	@Override
 	public SellerDetails selectSellerDetails(String id) {
 		SellerDetails userSeller = userSellerMapper.selectSellerDetails(id);
-		if("0".equals(userSeller.getSellerType())){
-			userSeller.setSellerType("超市");
-		}else if("1".equals(userSeller.getSellerType())){
-			userSeller.setSellerType("水果店");
-		}else{
-			userSeller.setSellerType("冷饮店");
-		}
 		return userSeller;
 	}
 	@Override
@@ -112,11 +105,11 @@ public class SellerServiceImpl implements SellerService {
 		userSeller.setSellerPicture(sellerPicture);
 		userSeller.setNotice(userSellerMap.get("notice").toString());
 		userSeller.setPhone(userSellerMap.get("phone").toString());
-		userSeller.setSellerType(userSellerMap.get("sellerType").toString());
+		userSeller.setSellerType(Integer.valueOf(userSellerMap.get("sellerType").toString()));
 		userSeller.setLat(new BigDecimal(userSellerMap.get("lat").toString()));
 		userSeller.setLon(new BigDecimal(userSellerMap.get("lon").toString()));
-		userSeller.setStartDate(Timestamp.valueOf(userSellerMap.get("startDate").toString()));
-		userSeller.setEndDate(Timestamp.valueOf(userSellerMap.get("endDate").toString()));
+		userSeller.setStartDate(Timestamp.valueOf("1970-01-01 "+userSellerMap.get("startDate").toString()+":00"));
+		userSeller.setEndDate(Timestamp.valueOf("1970-01-01 "+userSellerMap.get("endDate").toString()+":00"));
 		return userSellerMapper.updateByPrimaryKeySelective(userSeller);
 	}
 	@Override
