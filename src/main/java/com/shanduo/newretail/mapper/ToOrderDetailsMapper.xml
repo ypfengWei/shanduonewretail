@@ -9,6 +9,11 @@
     <result column="commodity_number" jdbcType="INTEGER" property="commodityNumber" />
     <result column="price" jdbcType="DECIMAL" property="price" />
   </resultMap>
+  <resultMap id="CommodityInfosMap" type="com.shanduo.newretail.entity.service.CommodityInfos">
+    <result column="commodity_id" jdbcType="VARCHAR" property="commodityId" />
+    <result column="commodity_name" jdbcType="VARCHAR" property="commodityName" />
+    <result column="number" jdbcType="INTEGER" property="number" />
+  </resultMap>
   <sql id="Base_Column_List">
     id, order_id, commodity_id, commodity_name, commodity_number, price
   </sql>
@@ -109,5 +114,82 @@
     id, order_id, commodity_id, commodity_name, commodity_number, price
     from to_order_details
     where order_id = #{orderId,jdbcType=VARCHAR}
+  </select>
+  <select id="countSellerCommodity" resultType="java.lang.Integer">
+  	select count(t.id) 
+  	from (
+  		select id 
+  		from to_order_details
+		where order_id in (
+			select id from to_order
+			where is_deleted = '0'
+			and state = '4'
+			and seller_id = #{sellerId,jdbcType=VARCHAR}
+			<if test="startDate != null and startDate != ''">
+    		and gmt_create &gt;= #{startDate,jdbcType=VARCHAR}
+    		</if>
+    		<if test="endDate != null and endDate != ''">
+    		and gmt_create &lt;= #{endDate,jdbcType=VARCHAR}" 23:59:59"
+    		</if>
+			)
+		<if test="categoryId != null and categoryId != ''">
+		and commodity_id in (
+			select commodity_id from relations 
+			where user_id = #{sellerId,jdbcType=VARCHAR}
+			and category_id = #{categoryId,jdbcType=VARCHAR}
+			)
+		</if>
+		group by commodity_id
+		) t;
+  </select>
+  <select id="listSellerCommodity" resultMap="CommodityInfosMap">
+  	select
+ 	commodity_id, commodity_name, sum(commodity_number) as number
+	from to_order_details
+	where order_id in (
+		select id from to_order
+		where is_deleted = '0'
+		and state = '4'
+		and seller_id = #{sellerId,jdbcType=VARCHAR}
+			<if test="startDate != null and startDate != ''">
+    		and gmt_create &gt;= #{startDate,jdbcType=VARCHAR}
+    		</if>
+    		<if test="endDate != null and endDate != ''">
+    		and gmt_create &lt;= #{endDate,jdbcType=VARCHAR}" 23:59:59"
+    		</if>
+		)
+		<if test="categoryId != null and categoryId != ''">
+		and commodity_id in (
+			select commodity_id from relations 
+			where user_id = #{sellerId,jdbcType=VARCHAR}
+			and category_id = #{categoryId,jdbcType=VARCHAR}
+			)
+		</if>
+	group by commodity_id
+	limit #{pageNum},#{pageSize}
+  </select>
+  <select id="sumSellerMoney" resultType="java.lang.Double">
+  	select
+ 	ifnull(0,sum(commodity_number*price))
+	from to_order_details
+	where order_id in (
+		select id from to_order
+		where is_deleted = '0'
+		and state = '4'
+		and seller_id = #{sellerId,jdbcType=VARCHAR}
+			<if test="startDate != null and startDate != ''">
+    		and gmt_create &gt;= #{startDate,jdbcType=VARCHAR}
+    		</if>
+    		<if test="endDate != null and endDate != ''">
+    		and gmt_create &lt;= #{endDate,jdbcType=VARCHAR}" 23:59:59"
+    		</if>
+		)
+		<if test="categoryId != null and categoryId != ''">
+		and commodity_id in (
+			select commodity_id from relations
+			where user_id = #{sellerId,jdbcType=VARCHAR}
+			and category_id = #{categoryId,jdbcType=VARCHAR}
+			)
+		</if>
   </select>
 </mapper>

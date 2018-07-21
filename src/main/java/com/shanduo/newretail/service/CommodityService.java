@@ -25,6 +25,8 @@ public interface CommodityService {
 	 * 查询店铺同一类别的所有商品
 	 */
 	Map<String, Object> selectCommodity(Integer categoryId,String id,Integer pageNum, Integer pageSize,String typeId);
+	
+	Map<String, Object> selectWarehouseCommodity(Integer categoryId,String id,Integer pageNum, Integer pageSize,String userId);
 	/*
 	 * 商品上下架
 	 */

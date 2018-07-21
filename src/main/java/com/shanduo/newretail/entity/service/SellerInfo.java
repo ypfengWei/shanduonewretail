@@ -8,7 +8,7 @@ public class SellerInfo {
 
 	    private String sellerPicture;
 	    
-	    private String sellerType;
+	    private Integer sellerType;
 
 	    private Boolean businessSign;
 	    
@@ -38,11 +38,11 @@ public class SellerInfo {
 			this.sellerPicture = sellerPicture;
 		}
 
-		public String getSellerType() {
+		public Integer getSellerType() {
 			return sellerType;
 		}
 
-		public void setSellerType(String sellerType) {
+		public void setSellerType(Integer sellerType) {
 			this.sellerType = sellerType;
 		}
 

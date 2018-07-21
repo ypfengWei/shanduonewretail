@@ -20,13 +20,7 @@
     <script src="js/layer.js"></script>
     <script src="js/utils.js"></script>
     <script src="js/service.js"></script>
-    <script src="js/store_service.js"></script>
     <title>商品设置</title>
-    <style type="text/css">
-        [v-cloak] {
-            display: none;
-        }
-    </style>
 </head>
 <body>
 <div id="vueData" class="mescroll">
@@ -42,7 +36,7 @@
                                 <li v-for="(item,index) in classify"
                                     :class="index==0?'swiper-container-ul-li active':'swiper-container-ul-li'">
                                     <a href="#" data-toggle="tab"
-                                       @click.prevent="changer(item.id)">{{item.commodityType}}</a>
+                                       @click.prevent="changer(item.id)">{{item.category_name}}</a>
                                 </li>
                             </ul>
                         </div>
@@ -75,18 +69,22 @@
                                                         <div class="number dis_flex">
                                                             <span class="price" @click="onclick3(index)
                                                             "><span class="col_hui">单价：</span>￥{{commodity.price}}</span>
-                                                            <input type="checkbox" name="Drink" value="cola" checked="checked" />
                                                         </div>
                                                     </div>
                                                     <div class="right_top_pot dis_flex">
                                                         <div>
-                                                            <a href="">上架</a>/<a href="">下架</a>
+                                                            <a href="javascript:" @click="commodityVisible(index)">
+                                                                <span v-if="commodity.visible==1">下架</span>
+                                                                <span v-else>上架</span>
+                                                            </a>
                                                         </div>
                                                         <div>
-                                                            <a href="">修改</a>
+                                                            <a href="javascript:"
+                                                               @click="gotoEditCommodityView(commodity.id)">修改</a>
                                                         </div>
                                                         <div>
-                                                            <a href="">删除</a>
+                                                            <a href="javascript:"
+                                                               @click="deleteCommodity(index,commodity.id)">删除</a>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -105,17 +103,11 @@
                 <div class="dis_flex">
                     <img id="bigimg" :src="currentCommodity.picture.imgPath"/>
                     <div class="title">{{currentCommodity.name}}</div>
-                    <div class="subtitle">{{currentCommodity.introduceDetails}}</div>
+                    <div class="subtitle">库存:{{currentCommodity.stock}}</div>
                     <div class="number dis_flex">
                         <span class="price">￥{{currentCommodity.price}}</span>
                         <p class="plan dis_flex">
-                            <a href="javascript:"
-                               @click.prevent="addoff(currentCommodity.id)"
-                               class="add_left" v-if="currentCommodity.count>0"></a>
-                            <span v-if="currentCommodity.count>0">{{currentCommodity.count}}</span>
-                            <a href="javascript:"
-                               @click.prevent="addon(currentCommodity.id,currentCommodity.name,currentCommodity.price,currentCommodity.introduceDetails,currentCommodity.picture.imgPath)"
-                               class="add_right"></a>
+
                         </p>
                     </div>
                 </div>
@@ -125,38 +117,8 @@
     </div>
     <footer>
         <div class="dis_flex">
-            <a href="javascript:" @click="submitOrderView">去仓库</a>
-            <a href="javascript:" @click="submitOrderView">上传商品</a>
-        </div>
-        <div class="gwcTog">
-            <div class="dis_flex">
-                <div class="dis_flex" @click="emptyCart">
-                    <img src="img/delete.png" alt="">
-                    <span class="col_hui">清空购物车</span>
-                </div>
-                <!--购物车商品-->
-                <div class="dis_flex">
-                    <!--购物车单个商品-->
-                    <div v-for="item in cart" v-if="item.count>0" class="dis_flex">
-                        <div class="dis_flex">
-                            <div class="title">{{item.commodityName}}</div>
-                            <div class="subtitle">{{item.commodityDesc}}</div>
-                        </div>
-                        <div class="dis_flex">
-                            <div class="number dis_flex">
-                                <span class="price">￥{{item.commodityPrice}}</span>
-                                <p class="plan dis_flex">
-                                    <a href="javascript:" class="add_left"
-                                       @click="cartUpdate('del',item.commodityId)"></a>
-                                    <span>{{item.count}}</span>
-                                    <a href="javascript:" class="add_right"
-                                       @click="cartUpdate('add',item.commodityId)"></a>
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <a href="javascript:" @click="gotoWarehouseView">去仓库</a>
+            <a href="javascript:" @click="addCommodityView">上传商品</a>
         </div>
     </footer>
 </div>
@@ -164,7 +126,7 @@
 <script src="js/mescroll.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 <script type="text/javascript">
-    let code = GetQueryString('code');
+    let localStore = JSON.parse(localStorage.localStore);
     let pageIndex = 1, pageCount = 20, totalPage = 0, itemIndex = 0, currentClassifyid;
     var vm = new Vue({
         el: '#vueData',
@@ -172,9 +134,6 @@
             classify: [],
             commodityArray: [],
             currentCommodity: null,
-            cart: [],
-            totalPrice: 0,
-            totalCount: 0,
             mescroll: null
         },
         mounted: function () {
@@ -182,14 +141,13 @@
             that.mescroll = new MeScroll("vueData", { //请至少在vue的mounted生命周期初始化mescroll,以确保您配置的id能够被找到
                 up: {
                     callback: that.upCallback, //
-                    auto: false
+                    auto: false,
+                    noMoreSize: 20
                 }, down: {
                     callback: that.downCallback,
                     auto: false
                 }
             });
-            //隐藏购物车
-            $('.gwcTog').hide();
             //图片放大
             $('#outerdiv').hide();
         },
@@ -222,171 +180,102 @@
             closeDiglog() {
                 $('#outerdiv').fadeOut("fast");
             },
-            gwcToggle() {
-                if (this.totalPrice > 0) {
-                    $('.gwcTog').toggle();
-                }
-            },
-            addoff(commodityId) {
-                cartAction('del', {commodityId: commodityId}, function () {
-                    queryCartAll(function (res) {
-                        vm.cart = res;
-                    });
-                }, function () {
-                    queryCartAll(function (res) {
-                        vm.cart = res;
-                    });
-
-                });
-            },
-            emptyCart() {
-                emptyDB();
-                let ary = vm.cart;
-                ary.splice(0, ary.length);
-                vm.cart = ary;
-            },
-            cartUpdate(action, commodityId) {
-                cartAction(action, {commodityId: commodityId}, function () {
-                    queryCartAll(function (res) {
-                        vm.cart = res;
-                    });
-                }, function () {
-                    queryCartAll(function (res) {
-                        vm.cart = res;
-                    });
-                });
-            },
-            addon(commodityId, commodityName, commodityPrice, commodityDesc, commodityPicture) {
-                cartAction('add', {
-                    commodityId: commodityId,
-                    commodityName: commodityName,
-                    commodityPrice: commodityPrice,
-                    commodityDesc: commodityDesc,
-                    commodityPicture: commodityPicture,
-                    count: 1
-                }, function () {
-                    queryCartAll(function (res) {
-                        vm.cart = res;
-                    });
-                }, function () {
-                    queryCartAll(function (res) {
-                        vm.cart = res;
-                    });
-                });
-
-            },
             changer(classifyId) {
-                let that = this;
                 let selectId = $(event.currentTarget).parent().index();
                 if (itemIndex === selectId) {
                     return;
                 }
-                emptyData();
                 itemIndex = selectId;
-                pageIndex = 1;
-                totalPage = 1;
+                emptyData();
                 currentClassifyid = classifyId;
                 $(event.currentTarget).parent().addClass('active').siblings('li').removeClass('active');
-                adapter(classifyId, function () {
-                    if (totalPage > pageIndex) {
-                        pageIndex++;
-                        that.mescroll.endSuccess(pageCount, true);
-                    } else {
-                        that.mescroll.endSuccess(pageCount, false);
-                    }
-                }, function () {
-                    that.mescroll.endErr();
-                });
+                adapter(classifyId);
             },
             onclick1(index) {
-                vm.currentCommodity = vm.commodityArray[shop];
+                vm.currentCommodity = vm.commodityArray[index];
                 vm.imgShow();
             },
             onclick2(index) {
-                vm.currentCommodity = vm.commodityArray[shop];
+                vm.currentCommodity = vm.commodityArray[index];
                 vm.imgShow();
             },
             onclick3(index) {
-                vm.currentCommodity = vm.commodityArray[shop];
+                vm.currentCommodity = vm.commodityArray[index];
                 vm.imgShow()
-            },
-            submitOrderView() {
-                if (vm.totalCount > 0) {
-                    location.href = 'payment.html';
-                } else {
-                    toast('客官选一件吧!');
-                }
-            }
-
-        }
-    });
-    vm.$watch('cart', function () {
-        let price = 0;
-        let count = 0;
-        $.each(vm.cart, function (i, item) {
-            price += item.commodityPrice * item.count;
-            count += item.count;
-        });
-        vm.totalPrice = price.toFixed(2);
-        vm.totalCount = count;
-        if ($(".gwcTog").css("display") === 'block' && vm.totalCount === 0) {
-            $('.gwcTog').toggle();
-        }
-        notifyDataSetChanged();
-    });
-
-    function notifyDataSetChanged() {
-        if (vm.cart.length > 0) {
-            for (let i = 0; i < vm.cart.length; i++) {
-                for (let j = 0; j < vm.commodityArray.length; j++) {
-                    if (vm.cart[i].commodityId === vm.commodityArray[j].id) {
-                        vm.commodityArray[j].count = vm.cart[i].count;
-                        if (vm.cart[i].count === 0) {
-                            delCommodity(vm.cart[i].commodityId);
-                        }
-                        break;
+            }, gotoWarehouseView() {
+                location.href = 'Warehouse.html';
+            }, addCommodityView() {
+                location.href = 'UploadingGoods.html'
+            }, commodityVisible(key) {
+                let commodity = vm.commodityArray[key];
+                layer.open({
+                    content: commodity.visible === 1 ? "下架这个商品?" : "上架这个商品?"
+                    , btn: ['是的', '取消']
+                    , yes: function (index) {
+                        $.getJSON('/shanduonewretail/jcommodity/updatecommodityvisible', {
+                            token: localStore.token,
+                            commodityId: commodity.id,
+                            visible: commodity.visible === 1 ? 0 : 1
+                        }, function (result) {
+                            if (result.success) {
+                                vm.commodityArray[key].visible = commodity.visible === 1 ? 0 : 1;
+                                toast('操作成功');
+                            } else {
+                                toast('操作失败');
+                            }
+                        });
+                        layer.close(index);
                     }
-                }
-            }
-        } else {
-            for (let i = 0; i < vm.commodityArray.length; i++) {
-                vm.commodityArray[i].count = 0;
+                });
+            }, gotoEditCommodityView(commodityId) {
+                location.href = 'UploadingGoods.html?commodityId=' + commodityId;
+            }, deleteCommodity(key, commodityId) {
+                layer.open({
+                    content: "删除这个商品吗？"
+                    , btn: ['是的', '取消']
+                    , yes: function (index) {
+                        $.getJSON('/shanduonewretail/jcommodity/deletecommodity', {
+                            token: localStore.token,
+                            commodityId: commodityId
+                        }, function (result) {
+                            if (result.success) {
+                                let oldData = vm.commodityArray;
+                                oldData.splice(key, 1);
+                                vm.commodityArray = oldData;
+                                toast('操作成功');
+                                if (vm.commodityArray.length === 0) {
+                                    location.reload();
+                                }
+                            } else {
+                                toast('操作失败');
+                            }
+                        });
+                        layer.close(index);
+                    }
+                });
             }
         }
-    }
-
+    });
     $(function () {
-        init();
-        if (!openid) {
-            if (code) {
-                getOpenid(code);
-            } else {
-                location.href = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxe0870cb2d63b008d&redirect_uri=https://yapinkeji.com/yapingzh/shanduo_zahuopu/index.html&response_type=code&scope=snsapi_userinfo#wechat_redirect';
-            }
-        }
-        getClassify(function (result) {
-            vm.classify = result.classify;
+        getStoreClassify(localStore.token, 2, function (result) {
+            vm.classify = result;
             currentClassifyid = vm.classify[0].id;
             adapter(currentClassifyid);
         });
     });
 
-    function adapter(classifyId, cbOK, cbErr) {
-        getGoodsByClassifyId(classifyId, pageIndex, pageCount, function (res) {
-            let newData = res.commodityArray;
+    function adapter(categoryId, cbOK, cbErr) {
+        getGoods(localStore.token, categoryId, 2, pageIndex, pageCount, function (res) {
+            console.log(res);
+            let newData = res.commodityInfoList;
             for (let i in newData) {
                 newData[i].picture = {
-                    myStyle: {backgroundImage: "url('/yapingzh/picture/" + newData[i].introducePicture + "')"},
-                    imgPath: '/yapingzh/picture/' + newData[i].introducePicture
+                    myStyle: {backgroundImage: "url('/yapingzh/picture/" + newData[i].picture + "')"},
+                    imgPath: '/yapingzh/picture/' + newData[i].picture
                 };
             }
             vm.commodityArray = vm.commodityArray.concat(newData);
             totalPage = res.totalPage;
-            queryCartAll(function (res) {
-                if (res.length > 0) {
-                    vm.cart = res;
-                }
-            });
             cbOK && cbOK();
         }, function () {
             cbErr && cbErr();

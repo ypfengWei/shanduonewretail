@@ -87,7 +87,8 @@ public class CommodityServiceImpl implements CommodityService {
 		int totalRecord = 0;
 		if("2".equals(typeId)){
 			totalRecord = relationsMapper.selectCommodityNums(id, categoryId);
-		}else{
+		}
+		if("1".equals(typeId)){
 			totalRecord = relationsMapper.selectCommodityNum(id, categoryId);
 		}
 		Map<String, Object> resultMap = new HashMap<String, Object>(3);
@@ -143,13 +144,14 @@ public class CommodityServiceImpl implements CommodityService {
 	public List<Map<String, Object>> selectCommodityType(String id) {
 		UserSeller userSeller =userSellerMapper.selectByPrimaryKey(id);
 		List<Map<String, Object>> map = new ArrayList<Map<String, Object>>();
-		if("0".equals(userSeller.getSellerType())){
+		Integer sellerType = userSeller.getSellerType();
+		if(0==sellerType){
 			map=categoryMapper.selectCommodityType(99, 999);
 		}
-		if("1".equals(userSeller.getSellerType())){
+		if(1==sellerType){
 			map=categoryMapper.selectCommodityType(999, 9999);
 		}
-		if("2".equals(userSeller.getSellerType())){
+		if(2==sellerType){
 			map=categoryMapper.selectCommodityType(9999, 99999);
 		}
 		return map;
@@ -215,6 +217,37 @@ public class CommodityServiceImpl implements CommodityService {
 	public CommodityInfo selectOneCommodity(String id,String commodityId) {
 		
 		return commodityMapper.selectOneCommodity(id,commodityId);
+	}
+
+	@Override
+	public Map<String, Object> selectWarehouseCommodity(Integer categoryId, String id, Integer pageNum,
+			Integer pageSize, String userId) {
+		Map<String, Object> resultMap = new HashMap<String, Object>(3);
+		List<CommodityInfo> list = commodityMapper.selectWarehouseCommodity(categoryId, id);
+		List<String> lists = commodityMapper.selectWarehouseCommoditys(categoryId, userId);
+		for(int i=list.size()-1;i>=0;i--){
+			CommodityInfo commodityInfo = new CommodityInfo();
+			commodityInfo=list.get(i);
+			if(lists.contains(commodityInfo.getName())){
+				list.remove(commodityInfo);
+			}
+		}
+		if(list.size()<(pageNum-1)*pageSize){
+			return null;
+		}else if(list.size()>pageNum*pageSize){
+			list=list.subList((pageNum-1)*pageSize,pageNum*pageSize);
+		}else{
+			List<CommodityInfo> commodityInfoList = new ArrayList<CommodityInfo>();
+			for(int i=(pageNum-1)*pageSize;i<list.size();i++){
+				commodityInfoList.add(list.get(i));
+			}
+			resultMap.put("totalPage", list.size());
+			resultMap.put("commodityInfoList", commodityInfoList);
+			return resultMap;
+		}
+		resultMap.put("totalPage", list.size());
+		resultMap.put("commodityInfoList", list);
+		return resultMap;
 	}
 
 }

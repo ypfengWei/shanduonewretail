@@ -123,4 +123,34 @@ public interface OrderService {
 	 * @throws
 	 */
 	Map<String, Object> listSellerOrder(String sellerId, String state, String startDate, String endDate, Integer pageNum, Integer pageSize);
+	
+	/**
+	 * 卖家条件分页查询商品销售数量
+	 * @Title: listSellerCommodity
+	 * @Description: TODO
+	 * @param @param sellerId
+	 * @param @param categoryId
+	 * @param @param startDate
+	 * @param @param endDate
+	 * @param @param pageNum
+	 * @param @param pageSize
+	 * @param @return
+	 * @return Map<String,Object>
+	 * @throws
+	 */
+	Map<String, Object> listSellerCommodity(String sellerId, String categoryId, String startDate, String endDate, Integer pageNum, Integer pageSize);
+	
+	/**
+	 * 卖家条件查询商品销售金额
+	 * @Title: sumSellerMoney
+	 * @Description: TODO
+	 * @param @param sellerId
+	 * @param @param categoryId
+	 * @param @param startDate
+	 * @param @param endDate
+	 * @param @return
+	 * @return Double
+	 * @throws
+	 */
+	Double sumSellerMoney(String sellerId, String categoryId, String startDate, String endDate);
 }

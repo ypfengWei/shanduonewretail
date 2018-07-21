@@ -255,10 +255,111 @@ public class OrderController {
 		if(sellerId == null) {
 			return ResultUtils.error(ErrorConsts.CODE_10001, "请重新登录");
 		}
-		if(StringUtils.isNull(state) || !state.matches("^[1-6]$")) {
-			log.warn("state is error waith state:{}", state);
-			return ResultUtils.error(ErrorConsts.CODE_10002, "状态错误");
+		JSONObject json = isDate(startDate, endDate);
+		if(json != null) {
+			return json;
 		}
+		if(StringUtils.isNull(page) || !page.matches("^\\d*$")) {
+			log.warn("page is error waith page:{}", page);
+			return ResultUtils.error(ErrorConsts.CODE_10002, "页码错误");
+		}
+		if(StringUtils.isNull(pageSize) || !pageSize.matches("^\\d*$")) {
+			log.warn("pageSize is error waith pageSize:{}", pageSize);
+			return ResultUtils.error(ErrorConsts.CODE_10002, "记录错误");
+		}
+		Integer pages = Integer.valueOf(page);
+		Integer pageSizes = Integer.valueOf(pageSize);
+		Map<String, Object> resultMap = new HashMap<>(3);
+		try {
+			resultMap = orderService.listSellerOrder(sellerId, state, startDate, endDate, pages, pageSizes);
+		} catch (Exception e) {
+			return ResultUtils.error(ErrorConsts.CODE_10004, "查询错误");
+		}
+		return ResultUtils.success(resultMap);
+	}
+	
+	/**
+	 * 卖家条件分页查询商品销售数量
+	 * @Title: commodityList
+	 * @Description: TODO
+	 * @param @param request
+	 * @param @param token
+	 * @param @param categoryId 分类ID
+	 * @param @param startDate 开始时间
+	 * @param @param endDate 结束时间 
+	 * @param @param page 页码
+	 * @param @param pageSize 记录数
+	 * @param @return
+	 * @return JSONObject
+	 * @throws
+	 */
+	@RequestMapping(value = "commodityList",method={RequestMethod.POST,RequestMethod.GET})
+	@ResponseBody
+	public JSONObject commodityList(HttpServletRequest request, String token, String categoryId, String startDate, String endDate, 
+			String page, String pageSize) {
+		String sellerId = baseService.checkUserToken(token);
+		if(sellerId == null) {
+			return ResultUtils.error(ErrorConsts.CODE_10001, "请重新登录");
+		}
+		JSONObject json = isDate(startDate, endDate);
+		if(json != null) {
+			return json;
+		}
+		if(StringUtils.isNull(page) || !page.matches("^\\d*$")) {
+			log.warn("page is error waith page:{}", page);
+			return ResultUtils.error(ErrorConsts.CODE_10002, "页码错误");
+		}
+		if(StringUtils.isNull(pageSize) || !pageSize.matches("^\\d*$")) {
+			log.warn("pageSize is error waith pageSize:{}", pageSize);
+			return ResultUtils.error(ErrorConsts.CODE_10002, "记录错误");
+		}
+		Integer pages = Integer.valueOf(page);
+		Integer pageSizes = Integer.valueOf(pageSize);
+		Map<String, Object> resultMap = new HashMap<>(3);
+		try {
+			resultMap = orderService.listSellerCommodity(sellerId, categoryId, startDate, endDate, pages, pageSizes);
+		} catch (Exception e) {
+			return ResultUtils.error(ErrorConsts.CODE_10004, "查询错误");
+		}
+		return ResultUtils.success(resultMap);
+	}
+	
+	/**
+	 * 卖家条件查询商品销售金额
+	 * @Title: countMoney
+	 * @Description: TODO
+	 * @param @param request
+	 * @param @param token
+	 * @param @param categoryId
+	 * @param @param startDate
+	 * @param @param endDate
+	 * @param @return
+	 * @return JSONObject
+	 * @throws
+	 */
+	@RequestMapping(value = "countmoney",method={RequestMethod.POST,RequestMethod.GET})
+	@ResponseBody
+	public JSONObject countMoney(HttpServletRequest request, String token, String categoryId, String startDate, String endDate) {
+		String sellerId = baseService.checkUserToken(token);
+		if(sellerId == null) {
+			return ResultUtils.error(ErrorConsts.CODE_10001, "请重新登录");
+		}
+		JSONObject json = isDate(startDate, endDate);
+		if(json != null) {
+			return json;
+		}
+		Double money = 0.00;
+		try {
+			money = orderService.sumSellerMoney(sellerId, categoryId, startDate, endDate);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResultUtils.error(ErrorConsts.CODE_10004, "查询错误");
+		}
+		return ResultUtils.success("money", money);
+	}
+	
+	@SuppressWarnings("unused")
+	private JSONObject isDate(String startDate, String endDate) {
 		if(!StringUtils.isNull(startDate)) {
 			if(!startDate.matches("^\\d{4}-\\d{1,2}-\\d{1,2}$")) {
 				log.warn("startDate is error waith startDate:{}", startDate);
@@ -278,33 +379,15 @@ public class OrderController {
 				log.warn("endDate is error waith endDate:{}", endDate);
 				return ResultUtils.error(ErrorConsts.CODE_10002, "结束时间错误");
 			}
-			endDate += " 23:59:59";
 		}
 		if(!StringUtils.isNull(startDate) && !StringUtils.isNull(endDate)) {
 			long start = convertTimeToLong(startDate);
 			long end = convertTimeToLong(endDate);
 			if(start > end) {
-				return ResultUtils.error(ErrorConsts.CODE_10003,"输入时间开始时间不能晚于结束时间");
+				return ResultUtils.error(ErrorConsts.CODE_10003,"开始时间大于结束时间");
 			}
 		}
-		if(StringUtils.isNull(page) || !page.matches("^\\d*$")) {
-			log.warn("page is error waith page:{}", page);
-			return ResultUtils.error(ErrorConsts.CODE_10002, "页码错误");
-		}
-		if(StringUtils.isNull(pageSize) || !pageSize.matches("^\\d*$")) {
-			log.warn("pageSize is error waith pageSize:{}", pageSize);
-			return ResultUtils.error(ErrorConsts.CODE_10002, "记录错误");
-		}
-		Integer pages = Integer.valueOf(page);
-		Integer pageSizes = Integer.valueOf(pageSize);
-		Map<String, Object> resultMap = new HashMap<>(3);
-		try {
-			resultMap = orderService.listSellerOrder(sellerId, state, startDate, endDate, pages, pageSizes);
-		} catch (Exception e) {
-			e.printStackTrace();
-			return ResultUtils.error(ErrorConsts.CODE_10002, "查询错误");
-		}
-		return ResultUtils.success(resultMap);
+		return null;
 	}
 	
 	private Long convertTimeToLong(String time) {

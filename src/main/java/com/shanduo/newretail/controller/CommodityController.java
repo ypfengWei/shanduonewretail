@@ -126,13 +126,6 @@ public class CommodityController {
 				return new ErrorBean(ErrorConsts.CODE_10001,"token失效");
 			}
 		}
-		if("3".equals(typeId)){
-			id = UserService.selectAdministratorsId();
-			if(null==id){
-				Log.warn("token失效");
-				return new ErrorBean(ErrorConsts.CODE_10001,"token失效");
-			}
-		}
 		if(null==categoryId){
 			Log.warn("categoryId错误");
 			return new ErrorBean(ErrorConsts.CODE_10002,"参数为空");
@@ -148,6 +141,61 @@ public class CommodityController {
 		try {
 			Map<String, Object> resultMap = new HashMap<String, Object>(3);
 			resultMap = commodityService.selectCommodity(Integer.valueOf(categoryId), id,Integer.valueOf(page),Integer.valueOf(pageSize),typeId);
+			if(resultMap.isEmpty()){
+				return new ErrorBean();
+			}
+			return new SuccessBean(resultMap);
+		} catch (Exception e) {
+			return new ErrorBean(ErrorConsts.CODE_10004,"查询失败");
+		}
+	}
+	
+	/**
+	 * 查询仓库所有商品
+	 * @param request
+	 * @param id
+	 * @param categoryId
+	 * @param page
+	 * @param pageSize
+	 * @param typeId
+	 * @param token
+	 * @return
+	 */
+	@RequestMapping(value = "selectwarehousecommodity",method={RequestMethod.POST,RequestMethod.GET})
+	@ResponseBody
+	//http://localhost:8081/shanduonewretail/jcommodity/selectwarehousecommodity?categoryId=
+	public ResultBean selectWarehouseCommodity(HttpServletRequest request, String categoryId, String page, String pageSize,String token) {
+		
+		if(StringUtils.isNull(token)) {
+			Log.warn("token为空");
+			return new ErrorBean(ErrorConsts.CODE_10002,"token为空");
+		}
+		String userId = baseService.checkUserToken(token);
+		if(null==userId){
+			Log.warn("token失效");
+			return new ErrorBean(ErrorConsts.CODE_10001,"token失效");
+		}
+		String id = UserService.selectAdministratorsId();
+		if(null==id){
+			Log.warn("token失效");
+			return new ErrorBean(ErrorConsts.CODE_10001,"token失效");
+		}
+		
+		if(null==categoryId){
+			Log.warn("categoryId错误");
+			return new ErrorBean(ErrorConsts.CODE_10002,"参数为空");
+		}
+		if(StringUtils.isNull(page) || !page.matches("^\\d*$")) {
+			Log.warn("page is error waith page:{}", page);
+			return new ErrorBean(ErrorConsts.CODE_10002, "页码错误");
+		}
+		if(StringUtils.isNull(pageSize) || !pageSize.matches("^\\d*$")) {
+			Log.warn("pageSize is error waith pageSize:{}", pageSize);
+			return new ErrorBean(ErrorConsts.CODE_10002, "记录错误");
+		}
+		try {
+			Map<String, Object> resultMap = new HashMap<String, Object>(3);
+			resultMap = commodityService.selectWarehouseCommodity(Integer.valueOf(categoryId), id,Integer.valueOf(page),Integer.valueOf(pageSize),userId);
 			if(resultMap.isEmpty()){
 				return new ErrorBean();
 			}

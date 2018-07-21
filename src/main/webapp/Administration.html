@@ -13,88 +13,102 @@
     <meta name="apple-touch-fullscreen" content="yes"/>
     <!--苹果手机：如果把一个web app添加到了主屏幕中，那么从主屏幕中打开这个web app则全屏显示-->
     <link rel="stylesheet" type="text/css" href="css/Administration.css">
+    <script type="text/javascript" src="js/jquery-3.3.1.js"></script>
     <title></title>
 </head>
 <body>
-    <div id="vueData">
-        <header class="dis_flex">
-            <div class="title_header dis_flex">
-                <div class="dis_flex">
-                    <img src="img/return_3.png">
-                </div>
-                <div>
-                    <span>管理页面</span>
-                </div>
-                <div></div>
+<div id="vueData">
+    <header class="dis_flex">
+        <div class="title_header dis_flex">
+            <div class="dis_flex">
+                <img src="img/return_3.png" alt="">
             </div>
-            <img src="img/rectangle_3.png">
-            <span>闪多新零售</span>
-        </header>
-        <div class="body">
-            <div class="category dis_flex ">
-                <div class="dis_flex">
-                    <img src="img/shop.png">
-                    <span>店铺管理</span>
-                </div>
-                <div class="dis_flex">
-                    <img src="img/return_5.png">
-                </div>
+            <div>
+                <span>管理页面</span>
             </div>
-            <div class="category dis_flex ">
-                <div class="dis_flex">
-                    <img src="img/commodity.png">
-                    <span>商品管理</span>
-                </div>
-                <div class="dis_flex">
-                    <img src="img/return_5.png">
-                </div>
+            <div></div>
+        </div>
+        <img src="img/rectangle_3.png">
+        <span>闪多新零售</span>
+    </header>
+    <div class="body">
+        <div class="category dis_flex " @click="gotoStoreHomeView">
+            <div class="dis_flex">
+                <img src="img/shop.png">
+                <span>店铺管理</span>
             </div>
-            <div class="category dis_flex ">
-                <div class="dis_flex">
-                    <img src="img/Sale.png">
-                    <span>商品销售详情</span>
-                </div>
-                <div class="dis_flex">
-                    <img src="img/return_5.png">
-                </div>
+            <div class="dis_flex">
+                <img src="img/return_5.png">
             </div>
-            <div class="category dis_flex ">
-                <div class="dis_flex">
-                    <img src="img/Order.png">
-                    <span>订单管理</span>
-                </div>
-                <div class="dis_flex">
-                    <img src="img/return_5.png">
-                </div>
+        </div>
+        <div class="category dis_flex " @click="commoditysettingView">
+            <div class="dis_flex">
+                <img src="img/commodity.png">
+                <span>商品管理</span>
             </div>
-            <div class="category dis_flex ">
-                <div class="dis_flex">
-                    <img src="img/Finance.png">
-                    <span>财务管理</span>
-                </div>
-                <div class="dis_flex">
-                    <img src="img/return_5.png">
-                </div>
+            <div class="dis_flex">
+                <img src="img/return_5.png">
             </div>
-            <div class="category dis_flex ">
-                <div class="dis_flex">
-                    <img src="img/business.png">
-                    <span>业务员管理</span>
-                </div>
-                <div class="dis_flex">
-                    <img src="img/return_5.png">
-                </div>
+        </div>
+        <div class="category dis_flex ">
+            <div class="dis_flex">
+                <img src="img/Sale.png">
+                <span>商品销售详情</span>
             </div>
-            <div class="category dis_flex ">
-                <div class="dis_flex">
-                    <img src="img/region.png">
-                    <span>区域管理</span>
-                </div>
-                <div class="dis_flex">
-                    <img src="img/return_5.png">
-                </div>
+            <div class="dis_flex">
+                <img src="img/return_5.png">
+            </div>
+        </div>
+        <div class="category dis_flex ">
+            <div class="dis_flex">
+                <img src="img/Order.png">
+                <span>订单管理</span>
+            </div>
+            <div class="dis_flex">
+                <img src="img/return_5.png">
+            </div>
+        </div>
+        <div class="category dis_flex ">
+            <div class="dis_flex">
+                <img src="img/Finance.png">
+                <span>财务管理</span>
+            </div>
+            <div class="dis_flex">
+                <img src="img/return_5.png">
+            </div>
+        </div>
+        <div class="category dis_flex ">
+            <div class="dis_flex">
+                <img src="img/business.png">
+                <span>业务员管理</span>
+            </div>
+            <div class="dis_flex">
+                <img src="img/return_5.png">
+            </div>
+        </div>
+        <div class="category dis_flex ">
+            <div class="dis_flex">
+                <img src="img/region.png">
+                <span>区域管理</span>
+            </div>
+            <div class="dis_flex">
+                <img src="img/return_5.png">
             </div>
         </div>
     </div>
+</div>
 </body>
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script>
+    let vm = new Vue({
+        el: '#vueData',
+        methods: {
+            gotoStoreHomeView() {
+                location.href = "shopinformation.html";
+            },commoditysettingView(){
+                location.href = "Commoditysetting.html";
+            }
+        }
+    });
+</script>
 </html>
