@@ -28,7 +28,7 @@ public class ResultUtils {
 	@SuppressWarnings("unchecked")
 	public static JSONObject success(Object object) {
 		JSONObject jsonObject = new JSONObject();
-		jsonObject.put("success", "true");
+		jsonObject.put("success", true);
 		if(object instanceof TokenInfo){
 			TokenInfo token = (TokenInfo) object;
             jsonObject.put("token", token.getToken());
@@ -54,7 +54,7 @@ public class ResultUtils {
 	
 	public static JSONObject success(String str,Object object) {
 		JSONObject jsonObject = new JSONObject();
-		jsonObject.put("success", "true");
+		jsonObject.put("success", true);
 		jsonObject.put(str, object);
 		return jsonObject;
 	}
@@ -70,7 +70,7 @@ public class ResultUtils {
 	 */
 	public static JSONObject error(Integer errorCode,String errCodeDes) {
 		JSONObject jsonObject = new JSONObject();
-		jsonObject.put("success", "false");
+		jsonObject.put("success", false);
 		jsonObject.put("errCode", errorCode);
 		jsonObject.put("errCodeDes", errCodeDes);
 		return jsonObject;
