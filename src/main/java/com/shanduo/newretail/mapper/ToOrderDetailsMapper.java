@@ -8,13 +8,13 @@ import com.shanduo.newretail.entity.ToOrderDetails;
 import com.shanduo.newretail.entity.service.CommodityInfos;
 
 public interface ToOrderDetailsMapper {
-    int deleteByPrimaryKey(Integer id);
+	int deleteByPrimaryKey(String id);
 
     int insert(ToOrderDetails record);
 
     int insertSelective(ToOrderDetails record);
 
-    ToOrderDetails selectByPrimaryKey(Integer id);
+    ToOrderDetails selectByPrimaryKey(String id);
 
     int updateByPrimaryKeySelective(ToOrderDetails record);
 
