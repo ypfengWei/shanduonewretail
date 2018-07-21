@@ -47,10 +47,11 @@
             </div>
             <div class="btn-group">
                 <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
-                    类别：饮料
+                    类别:{{commodity.categoryName}}
                 </button>
                 <ul class="dropdown-menu" role="menu">
-                    <li v-for="(item,index) in classify"><a href="#">{{item.category_name}}</a></li>
+                    <li v-for="(item,index) in classify"><a href="#" @click="selCategory(item.id,item.category_name)">{{item.category_name}}</a>
+                    </li>
                 </ul>
             </div>
             <div class="div_inp">
@@ -62,7 +63,7 @@
                 <input type="text" id="stock" v-model="commodity.stock">
             </div>
             <div class="foot_inp">
-                <input type="submit" v-model="submitName" @click="submitDone">
+                <input type="button" v-model="submitName" @click="submitDone">
             </div>
         </form>
     </div>
@@ -77,12 +78,29 @@
         el: '#vueData',
         data: {
             storeImg: null,
+            avatarUrl:null,
             classify: [],
-            commodity: {},
+            commodity: {
+                categoryName:'请选择',
+                picture:''
+            },
             titleName: '修改商品',
             submitName: '保存修改',
             categoryName: ''
-        }, methods: {
+        },watch:{
+            'avatarUrl': function (res) {
+                wx.uploadImage({
+                    localId: res, // 需要上传的图片的本地ID，由chooseImage接口获得
+                    success: function (res) {
+                        vm.commodity.picture = res.serverId; // 返回图片的服务器端ID
+                    }
+                })
+            }
+        } ,methods: {
+            selCategory(categoryId, categoryName) {
+                vm.commodity.commodityId=categoryId;
+                vm.commodity.categoryName=categoryName;
+            },
             goBack() {
                 history.back();
             }, submitDone() {
@@ -96,9 +114,9 @@
                 };
                 if (commodityId) {
                     commodity.commodityId = commodityId;
-                    excute('/shanduonewretail/jcommodity/updatecommodity', commodity);
+                    excuteSubmit('/shanduonewretail/jcommodity/updatecommodity', commodity);
                 } else {
-                    excute('/shanduonewretail/jcommodity/insertcommodity', commodity);
+                    excuteSubmit('/shanduonewretail/jcommodity/insertcommodity',commodity);
                 }
             }, onLoadImg() {
                 wx.chooseImage({
@@ -109,11 +127,10 @@
                         let u = navigator.userAgent;//手机类型android或ios
                         //if (u.indexOf('Android') > -1 || u.indexOf('Linux') > -1) {//安卓手机
                         if (u.indexOf('iPhone') > -1) {
-                            vm.avatarUrl.push(res.localIds[0]);
                             wx.getLocalImgData({
                                 localId: res.localIds[0], // 图片的localID
                                 success: function (res) {
-                                    vm.storeInfo.sellerPicture = res.localData;
+                                    vm.storeImg = res.localData;
                                 }
                             });
                         } else {
@@ -125,10 +142,10 @@
         }
     });
 
-    function excute(url, obj) {
+    function excuteSubmit(url, obj) {
         $.ajax({
             url: url,
-            data: JSON.stringify(obj),
+            data: obj,
             success: function (res) {
                 console.log(res);
             }
@@ -152,8 +169,7 @@
             vm.titleName = '添加商品';
             vm.submitName = '添加上传';
         }
-        $.get('/shanduonewretail/jcommodity/selectcommodityalltype', {token: localStore.token}, function (res) {
-            console.log(res);
+        getCommodityAllType(localStore.token,function (res) {
             vm.classify = res.result;
         });
         init_wx_js_sdk(href, function (result) {

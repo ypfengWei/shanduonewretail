@@ -20,7 +20,6 @@
     <script src="js/layer.js"></script>
     <script src="js/utils.js"></script>
     <script src="js/service.js"></script>
-    <script src="js/store_service.js"></script>
     <title>商品选择</title>
 </head>
 <body>
@@ -37,7 +36,7 @@
                                 <li v-for="(item,index) in classify"
                                     :class="index==0?'swiper-container-ul-li active':'swiper-container-ul-li'">
                                     <a href="#" data-toggle="tab"
-                                       @click.prevent="changer(item.id)">{{item.commodityType}}</a>
+                                       @click.prevent="changer(item.id)">{{item.category_name}}</a>
                                 </li>
                             </ul>
                         </div>
@@ -70,7 +69,8 @@
                                                         <div class="number dis_flex">
                                                             <span class="price"
                                                                   @click="onclick3(index)">￥{{commodity.price}}</span>
-                                                            <input type="checkbox" name="Drink" value="cola" checked="checked" />
+                                                            <input type="checkbox" name="Drink" value="cola"
+                                                                   checked="checked"/>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -109,37 +109,7 @@
     </div>
     <footer>
         <div class="dis_flex">
-            <a href="javascript:" @click="submitOrderView">确认</a>
-        </div>
-        <div class="gwcTog">
-            <div class="dis_flex">
-                <div class="dis_flex" @click="emptyCart">
-                    <img src="img/delete.png" alt="">
-                    <span class="col_hui">清空购物车</span>
-                </div>
-                <!--购物车商品-->
-                <div class="dis_flex">
-                    <!--购物车单个商品-->
-                    <div v-for="item in cart" v-if="item.count>0" class="dis_flex">
-                        <div class="dis_flex">
-                            <div class="title">{{item.commodityName}}</div>
-                            <div class="subtitle">{{item.commodityDesc}}</div>
-                        </div>
-                        <div class="dis_flex">
-                            <div class="number dis_flex">
-                                <span class="price">￥{{item.commodityPrice}}</span>
-                                <p class="plan dis_flex">
-                                    <a href="javascript:" class="add_left"
-                                       @click="cartUpdate('del',item.commodityId)"></a>
-                                    <span>{{item.count}}</span>
-                                    <a href="javascript:" class="add_right"
-                                       @click="cartUpdate('add',item.commodityId)"></a>
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <a href="javascript:">确认</a>
         </div>
     </footer>
 </div>
@@ -147,7 +117,7 @@
 <script src="js/mescroll.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 <script type="text/javascript">
-    let code = GetQueryString('code');
+    let localStore = JSON.parse(localStorage.localStore);
     let pageIndex = 1, pageCount = 20, totalPage = 0, itemIndex = 0, currentClassifyid;
     var vm = new Vue({
         el: '#vueData',
@@ -163,7 +133,7 @@
             let that = this;
             that.mescroll = new MeScroll("vueData", { //请至少在vue的mounted生命周期初始化mescroll,以确保您配置的id能够被找到
                 up: {
-                    callback: that.upCallback, //
+                    callback: that.upCallback,
                     auto: false
                 }, down: {
                     callback: that.downCallback,
@@ -210,27 +180,15 @@
                 }
             },
             changer(classifyId) {
-                let that = this;
                 let selectId = $(event.currentTarget).parent().index();
                 if (itemIndex === selectId) {
                     return;
                 }
                 emptyData();
                 itemIndex = selectId;
-                pageIndex = 1;
-                totalPage = 1;
                 currentClassifyid = classifyId;
                 $(event.currentTarget).parent().addClass('active').siblings('li').removeClass('active');
-                adapter(classifyId, function () {
-                    if (totalPage > pageIndex) {
-                        pageIndex++;
-                        that.mescroll.endSuccess(pageCount, true);
-                    } else {
-                        that.mescroll.endSuccess(pageCount, false);
-                    }
-                }, function () {
-                    that.mescroll.endErr();
-                });
+                adapter(classifyId);
             },
             onclick1(index) {
                 vm.currentCommodity = vm.commodityArray[index];
@@ -249,23 +207,14 @@
     });
 
     $(function () {
-        init();
-        if (!openid) {
-            if (code) {
-                getOpenid(code);
-            } else {
-                location.href = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxe0870cb2d63b008d&redirect_uri=https://yapinkeji.com/yapingzh/shanduo_zahuopu/index.html&response_type=code&scope=snsapi_userinfo#wechat_redirect';
-            }
-        }
-        getClassify(function (result) {
-            vm.classify = result.classify;
-            currentClassifyid = vm.classify[0].id;
-            adapter(currentClassifyid);
+        getCommodityAllType(localStore.token,function (res) {
+            vm.classify = res.result;
+            adapter(vm.classify[0].id);
         });
     });
 
     function adapter(classifyId, cbOK, cbErr) {
-        getGoodsByClassifyId(classifyId, pageIndex, pageCount, function (res) {
+        getGoodsAll(localStore.token, classifyId, pageIndex, pageCount, function (res) {
             let newData = res.commodityArray;
             for (let i in newData) {
                 newData[i].picture = {

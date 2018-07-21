@@ -7,6 +7,14 @@ function getClassify(lat, lon, back) {
     });
 }
 
+function getCommodityAllType(token, back) {
+    $.getJSON("/shanduonewretail/jcommodity/selectcommodityalltype", {token: token}, function (result) {
+        if (result.success) {
+            back && back(result);
+        }
+    });
+}
+
 // 根据类别id查询该类别下的店铺
 function getClassifyBySellerType(lat, lon, sellerType, cbOk) {
     $.ajax({
@@ -38,6 +46,24 @@ function getGoods(storeId, categoryId, typeId, pageIndex, pageCount, cbOk, cbErr
         url: "/shanduonewretail/jcommodity/selectcommodity",
         dataType: "JSON",
         data: {id: storeId, categoryId: categoryId, typeId: typeId, page: pageIndex, pageSize: pageCount},
+        success: function (result) {
+            console.log(result)
+            if (result.success) {
+                cbOk && cbOk(result.result);
+            }
+        }, error: () => {
+            cbErr && cbErr();
+        }
+    });
+}
+
+// 根据类别id查询该商店某类别下的商品
+function getGoodsAll(token, categoryId, page, pageSize, cbOk, cbErr) {
+    $.ajax({
+        sync: false,
+        url: "/shanduonewretail/jcommodity/selectwarehousecommodity",
+        dataType: "JSON",
+        data: {token: token, categoryId: categoryId, page: page, pageSize: pageSize},
         success: function (result) {
             console.log(result)
             if (result.success) {
