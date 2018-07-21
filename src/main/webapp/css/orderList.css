@@ -188,21 +188,3 @@ div.title_header>div:first-child>img{
 select{
   height: 26px;
 }
-footer{
-  height: 40px;
-  width: 100%;
-}
-footer>div{
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  position: fixed;
-  left: 0;
-  bottom: 0;
-  height: 40px;
-  width: 100%;
-  background-color: #ff734c;
-}
-footer>div>a{
-  color: #ffffff;
-}

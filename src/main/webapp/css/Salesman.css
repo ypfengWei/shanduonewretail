@@ -1,0 +1,136 @@
+/*部分重置*/
+body {
+    word-wrap: break-word;
+    font-family: Helvetica, Arial;
+    /*这里是设置字体，Helvetica字体在移动端各系统都支持（都不支持微软雅黑）*/
+    color: #333;
+    -webkit-text-size-adjust: none;
+    /*设置文本不会放大，普通网页在移动端打开文本是会跟随网页结构缩放的*/
+    margin: 0;
+}
+html{
+    -webkit-text-size-adjust:none;
+    font-size: 62.5%;
+}
+ul,li,p{
+    padding: 0;
+    margin: 0;
+    list-style-type:none;
+}
+a:focus, a:active, a:focus-within, a:visited, a:hover{
+    text-decoration: none!important;
+}
+body *{
+    -webkit-tap-highlight-color: transparent;
+    /*在一些手机上，如iphone，点击按钮等元素会出现点击态的背景色，设置为透明就看不出来了*/
+}
+body{
+    height: 100%;
+    background-color: #F4F4F4;
+}
+
+.dis_flex{
+    display: flex;
+    flex-shrink:0;
+}
+header{
+    height: 50px;
+}
+/*标题*/
+div.title_header {
+    height: 50px;
+    width: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+    background-color: #fff;
+}
+div.title_header>div{
+    width: 33%;
+    text-align: center;
+    height: 100%;
+}
+div.title_header>div>span{
+    line-height: 50px;
+    font-size: 16px;
+}
+/*左边*/
+div.title_header>div:first-child{
+    text-align: left;
+    align-items: center;
+    margin-left: 0.5%;
+}
+div.title_header>div:first-child>img{
+    width: 30px;
+    height: 30px;
+    margin-left: 7px;
+}
+/*右边*/
+div.title_header>div:last-child{
+    text-align: right;
+    margin-right: 0.5%;
+}
+div.title_header>div:last-child>img{
+    margin-right: 5px;
+    width: 24px;
+    height: 24px;
+}
+div.title_header>div:last-child>span{
+    margin-right: 7px;
+    width: 24px;
+    height: 24px;
+    color: #999999;
+}
+.col_hui{
+    color: #999999;
+}
+.body>div{
+    background-color: #fff;
+    padding: 0 10px;
+}
+.body>div:last-child{
+    padding: 0;
+}
+.div_li{
+    height: 80px;
+    align-items: center;
+}
+.div_li>img{
+    width: 60px;
+    height: 60px;
+}
+.div_li>div{
+    flex-direction: column;
+    height: 60px;
+    padding-left: 10px;
+    font-size: 12px;
+}
+.body>div:first-child>div>span:first-child{
+    font-size: 15px;
+    margin-bottom: 5px;
+}
+.body>div:nth-child(2){
+    border-top: 3px solid #F4F4F4;
+    border-bottom: 3px solid #F4F4F4;
+    justify-content: space-between;
+    align-items: center;
+    height: 40px;
+    font-size: 15px;
+}
+.div_li.div_complex{
+    border-bottom: 1px solid #F4F4F4;
+    padding: 0 10px;
+}
+.div_li.div_complex>img{
+    border-radius: 50%;
+}
+.div_li.div_complex>div{
+    height: auto;
+}
+.div_li.div_complex>div>span{
+    font-size: 14px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
