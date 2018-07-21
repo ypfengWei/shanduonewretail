@@ -46,8 +46,9 @@ body{
 header{
   height: 50px;
 }
-article{
-  padding: 0 10px;
+.content{
+  margin-top: 5px;
+  background-color: #fff;
 }
 .frame>span{
   width: 100%;
@@ -64,7 +65,7 @@ article{
   overflow-y: scroll;
 }
 .swiper-container-div{
-  margin-top: 10px;
+  margin-top: 5px;
 }
 .swiper-container-ul{
   background-color: #fff;
@@ -88,24 +89,43 @@ article{
 }
 .item{
   padding: 10px;
-  margin: 10px 0;
   background-color: #ffffff;
 }
 .swiper-wrapper:nth-child(3) .item:first-child{
   margin-top: 0;
 }
 .number{
-  margin-top: 40px;
-  justify-content: space-between;
+  margin-top: 10px;
+  justify-content: center;
 }
 .title{
   height: 20px;
   color: #666666;
   margin-top: 5px;
 }
+.subtitle_div{
+  color: #333;
+  font-size: 16px;
+  font-weight: bold;
+}
 .subtitle{
+  color: #999;
+  flex-direction: column;
+  margin: 7px 0;
+}
+.subtitle>div{
   margin-top: 5px;
-  color: #999999;
+}
+.subtitle>div:first-child{
+  margin-top: 0;
+}
+.subtitle>div>div{
+  justify-content: space-between;
+  width: 100%;
+}
+.subtitle>div>div:first-child>span:last-child{
+  color: #333333;
+  font-size: 14px;
 }
 .price{
   color:#ff6c00;
@@ -118,16 +138,27 @@ article{
 .swiper-wrapper:nth-child(1) .number>div{
   justify-content: space-between;
 }
-.number>div>a{
+.bg_div_hui{
+  background-color: #F4F4F4;
+  color: #999999;
+  font-size: 12px;
+  padding: 10px;
+  margin-top: 7px;
+}
+.bg_div_hui>div{
+  margin-bottom: 5px;
+}
+.number>a{
   text-decoration: none;
   text-align: center;
   line-height: 21px;
   font-size: 14px;
   color: #eee8da;
-  width: 50px;
   height: 21px;
   background: #ff734c;
   border-radius: 50px;
+  margin: 0 20px;
+  padding: 0 10px;
 }
 /*标题*/
 div.title_header {

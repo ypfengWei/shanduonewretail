@@ -10,6 +10,7 @@ package com.shanduo.newretail.entity.service;
  */
 public class CommodityInfos {
 	private String commodityId;
+	private String picture;
 	private String commodityName;
 	private Integer number;
 	public String getCommodityId() {
@@ -17,6 +18,12 @@ public class CommodityInfos {
 	}
 	public void setCommodityId(String commodityId) {
 		this.commodityId = commodityId;
+	}
+	public String getPicture() {
+		return picture;
+	}
+	public void setPicture(String picture) {
+		this.picture = picture;
 	}
 	public String getCommodityName() {
 		return commodityName;

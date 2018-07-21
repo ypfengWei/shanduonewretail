@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.shanduo.newretail.mapper.ToOrderDetailsMapper">
   <resultMap id="BaseResultMap" type="com.shanduo.newretail.entity.ToOrderDetails">
-    <id column="id" jdbcType="INTEGER" property="id" />
+    <id column="id" jdbcType="VARCHAR" property="id" />
     <result column="order_id" jdbcType="VARCHAR" property="orderId" />
     <result column="commodity_id" jdbcType="VARCHAR" property="commodityId" />
     <result column="commodity_name" jdbcType="VARCHAR" property="commodityName" />
@@ -11,27 +11,28 @@
   </resultMap>
   <resultMap id="CommodityInfosMap" type="com.shanduo.newretail.entity.service.CommodityInfos">
     <result column="commodity_id" jdbcType="VARCHAR" property="commodityId" />
+    <result column="picture" jdbcType="VARCHAR" property="picture" />
     <result column="commodity_name" jdbcType="VARCHAR" property="commodityName" />
     <result column="number" jdbcType="INTEGER" property="number" />
   </resultMap>
   <sql id="Base_Column_List">
     id, order_id, commodity_id, commodity_name, commodity_number, price
   </sql>
-  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
-    select
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
     <include refid="Base_Column_List" />
     from to_order_details
-    where id = #{id,jdbcType=INTEGER}
+    where id = #{id,jdbcType=VARCHAR}
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
     delete from to_order_details
-    where id = #{id,jdbcType=INTEGER}
+    where id = #{id,jdbcType=VARCHAR}
   </delete>
   <insert id="insert" parameterType="com.shanduo.newretail.entity.ToOrderDetails">
     insert into to_order_details (id, order_id, commodity_id, 
       commodity_name, commodity_number, price
       )
-    values (#{id,jdbcType=INTEGER}, #{orderId,jdbcType=VARCHAR}, #{commodityId,jdbcType=VARCHAR}, 
+    values (#{id,jdbcType=VARCHAR}, #{orderId,jdbcType=VARCHAR}, #{commodityId,jdbcType=VARCHAR}, 
       #{commodityName,jdbcType=VARCHAR}, #{commodityNumber,jdbcType=INTEGER}, #{price,jdbcType=DECIMAL}
       )
   </insert>
@@ -59,7 +60,7 @@
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
-        #{id,jdbcType=INTEGER},
+        #{id,jdbcType=VARCHAR},
       </if>
       <if test="orderId != null">
         #{orderId,jdbcType=VARCHAR},
@@ -97,7 +98,7 @@
         price = #{price,jdbcType=DECIMAL},
       </if>
     </set>
-    where id = #{id,jdbcType=INTEGER}
+    where id = #{id,jdbcType=VARCHAR}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.shanduo.newretail.entity.ToOrderDetails">
     update to_order_details
@@ -106,7 +107,7 @@
       commodity_name = #{commodityName,jdbcType=VARCHAR},
       commodity_number = #{commodityNumber,jdbcType=INTEGER},
       price = #{price,jdbcType=DECIMAL}
-    where id = #{id,jdbcType=INTEGER}
+    where id = #{id,jdbcType=VARCHAR}
   </update>
   
   <select id="listOrderId" parameterType="java.lang.String" resultMap="BaseResultMap">
@@ -144,8 +145,9 @@
   </select>
   <select id="listSellerCommodity" resultMap="CommodityInfosMap">
   	select
- 	commodity_id, commodity_name, sum(commodity_number) as number
-	from to_order_details
+ 	commodity_id, commodity_name, cy.picture, sum(commodity_number) as number
+	from to_order_details os
+	join commodity cy on os.commodity_id = cy.id
 	where order_id in (
 		select id from to_order
 		where is_deleted = '0'
@@ -165,12 +167,12 @@
 			and category_id = #{categoryId,jdbcType=VARCHAR}
 			)
 		</if>
-	group by commodity_id
+	group by os.commodity_id
 	limit #{pageNum},#{pageSize}
   </select>
   <select id="sumSellerMoney" resultType="java.lang.Double">
   	select
- 	ifnull(0,sum(commodity_number*price))
+ 	ifnull(sum(commodity_number*price),0)
 	from to_order_details
 	where order_id in (
 		select id from to_order

@@ -1,8 +1,8 @@
 /*查询店铺的种类*/
-function getClassify(lat,lon,back) {
-    $.getJSON("/shanduonewretail/jseller/selectsellertype",{lat:lat,lon:lon}, function (result) {
+function getClassify(lat, lon, back) {
+    $.getJSON("/shanduonewretail/jseller/selectsellertype", {lat: lat, lon: lon}, function (result) {
         if (result.success) {
-        	back&&back(result);
+            back && back(result);
         }
     });
 }
@@ -13,39 +13,42 @@ function getClassifyBySellerType(lat, lon, sellerType, cbOk) {
         sync: false,
         url: "/shanduonewretail/jseller/selectseller",
         dataType: "JSON",
-        data: {lat:lat,lon:lon,sellerType:sellerType},
+        data: {lat: lat, lon: lon, sellerType: sellerType},
         success: function (result) {
-        	if(result.success){
-        		cbOk && cbOk(result);
-        	}
+            if (result.success) {
+                cbOk && cbOk(result);
+            }
         }
     });
 }
+
 /* 查询某个店铺的商品种类 */
-function getStoreClassify(storeId,typeId,back) {
-    $.getJSON("/shanduonewretail/jcommodity/selectcommoditytype",{id:storeId,typeId:typeId}, function (result) {
+function getStoreClassify(storeId, typeId, back) {
+    $.getJSON("/shanduonewretail/jcommodity/selectcommoditytype", {id: storeId, typeId: typeId}, function (result) {
         if (result.success) {
-        	back&&back(result.result);
+            back && back(result.result);
         }
     });
 }
+
 // 根据类别id查询该商店某类别下的商品
-function getGoods(storeId,categoryId, pageIndex, pageCount, cbOk, cbErr) {
+function getGoods(storeId, categoryId, typeId, pageIndex, pageCount, cbOk, cbErr) {
     $.ajax({
         sync: false,
         url: "/shanduonewretail/jcommodity/selectcommodity",
         dataType: "JSON",
-        data: {id: storeId,categoryId:categoryId,page: pageIndex, pageSize: pageCount},
+        data: {id: storeId, categoryId: categoryId, typeId: typeId, page: pageIndex, pageSize: pageCount},
         success: function (result) {
-        	if(result.success){
-        		cbOk && cbOk(result.result);
-        	}
-            
+            console.log(result)
+            if (result.success) {
+                cbOk && cbOk(result.result);
+            }
         }, error: () => {
             cbErr && cbErr();
         }
     });
 }
+
 function addClassify() {
     var classifyName = $('#classifyName').val();
     if ($.trim(classifyName) === '') {

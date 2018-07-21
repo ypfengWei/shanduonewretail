@@ -27,6 +27,8 @@ import com.shanduo.newretail.service.AccessTokenService;
 import com.shanduo.newretail.service.JsApiTicketService;
 import com.shanduo.newretail.util.HttpRequest;
 import com.shanduo.newretail.util.SHA1;
+import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
+import net.sf.json.JSON;
 import net.sf.json.JSONException;
 import net.sf.json.JSONObject;
 @Controller
