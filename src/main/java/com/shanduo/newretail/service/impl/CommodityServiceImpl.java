@@ -235,9 +235,15 @@ public class CommodityServiceImpl implements CommodityService {
 		if(list.size()<(pageNum-1)*pageSize){
 			return null;
 		}else if(list.size()>pageNum*pageSize){
-			list=list.subList((pageNum-1)*pageSize-1,pageNum*pageSize);
+			list=list.subList((pageNum-1)*pageSize,pageNum*pageSize);
 		}else{
-			list=list.subList((pageNum-1)*pageSize-1, list.size());
+			List<CommodityInfo> commodityInfoList = new ArrayList<CommodityInfo>();
+			for(int i=(pageNum-1)*pageSize;i<list.size();i++){
+				commodityInfoList.add(list.get(i));
+			}
+			resultMap.put("totalPage", list.size());
+			resultMap.put("commodityInfoList", commodityInfoList);
+			return resultMap;
 		}
 		resultMap.put("totalPage", list.size());
 		resultMap.put("commodityInfoList", list);
