@@ -48,7 +48,14 @@
 	<mvc:interceptors>
 		<mvc:interceptor>
 	 		<!-- 上传图片接口拦截 -->
-	 		<mvc:mapping path="/file/**"/>
+	 		<mvc:mapping path="/juser/updatephone"/>
+	 		<mvc:mapping path="/jpresent/**"/>
+	 		<mvc:mapping path="/jorder/receivingorder"/>
+	 		<mvc:mapping path="/jorder/finishorder"/>
+	 		<mvc:mapping path="/jorder/cancelorder"/>
+	 		<mvc:mapping path="/jorder/orderList"/>
+	 		<mvc:mapping path="/jorder/commodityList"/>
+	 		<mvc:mapping path="/jorder/countmoney"/>
 	 		<bean class="com.shanduo.newretail.interceptor.TokenInterceptor"/>
 		</mvc:interceptor>
  	</mvc:interceptors>
