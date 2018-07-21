@@ -126,13 +126,6 @@ public class CommodityController {
 				return new ErrorBean(ErrorConsts.CODE_10001,"token失效");
 			}
 		}
-		if("3".equals(typeId)){
-			id = UserService.selectAdministratorsId();
-			if(null==id){
-				Log.warn("token失效");
-				return new ErrorBean(ErrorConsts.CODE_10001,"token失效");
-			}
-		}
 		if(null==categoryId){
 			Log.warn("categoryId错误");
 			return new ErrorBean(ErrorConsts.CODE_10002,"参数为空");
