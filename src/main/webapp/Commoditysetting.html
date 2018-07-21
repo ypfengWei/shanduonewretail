@@ -181,27 +181,15 @@
                 $('#outerdiv').fadeOut("fast");
             },
             changer(classifyId) {
-                let that = this;
                 let selectId = $(event.currentTarget).parent().index();
                 if (itemIndex === selectId) {
                     return;
                 }
-                emptyData();
                 itemIndex = selectId;
-                pageIndex = 1;
-                totalPage = 1;
+                emptyData();
                 currentClassifyid = classifyId;
                 $(event.currentTarget).parent().addClass('active').siblings('li').removeClass('active');
-                adapter(classifyId, function () {
-                    if (totalPage > pageIndex) {
-                        pageIndex++;
-                        that.mescroll.endSuccess(pageCount, true);
-                    } else {
-                        that.mescroll.endSuccess(pageCount, false);
-                    }
-                }, function () {
-                    that.mescroll.endErr();
-                });
+                adapter(classifyId);
             },
             onclick1(index) {
                 vm.currentCommodity = vm.commodityArray[index];
@@ -278,6 +266,7 @@
 
     function adapter(categoryId, cbOK, cbErr) {
         getGoods(localStore.token, categoryId, 2, pageIndex, pageCount, function (res) {
+            console.log(res);
             let newData = res.commodityInfoList;
             for (let i in newData) {
                 newData[i].picture = {
