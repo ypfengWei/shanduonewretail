@@ -139,29 +139,32 @@
 	select
 	<include refid="Commodity_Column_List" />
 	from relations as re join commodity as co on co.id=re.commodity_id
-	where re.category_id=#{0} and re.user_id=#{1} and re.visible='1' and stock &gt;0
-	and  re.is_deleted = 0
+	join category as ca on ca.id=re.category_id
+	where re.category_id=#{0} and re.user_id=#{1} and re.visible='1' and re.stock &gt; 0
+	and  re.is_deleted = 0 
 	limit #{2},#{3}
   </select> 
   <select id="selectCommoditys" resultMap="CommodityResultMap">
 	select
 	<include refid="Commodity_Column_List" />
 	from relations as re join commodity as co on co.id=re.commodity_id
-	where re.category_id=#{0} and re.user_id=#{1}  and stock &gt;0 and  re.is_deleted = 0
+	join category as ca on ca.id=re.category_id
+	where re.category_id=#{0} and re.user_id=#{1}  and re.stock &gt; 0 and  re.is_deleted = 0
 	limit #{2},#{3}
   </select> 
   <select id="selectWarehouseCommodity" resultMap="CommodityResultMap">
 	select
 	<include refid="Commodity_Column_List" />
 	from relations as re join commodity as co on co.id=re.commodity_id
-	where re.category_id=#{0} and re.user_id=#{1} and re.visible='1' and stock &gt;0
+	join category as ca on ca.id=re.category_id
+	where re.category_id=#{0} and re.user_id=#{1} and re.visible='1' and re.stock &gt; 0
 	and  re.is_deleted = 0
   </select> 
   <select id="selectWarehouseCommoditys" resultType="java.lang.String">
 	select
 	name
 	from relations as re join commodity as co on co.id=re.commodity_id
-	where re.category_id=#{0} and re.user_id=#{1}  and stock &gt;0 and  re.is_deleted = 0
+	where re.category_id=#{0} and re.user_id=#{1}  and re.stock &gt; 0 and  re.is_deleted = 0
   </select> 
   <update id="deleteCommodity" parameterType="java.lang.String">
     update commodity
