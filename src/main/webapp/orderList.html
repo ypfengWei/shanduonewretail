@@ -25,7 +25,7 @@
     <header>
         <div class="title_header dis_flex">
             <div @click="goBack">
-                <img src="img/return_1.png" alt="">
+                <img src="img/return_2.png" alt="">
             </div>
             <div>
                 <span>订单管理</span>
@@ -46,6 +46,9 @@
                     <li class="swiper-container-ul-li">
                         <a href="javascript:" class="dis_inli">已完成</a>
                     </li>
+                    <li class="swiper-container-ul-li">
+                        <a href="javascript:" class="dis_inli">已退款</a>
+                    </li>
                 </ul>
             </div>
         </div>
@@ -56,25 +59,74 @@
                 <div class="swiper-slide">
                     <div class="frame">
                         <!--没有订单时显示-->
-                        <span class="dis_inli" v-if="orders[0].arrayResult.length==0">没有订单</span>
+                        <!--<span class="dis_inli" v-if="orders[0].arrayResult.length==0">没有订单</span>-->
                         <ul :style="{maxHeight: winHeight+'px'}">
-                            <li class="item" v-for="(order,index) in orders[0].arrayResult">
+                            <li class="item">
                                 <div class="item-right">
-                                    <div class="title" v-for="details in order.orderDetailsList">
-                                        {{details.commodityName}}
-                                    </div>
+                                    <div class="title price">订单ID：12345654321</div>
                                     <div class="subtitle">
-                                        <span>备注:</span>
-                                        <span>{{order.remarks}}</span>
+                                        <div>
+                                            <div class="dis_flex">
+                                                <span>肥宅快乐水</span>
+                                                <span>x3</span>
+                                            </div>
+                                            <div>
+                                                <span>售价:</span>
+                                                <span>500</span>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <div class="dis_flex">
+                                                <span>肥宅快乐水</span>
+                                                <span>x3</span>
+                                            </div>
+                                            <div>
+                                                <span>售价:</span>
+                                                <span>500</span>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <div class="dis_flex">
+                                                <span>肥宅快乐水</span>
+                                                <span>x3</span>
+                                            </div>
+                                            <div>
+                                                <span>售价:</span>
+                                                <span>500</span>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <div class="dis_flex">
+                                                <span>肥宅快乐水</span>
+                                                <span>x3</span>
+                                            </div>
+                                            <div>
+                                                <span>售价:</span>
+                                                <span>500</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="subtitle_div">
+                                        <span>合计:</span>
+                                        <span>1500</span>
+                                    </div>
+                                    <div class="bg_div_hui">
+                                        <div>
+                                            <span>收货人：</span>
+                                            <span>阿西吧</span>
+                                        </div>
+                                        <div>
+                                            <span>收货地址：</span>
+                                            <span>湖南省长沙市xxxxxxxxxxxxxxxxx</span>
+                                        </div>
+                                        <div>
+                                            <span>备注：</span>
+                                            <span>哈哈哈哈哈哈哈哈哈哈色氨酸我的速度我达瓦大大我的</span>
+                                        </div>
                                     </div>
                                     <div class="number dis_flex">
-                                        <span class="price">￥{{order.totalPrice}}</span>
-                                        <div class="dis_flex">
-                                            <a href="javascript:"
-                                               @click="exctueMethod(index,'/yapingzh/confirmOrder.do', order.id )">接单</a>
-                                            <a href="javascript:"
-                                               @click="exctueMethod(index,'/yapingzh/cancelOrder.do', order.id )">拒绝</a>
-                                        </div>
+                                            <a href="javascript:">接单</a>
+                                            <a href="javascript:">拒绝</a>
                                     </div>
                                 </div>
                             </li>
@@ -87,23 +139,73 @@
                 <div class="swiper-slide" style="display:none;">
                     <div class="frame">
                         <!--没有订单时显示-->
-                        <span class="dis_inli" v-if="orders[1].arrayResult.length==0">没有订单</span>
+                        <!--<span class="dis_inli" v-if="orders[0].arrayResult.length==0">没有订单</span>-->
                         <ul :style="{maxHeight: winHeight+'px'}">
-                            <li class="item" v-for="(order,index) in orders[1].arrayResult">
+                            <li class="item">
                                 <div class="item-right">
-                                    <div class="title" v-for="details in order.orderDetailsList">
-                                        {{details.commodityName}}
-                                    </div>
+                                    <div class="title price">订单ID：12345654321</div>
                                     <div class="subtitle">
-                                        <span>备注:</span>
-                                        <span>{{order.remarks}}</span>
+                                        <div>
+                                            <div class="dis_flex">
+                                                <span>肥宅快乐水</span>
+                                                <span>x3</span>
+                                            </div>
+                                            <div>
+                                                <span>售价:</span>
+                                                <span>500</span>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <div class="dis_flex">
+                                                <span>肥宅快乐水</span>
+                                                <span>x3</span>
+                                            </div>
+                                            <div>
+                                                <span>售价:</span>
+                                                <span>500</span>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <div class="dis_flex">
+                                                <span>肥宅快乐水</span>
+                                                <span>x3</span>
+                                            </div>
+                                            <div>
+                                                <span>售价:</span>
+                                                <span>500</span>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <div class="dis_flex">
+                                                <span>肥宅快乐水</span>
+                                                <span>x3</span>
+                                            </div>
+                                            <div>
+                                                <span>售价:</span>
+                                                <span>500</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="subtitle_div">
+                                        <span>合计:</span>
+                                        <span>1500</span>
+                                    </div>
+                                    <div class="bg_div_hui">
+                                        <div>
+                                            <span>收货人：</span>
+                                            <span>阿西吧</span>
+                                        </div>
+                                        <div>
+                                            <span>收货地址：</span>
+                                            <span>湖南省长沙市xxxxxxxxxxxxxxxxx</span>
+                                        </div>
+                                        <div>
+                                            <span>备注：</span>
+                                            <span>哈哈哈哈哈哈哈哈哈哈色氨酸我的速度我达瓦大大我的</span>
+                                        </div>
                                     </div>
                                     <div class="number dis_flex">
-                                        <span class="price">￥{{order.totalPrice}}</span>
-                                        <div class="dis_flex">
-                                            <a href="javascript:"
-                                               @click="exctueMethod(index,'/yapingzh/completeOrder.do', order.id )">已完成</a>
-                                        </div>
+                                        <a href="javascript:">完成</a>
                                     </div>
                                 </div>
                             </li>
@@ -116,6 +218,84 @@
                 <div class="swiper-slide" style="display:none;">
                     <div class="frame">
                         <!--没有订单时显示-->
+                        <!--<span class="dis_inli" v-if="orders[0].arrayResult.length==0">没有订单</span>-->
+                        <ul :style="{maxHeight: winHeight+'px'}">
+                            <li class="item">
+                                <div class="item-right">
+                                    <div class="title price">订单ID：12345654321</div>
+                                    <div class="subtitle">
+                                        <div>
+                                            <div class="dis_flex">
+                                                <span>肥宅快乐水</span>
+                                                <span>x3</span>
+                                            </div>
+                                            <div>
+                                                <span>售价:</span>
+                                                <span>500</span>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <div class="dis_flex">
+                                                <span>肥宅快乐水</span>
+                                                <span>x3</span>
+                                            </div>
+                                            <div>
+                                                <span>售价:</span>
+                                                <span>500</span>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <div class="dis_flex">
+                                                <span>肥宅快乐水</span>
+                                                <span>x3</span>
+                                            </div>
+                                            <div>
+                                                <span>售价:</span>
+                                                <span>500</span>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <div class="dis_flex">
+                                                <span>肥宅快乐水</span>
+                                                <span>x3</span>
+                                            </div>
+                                            <div>
+                                                <span>售价:</span>
+                                                <span>500</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="subtitle_div">
+                                        <span>合计:</span>
+                                        <span>1500</span>
+                                    </div>
+                                    <div class="bg_div_hui">
+                                        <div>
+                                            <span>收货人：</span>
+                                            <span>阿西吧</span>
+                                        </div>
+                                        <div>
+                                            <span>收货地址：</span>
+                                            <span>湖南省长沙市xxxxxxxxxxxxxxxxx</span>
+                                        </div>
+                                        <div>
+                                            <span>备注：</span>
+                                            <span>哈哈哈哈哈哈哈哈哈哈色氨酸我的速度我达瓦大大我的</span>
+                                        </div>
+                                    </div>
+                                    <div class="number dis_flex">
+                                        <a href="javascript:">删除</a>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+<!--            <div class="swiper-wrapper">
+                <div class="swiper-slide" style="display:none;">
+                    <div class="frame">
+                        &lt;!&ndash;没有订单时显示&ndash;&gt;
                         <span class="dis_inli" v-if="orders[2].arrayResult.length==0">没有订单</span>
                         <div v-else>
                             <div>
@@ -163,13 +343,87 @@
                     </div>
                 </div>
             </div>
+            <!--已退款-->
+            <div class="swiper-wrapper">
+                <div class="swiper-slide" style="display:none;">
+                    <div class="frame">
+                        <!--没有订单时显示-->
+                        <!--<span class="dis_inli" v-if="orders[0].arrayResult.length==0">没有订单</span>-->
+                        <ul :style="{maxHeight: winHeight+'px'}">
+                            <li class="item">
+                                <div class="item-right">
+                                    <div class="title price">订单ID：12345654321</div>
+                                    <div class="subtitle">
+                                        <div>
+                                            <div class="dis_flex">
+                                                <span>肥宅快乐水</span>
+                                                <span>x3</span>
+                                            </div>
+                                            <div>
+                                                <span>售价:</span>
+                                                <span>500</span>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <div class="dis_flex">
+                                                <span>肥宅快乐水</span>
+                                                <span>x3</span>
+                                            </div>
+                                            <div>
+                                                <span>售价:</span>
+                                                <span>500</span>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <div class="dis_flex">
+                                                <span>肥宅快乐水</span>
+                                                <span>x3</span>
+                                            </div>
+                                            <div>
+                                                <span>售价:</span>
+                                                <span>500</span>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <div class="dis_flex">
+                                                <span>肥宅快乐水</span>
+                                                <span>x3</span>
+                                            </div>
+                                            <div>
+                                                <span>售价:</span>
+                                                <span>500</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="subtitle_div">
+                                        <span>合计:</span>
+                                        <span>1500</span>
+                                    </div>
+                                    <div class="bg_div_hui">
+                                        <div>
+                                            <span>收货人：</span>
+                                            <span>阿西吧</span>
+                                        </div>
+                                        <div>
+                                            <span>收货地址：</span>
+                                            <span>湖南省长沙市xxxxxxxxxxxxxxxxx</span>
+                                        </div>
+                                        <div>
+                                            <span>备注：</span>
+                                            <span>哈哈哈哈哈哈哈哈哈哈色氨酸我的速度我达瓦大大我的</span>
+                                        </div>
+                                    </div>
+                                    <div class="number dis_flex">
+                                        <a href="javascript:">删除</a>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
         </div>
     </article>
-    <footer>
-        <div>
-            <a href="javascript:" @click="logout">退出登录</a>
-        </div>
-    </footer>
 </div>
 </body>
 <script src="js/mescroll.min.js"></script>

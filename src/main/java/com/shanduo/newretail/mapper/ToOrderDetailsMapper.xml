@@ -9,11 +9,7 @@
     <result column="commodity_number" jdbcType="INTEGER" property="commodityNumber" />
     <result column="price" jdbcType="DECIMAL" property="price" />
   </resultMap>
-  <resultMap id="CommodityInfosMap" type="com.shanduo.newretail.entity.service.CommodityInfos">
-    <result column="commodity_id" jdbcType="VARCHAR" property="commodityId" />
-    <result column="commodity_name" jdbcType="VARCHAR" property="commodityName" />
-    <result column="number" jdbcType="INTEGER" property="number" />
-  </resultMap>
+  
   <sql id="Base_Column_List">
     id, order_id, commodity_id, commodity_name, commodity_number, price
   </sql>
@@ -142,10 +138,19 @@
 		group by commodity_id
 		) t;
   </select>
+  
+  <resultMap id="CommodityInfosMap" type="com.shanduo.newretail.entity.service.CommodityInfos">
+    <result column="commodity_id" jdbcType="VARCHAR" property="commodityId" />
+    <result column="picture" jdbcType="VARCHAR" property="picture" />
+    <result column="commodity_name" jdbcType="VARCHAR" property="commodityName" />
+    <result column="number" jdbcType="INTEGER" property="number" />
+  </resultMap>
+  
   <select id="listSellerCommodity" resultMap="CommodityInfosMap">
   	select
- 	commodity_id, commodity_name, sum(commodity_number) as number
-	from to_order_details
+ 	commodity_id, commodity_name, cy.picture, sum(commodity_number) as number
+	from to_order_details os
+	join commodity cy on os.commodity_id = cy.id
 	where order_id in (
 		select id from to_order
 		where is_deleted = '0'
@@ -165,7 +170,7 @@
 			and category_id = #{categoryId,jdbcType=VARCHAR}
 			)
 		</if>
-	group by commodity_id
+	group by os.commodity_id
 	limit #{pageNum},#{pageSize}
   </select>
   <select id="sumSellerMoney" resultType="java.lang.Double">

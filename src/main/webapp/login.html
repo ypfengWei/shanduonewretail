@@ -1,35 +1,52 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-    <title>登录</title>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"/>
+    <meta content="telephone=no,email=no" name="format-detection">
+    <!--禁止自动识别电话号码和邮箱-->
+    <meta content="yes" name="apple-mobile-web-app-capable">
+    <!--苹果手机：会删除默认的工具栏和菜单栏，网站开启对web app程序的支持-->
+    <meta name="apple-mobile-web-app-status-bar-style" content="black"/>
+    <!--苹果手机：在web app应用下状态条（屏幕顶部条）的颜色,默认值为default（白色），可以定为black（黑色）和black-translucent（灰色半透明）。-->
+    <meta name="apple-touch-fullscreen" content="yes"/>
+    <!--苹果手机：如果把一个web app添加到了主屏幕中，那么从主屏幕中打开这个web app则全屏显示-->
     <link rel="stylesheet" type="text/css" href="css/login.css">
     <script src="js/jquery-3.3.1.js"></script>
     <script src="js/layer.js"></script>
     <script src="js/utils.js"></script>
+    <title></title>
 </head>
 <body>
-<form action="#" method="post">
-    <div id="vueData" class="login">
-        <img src="img/icon_16.png">
-        <p>
-            <img src="img/icon_15.png">
-            <label for="name">账号：</label>
-            <span>
-					<input id="name" name="sellers.sellersName" placeholder="请输入登录名" v-model="userName"/>
-				</span>
-        </p>
-        <p>
-            <img src="img/icon_12.png">
-            <label for="pwd">密码：</label>
-            <span>
-					<input type="password" id="pwd" name="sellers.loginPassword" placeholder="请输入登录密码"
-                           v-model="password"/>
-				</span>
-        </p>
-        <img src="img/icon_13.png">
-        <img id="loginImg" src="img/icon_14.png" @click="sellersLogin"/>
+<form action="">
+    <div id="vueData">
+        <header>
+            <div class="title_header dis_flex">
+                <div></div>
+                <div>
+                    <span>登录</span>
+                </div>
+                <div>
+                    <span>去注册</span>
+                </div>
+            </div>
+        </header>
+        <div class="body">
+            <p>请输入你的账号和密码</p>
+            <div>
+                <div>
+                    <img src="img/phone.png">
+                    <input name="sellers.sellersName" placeholder="输入手机号" v-model="userInfo.userName"/>
+                </div>
+                <div>
+                    <img src="img/Password.png">
+                    <input type="password" name="sellers.loginPassword" placeholder="输入密码" v-model="userInfo.password"/>
+                </div>
+                <div @click="sellersLogin">立即登录</div>
+            </div>
+            <!--            <p>忘记密码？</p>-->
+        </div>
     </div>
 </form>
 </body>
@@ -38,28 +55,35 @@
     let vm = new Vue({
         el: '#vueData',
         data: {
+            userInfo: {
                 userName: '',
                 password: ''
+            }
         }, methods: {
             sellersLogin() {
-                if ($.trim(vm.userName) === '' || $.trim(vm.password) === '') {
+                if ($.trim(vm.userInfo.userName) === '' || $.trim(vm.userInfo.password) === '') {
                     toast('登录名或密码不能为空!');
                     return;
                 }
                 $.ajax({
                     type: "POST",
-                    url: "/shanduonewretail/juser/loginuser",
+                    url: "login.do",
                     dataType: "json",
                     data: {
-                        "phone": vm.userName,
-                        "password": vm.password
+                        "userInfo.userName": vm.userInfo.userName,
+                        "userInfo.password": encode64(vm.userInfo.password)
                     },
-                    success: function (res) {
-                        if (res.success) {
-                        	localStorage.setItem('localStore',JSON.stringify(res));
-                        	toast('登录成功!');
+                    success: function (result) {
+                        if (result.success) {
+                            toast('登录成功!');
+                            localStorage.userId = result.userId;
                             setTimeout(function () {
-                                    location.href = 'Administration.html';
+                                if (result.deliverRegion) {
+                                    localStorage.deliverRegion = result.deliverRegion;
+                                    location.href = 'orderList.html';
+                                } else {
+                                    location.href = 'commodityManage.html';
+                                }
                             }, 1000)
                         } else {
                             toast('登录失败');
@@ -70,9 +94,14 @@
         }
     });
     $(function () {
-        let localStore = localStorage.getItem('localStore');
-        if (localStore) {
-                location.href = 'Administration.html';
+        let userId = localStorage.getItem('userId');
+        let deliverRegion = localStorage.getItem('deliverRegion');
+        if (userId) {
+            if (deliverRegion) {
+                location.href = 'orderList.html';
+            } else {
+                location.href = 'commodityManage.html';
+            }
         }
     });
 </script>
