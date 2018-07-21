@@ -93,13 +93,7 @@
                     <div class="number dis_flex">
                         <span class="price">￥{{currentCommodity.price}}</span>
                         <p class="plan dis_flex">
-                            <a href="javascript:"
-                               @click.prevent="addoff(currentCommodity.id)"
-                               class="add_left" v-if="currentCommodity.count>0"></a>
-                            <span v-if="currentCommodity.count>0">{{currentCommodity.count}}</span>
-                            <a href="javascript:"
-                               @click.prevent="addon(currentCommodity.id,currentCommodity.name,currentCommodity.price,currentCommodity.introduceDetails,currentCommodity.picture.imgPath)"
-                               class="add_right"></a>
+
                         </p>
                     </div>
                 </div>
@@ -131,7 +125,7 @@
         },
         mounted: function () {
             let that = this;
-            that.mescroll = new MeScroll("vueData", { //请至少在vue的mounted生命周期初始化mescroll,以确保您配置的id能够被找到
+            that.mescroll = new MeScroll("vueData", {
                 up: {
                     callback: that.upCallback,
                     auto: false
@@ -207,7 +201,7 @@
     });
 
     $(function () {
-        getCommodityAllType(localStore.token,function (res) {
+        getCommodityAllType(localStore.token, function (res) {
             vm.classify = res.result;
             adapter(vm.classify[0].id);
         });
@@ -215,7 +209,7 @@
 
     function adapter(classifyId, cbOK, cbErr) {
         getGoodsAll(localStore.token, classifyId, pageIndex, pageCount, function (res) {
-            let newData = res.commodityArray;
+            let newData = res.commodityInfoList;
             for (let i in newData) {
                 newData[i].picture = {
                     myStyle: {backgroundImage: "url('/yapingzh/picture/" + newData[i].introducePicture + "')"},
@@ -224,11 +218,6 @@
             }
             vm.commodityArray = vm.commodityArray.concat(newData);
             totalPage = res.totalPage;
-            queryCartAll(function (res) {
-                if (res.length > 0) {
-                    vm.cart = res;
-                }
-            });
             cbOK && cbOK();
         }, function () {
             cbErr && cbErr();

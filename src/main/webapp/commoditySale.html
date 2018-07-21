@@ -16,6 +16,7 @@
     <link rel="stylesheet" type="text/css" href="css/commoditySale.css">
     <script src="js/jquery-3.3.1.js"></script>
     <script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="js/service.js"></script>
     <title></title>
 </head>
 <body>
@@ -36,30 +37,31 @@
             <div class="dis_flex Choice_list">
                 <div class="btn-group">
                     <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
-                        类别：饮料</button>
+                        类别：{{categoryName}}
+                    </button>
                     <ul class="dropdown-menu" role="menu">
-                        <li><a href="#">饮料</a></li>
-                        <li><a href="#">水果</a></li>
-                        <li><a href="#">其他</a></li>
+                        <li v-for="(item,index) in classify"><a href="#"
+                                                                @click="selCategory(item.id,item.category_name)">{{item.category_name}}</a>
+                        </li>
                     </ul>
                 </div>
                 <div>
                     <span>商品销售总额：</span>
-                    <span>111111111</span>
+                    <span>{{money}}</span>
                 </div>
             </div>
             <div class="dis_flex Choice_list">
                 <div>
                     <span>开始时间：</span>
-                    <input type="date">
+                    <input type="date" v-model="startDate">
                 </div>
             </div>
             <div class="dis_flex Choice_list">
                 <div>
-                    <span>开始时间：</span>
-                    <input type="date">
+                    <span>结束时间：</span>
+                    <input type="date" v-model="endDate">
                 </div>
-                <a href="javascript:">查询</a>
+                <a href="javascript:" @click="querySale">查询</a>
             </div>
         </div>
     </div>
@@ -85,4 +87,65 @@
     </footer>
 </div>
 </body>
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script>
+    let localStore = JSON.parse(localStorage.localStore);
+    let pageIndex = 1, pageCount = 20;
+    let vm = new Vue({
+        el: '#vueData',
+        data: {
+            classify: [],
+            categoryId: '',
+            categoryName: '选择类别',
+            startDate: '',
+            endDate: '',
+            money: 0
+        }, methods: {
+            selCategory(categoryId, categoryName) {
+                vm.categoryId = categoryId;
+                vm.categoryName = categoryName;
+            }, querySale() {
+                querySaleAll();
+            }
+        }
+    });
+
+    $(function () {
+        getCommodityAllType(localStore.token, function (res) {
+            vm.classify = vm.classify.concat(res.result);
+        });
+        loadCountmoney();
+    });
+
+    function loadCountmoney() {
+        $.get('/shanduonewretail/jorder/countmoney', {
+            token: localStore.token,
+            categoryId: vm.categoryId === '' ? '' : vm.categoryId,
+            startDate: vm.startDate === '' ? '' : vm.startDate,
+            endDate: vm.endDate === '' ? '' : vm.endDate
+        }, function (res) {
+            if (res.success) {
+                vm.money = res.money;
+            }
+        });
+    }
+
+    function querySaleAll(cbOk, cbErr) {
+        console.log(vm.startDate);
+        $.ajax({
+            url: '/shanduonewretail/jorder/commodityList', data: {
+                token: localStore.token,
+                startDate: vm.startDate === '' ? '' : vm.startDate,
+                endDate: vm.endDate === '' ? '' : vm.endDate,
+                page: pageIndex,
+                pageSize: pageCount
+            }, success: function (res) {
+                console.log(res);
+                cbOk && cbOk();
+            }, error: function () {
+                cbErr && cbErr();
+            }
+        });
+    }
+</script>
 </html>

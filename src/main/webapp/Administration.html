@@ -50,7 +50,7 @@
                 <img src="img/return_5.png">
             </div>
         </div>
-        <div class="category dis_flex ">
+        <div class="category dis_flex " @click="commoditySaleView">
             <div class="dis_flex">
                 <img src="img/Sale.png">
                 <span>商品销售详情</span>
@@ -59,7 +59,7 @@
                 <img src="img/return_5.png">
             </div>
         </div>
-        <div class="category dis_flex ">
+        <div class="category dis_flex " @click="orderManagerView">
             <div class="dis_flex">
                 <img src="img/Order.png">
                 <span>订单管理</span>
@@ -68,7 +68,7 @@
                 <img src="img/return_5.png">
             </div>
         </div>
-        <div class="category dis_flex ">
+        <div class="category dis_flex " @click="putForwardManagerView">
             <div class="dis_flex">
                 <img src="img/Finance.png">
                 <span>财务管理</span>
@@ -105,8 +105,14 @@
         methods: {
             gotoStoreHomeView() {
                 location.href = "shopinformation.html";
-            },commoditysettingView(){
+            }, commoditysettingView() {
                 location.href = "Commoditysetting.html";
+            }, commoditySaleView() {
+                location.href = "commoditySale.html";
+            }, orderManagerView() {
+                location.href = "orderList.html";
+            }, putForwardManagerView() {
+                location.href = "putForward.html";
             }
         }
     });
