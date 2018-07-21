@@ -384,7 +384,7 @@ public class OrderController {
 			long start = convertTimeToLong(startDate);
 			long end = convertTimeToLong(endDate);
 			if(start > end) {
-				return ResultUtils.error(ErrorConsts.CODE_10003,"输入时间开始时间不能晚于结束时间");
+				return ResultUtils.error(ErrorConsts.CODE_10003,"开始时间大于结束时间");
 			}
 		}
 		return null;
