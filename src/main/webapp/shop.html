@@ -191,7 +191,8 @@ let storeId = GetQueryString('storeId');
             that.mescroll = new MeScroll("vueData", { //请至少在vue的mounted生命周期初始化mescroll,以确保您配置的id能够被找到
                 up: {
                     callback: that.upCallback, //
-                    auto: false
+                    auto: false,
+                    noMoreSize: 20
                 }, down: {
                     callback: that.downCallback,
                     auto: false
@@ -377,7 +378,7 @@ let storeId = GetQueryString('storeId');
     });
 
     function adapter(categoryId, cbOK, cbErr) {
-    	getGoods(storeId,categoryId, pageIndex, pageCount, function (res) {
+    	getGoods(storeId,categoryId,1, pageIndex, pageCount, function (res) {
             let newData = res.commodityInfoList;
             for (let i in newData) {
                 newData[i].picture = {
