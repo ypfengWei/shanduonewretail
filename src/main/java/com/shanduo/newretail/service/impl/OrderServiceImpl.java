@@ -25,6 +25,7 @@ import com.shanduo.newretail.service.OrderService;
 import com.shanduo.newretail.service.SellerService;
 import com.shanduo.newretail.util.OrderIdUtils;
 import com.shanduo.newretail.util.Page;
+import com.shanduo.newretail.util.UUIDGenerator;
 
 /**
  * 
@@ -69,6 +70,7 @@ public class OrderServiceImpl implements OrderService {
 			commodityService.updateCommodityStock(sellerId, commodityId, number, "0");
 			Commodity commodity = commodityMapper.selectByPrimaryKey(commodityId);
 			ToOrderDetails orderDetails = new ToOrderDetails();
+			orderDetails.setId(UUIDGenerator.getUUID());
 			orderDetails.setOrderId(orderId);
 			orderDetails.setCommodityId(commodityId);
 			orderDetails.setCommodityName(commodity.getName());

@@ -4,9 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import javax.servlet.http.HttpServletRequest;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,10 +23,8 @@ import com.shanduo.newretail.service.AccessTokenService;
 import com.shanduo.newretail.service.BaseService;
 import com.shanduo.newretail.service.CommodityService;
 import com.shanduo.newretail.service.UserService;
-import com.shanduo.newretail.util.JsonStringUtils;
 import com.shanduo.newretail.util.StringUtils;
 import com.shanduo.newretail.util.WxFileUtils;
-
 import net.sf.json.JSONArray;
 
 @Controller
@@ -388,7 +384,9 @@ public class CommodityController {
 			return new ErrorBean(ErrorConsts.CODE_10001,"token失效");
 		}
 		try {
-			picture = WxFileUtils.downloadImage(accessTokenService.selectAccessToken(WxPayConsts.APPID).getAccessToken(),picture);
+			if(!picture.contains(".jpg")){
+				picture = WxFileUtils.downloadImage(accessTokenService.selectAccessToken(WxPayConsts.APPID).getAccessToken(),picture);
+			}
 			int count = commodityService.updateCommodity(name, picture, price, stock, categoryId,userId,commodityId);
 		} catch (Exception e) {
 			return new ErrorBean(ErrorConsts.CODE_10004,"修改失败");

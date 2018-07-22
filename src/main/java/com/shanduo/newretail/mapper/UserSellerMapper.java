@@ -33,5 +33,7 @@ public interface UserSellerMapper {
     int updateMoney (BigDecimal money,String id);
     
     SellerDetails selectSellerDetails(String id);
+    
+    List<Map<String,Object>>  selectSalesmanSubordinate(String id);
 
 }

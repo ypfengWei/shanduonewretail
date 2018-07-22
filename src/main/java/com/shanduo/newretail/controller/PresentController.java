@@ -75,7 +75,7 @@ public class PresentController {
 		if(StringUtils.isNull(typeId) || !typeId.matches("^[12]$")) {
 			return ResultUtils.error(ErrorConsts.CODE_10002, "提现类型错误");
 		}
-		if(StringUtils.isNull(money) || !money.matches("^\\d+(\\.\\d{0,2})$")) {
+		if(StringUtils.isNull(money) || !money.matches("^\\d*(\\.\\d{0,2})$")) {
 			log.warn("提现金额错误");
 			return ResultUtils.error(ErrorConsts.CODE_10002, "提现金额错误");
 		}
