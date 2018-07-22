@@ -2,9 +2,81 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"/>
+    <meta content="telephone=no,email=no" name="format-detection">
+    <!--禁止自动识别电话号码和邮箱-->
+    <meta content="yes" name="apple-mobile-web-app-capable">
+    <!--苹果手机：会删除默认的工具栏和菜单栏，网站开启对web app程序的支持-->
+    <meta name="apple-mobile-web-app-status-bar-style" content="black"/>
+    <!--苹果手机：在web app应用下状态条（屏幕顶部条）的颜色,默认值为default（白色），可以定为black（黑色）和black-translucent（灰色半透明）。-->
+    <meta name="apple-touch-fullscreen" content="yes"/>
+    <!--苹果手机：如果把一个web app添加到了主屏幕中，那么从主屏幕中打开这个web app则全屏显示-->
+    <link rel="stylesheet" type="text/css" href="css/Salesman.css">
+    <title></title>
 </head>
 <body>
-
+    <div id="vueData">
+        <header>
+            <div class="title_header dis_flex">
+                <div class="dis_flex">
+                    <img src="img/return_2.png">
+                </div>
+                <div>
+                    <span>业务员管理</span>
+                </div>
+                <div></div>
+            </div>
+        </header>
+        <div class="body">
+            <div class="dis_flex div_li">
+                <img src="img/ewm.png">
+                <div class="dis_flex">
+                    <span>业务员一号</span>
+                    <span class="col_hui ">电话：15873024293</span>
+                </div>
+            </div>
+            <div class="dis_flex">
+                <span>我的业绩：</span>
+                <div class="col_hui">
+                    <span>店铺数：</span>
+                    <span>2</span>
+                </div>
+            </div>
+            <div>
+                <div class="dis_flex div_li div_complex">
+                    <img src="img/rectangle_3.png">
+                    <div class="dis_flex">
+                        <span>闪多新零售</span>
+                        <span class="col_hui ">公告：需要香烟请在备注栏备注，谢谢！</span>
+                    </div>
+                </div>
+                <div class="dis_flex div_li div_complex">
+                    <img src="img/rectangle_3.png">
+                    <div class="dis_flex">
+                        <span>闪多新零售</span>
+                        <span class="col_hui " :style="{width: Width+'px'}">
+                            公告：需要香烟请在备注栏备注，谢谢！谢谢！谢谢！谢谢！谢谢！谢谢！谢谢！谢谢！</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script type="text/javascript">
+    let userId = localStorage.getItem('userId');
+    let vm = new Vue({
+        el: '#vueData',
+        data: {
+            //获取屏幕分辨率高度
+            Width: null,
+        },
+        mounted: function () {
+            //获取屏幕分辨率高度
+            let that = this;
+            that.Width = window.screen.width - 82;
+        }
+    })
+</script>
 </html>
