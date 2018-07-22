@@ -14,6 +14,9 @@
     <!--苹果手机：如果把一个web app添加到了主屏幕中，那么从主屏幕中打开这个web app则全屏显示-->
     <link rel="stylesheet" type="text/css" href="css/bankCard.css">
     <title></title>
+    <script src="js/jquery-3.3.1.js"></script>
+    <script src="js/layer.js"></script>
+    <script src="js/utils.js"></script>
 </head>
 <body>
 <div id="vueData">
@@ -30,25 +33,25 @@
         <div class="dis_flex">
             <div class="input_information">
                 <label for="name">姓名：</label>
-                <input type="text" id="name">
+                <input type="text" id="name" v-model="info.name">
             </div>
             <div class="input_information">
-                <label for="bank">银行：</label>
-                <input type="text" id="bank">
+                <label for="bank">银行名称：</label>
+                <input type="text" id="bank" v-model="info.bankName">
             </div>
             <div class="input_information">
                 <label for="cardNumber">卡号：</label>
-                <input type="text" id="cardNumber">
+                <input type="text" id="cardNumber" v-model="info.cardNumber">
             </div>
             <div class="input_information">
-                <label for="openAccountAddress">开户地址：</label>
-                <input type="text" id="openAccountAddress">
+                <label for="openAccountAddress">开户行名称：</label>
+                <input type="text" id="openAccountAddress" v-model="info.openingBank">
             </div>
             <div class="input_information">
                 <label for="withdrawalAmount">提款金额：</label>
-                <input type="text" id="withdrawalAmount">
+                <input type="number" id="withdrawalAmount" v-model="info.money">
             </div>
-            <div class="putForward">
+            <div class="putForward" @click="savepresent">
                 <span>立即提现</span>
             </div>
         </div>
@@ -56,4 +59,36 @@
     </div>
 </div>
 </body>
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script>
+    let localStore = JSON.parse(localStorage.localStore)
+    let vm = new Vue({
+        el: '#vueData',
+        data: {
+            info: {
+                token:localStore.token,
+                money: 0,
+                name: '',
+                typeId:2,
+                openingBank: '',
+                bankName: '',
+                cardNumber: '',
+            }
+        }, methods: {
+            savepresent() {
+                $.ajax({
+                    url:'/shanduonewretail/jpresent/savepresent',
+                    data:vm.info,
+                    success:function (res) {
+                        if(res.success){
+                            toast('提现申请已受理')
+                        }else {
+                            toast(res.errCodeDes);
+                        }
+                    }
+                });
+            }
+        }
+    });
+</script>
 </html>

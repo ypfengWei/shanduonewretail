@@ -100,12 +100,11 @@
             storeType: [],
             storeTypeIndex: 0,
             avatarUrl: null,
-            storeImg: ''
+            storeImg: null
         }, watch: {
             storeInfo: {
                 handler(val, oldVal) {
                     localStorage.localStoreInfo = JSON.stringify(val);
-                    this.storeImg = imagePath + val.sellerPicture;
                 },
                 deep: true
             }, storeType: {
@@ -143,13 +142,11 @@
                     success: function (res) {
                         vm.avatarUrl = res.localIds[0];
                         let u = navigator.userAgent;//手机类型android或ios
-                        //if (u.indexOf('Android') > -1 || u.indexOf('Linux') > -1) {//安卓手机
                         if (u.indexOf('iPhone') > -1) {
-                            vm.avatarUrl.push(res.localIds[0]);
                             wx.getLocalImgData({
                                 localId: res.localIds[0], // 图片的localID
                                 success: function (res) {
-                                    vm.storeInfo.sellerPicture = res.localData;
+                                    vm.storeImg = res.localData;
                                 }
                             });
                         } else {
@@ -231,26 +228,28 @@
                     token: localStore.token,
                     typeId: 1
                 }, success: function (res) {
-                    console.log(res)
                     if (res.success) {
                         vm.storeInfo = res.result;
-                    }
-                    vm.storeInfo.endDate = getMyDate(vm.storeInfo.endDate);
-                    vm.storeInfo.startDate = getMyDate(vm.storeInfo.startDate);
-                    $.getJSON('/shanduonewretail/jseller/selectselleralltype', function (res) {
-                        console.log(res)
-                        if (res.success) {
-                            vm.storeType = res.result;
-                            $.each(vm.storeType, function (i, item) {
-                                if (item.id == vm.storeInfo.sellerType) {
-                                    vm.storeTypeIndex = i;
-                                    return false;
-                                }
-                            });
-
+                        vm.storeInfo.endDate = getMyDate(vm.storeInfo.endDate);
+                        vm.storeInfo.startDate = getMyDate(vm.storeInfo.startDate);
+                        if (vm.storeInfo.sellerPicture) {
+                            vm.storeImg = imagePath + vm.storeInfo.sellerPicture
                         }
-                    });
+                        $.getJSON('/shanduonewretail/jseller/selectselleralltype', function (res) {
+                            if (res.success) {
+                                vm.storeType = res.result;
+                                $.each(vm.storeType, function (i, item) {
+                                    if (item.id == vm.storeInfo.sellerType) {
+                                        vm.storeTypeIndex = i;
+                                        return false;
+                                    }
+                                });
 
+                            }
+                        });
+                    } else {
+                        toast('登录状态失效')
+                    }
                 }
             });
         }

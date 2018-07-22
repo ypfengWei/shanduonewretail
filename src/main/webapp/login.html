@@ -27,7 +27,7 @@
                 <div>
                     <span>登录</span>
                 </div>
-                <div>
+                <div @click="gotoRegisterView">
                     <span>去注册</span>
                 </div>
             </div>
@@ -37,11 +37,11 @@
             <div>
                 <div>
                     <img src="img/phone.png">
-                    <input name="sellers.sellersName" placeholder="输入手机号" v-model="userInfo.userName"/>
+                    <input name="sellers.sellersName" placeholder="输入手机号" v-model="userName"/>
                 </div>
                 <div>
                     <img src="img/Password.png">
-                    <input type="password" name="sellers.loginPassword" placeholder="输入密码" v-model="userInfo.password"/>
+                    <input type="password" name="sellers.loginPassword" placeholder="输入密码" v-model="password"/>
                 </div>
                 <div @click="sellersLogin">立即登录</div>
             </div>
@@ -55,35 +55,31 @@
     let vm = new Vue({
         el: '#vueData',
         data: {
-            userInfo: {
-                userName: '',
-                password: ''
-            }
+            userName: '',
+            password: ''
         }, methods: {
+            gotoRegisterView(){
+                location.href="register.html";
+            },
             sellersLogin() {
-                if ($.trim(vm.userInfo.userName) === '' || $.trim(vm.userInfo.password) === '') {
+                if ($.trim(vm.userName) === '' || $.trim(vm.password) === '') {
                     toast('登录名或密码不能为空!');
                     return;
                 }
                 $.ajax({
                     type: "POST",
-                    url: "login.do",
+                    url: "/shanduonewretail/juser/loginuser",
                     dataType: "json",
                     data: {
-                        "userInfo.userName": vm.userInfo.userName,
-                        "userInfo.password": encode64(vm.userInfo.password)
+                        "phone": vm.userName,
+                        "password": vm.password
                     },
-                    success: function (result) {
-                        if (result.success) {
+                    success: function (res) {
+                        if (res.success) {
+                            localStorage.setItem('localStore',JSON.stringify(res));
                             toast('登录成功!');
-                            localStorage.userId = result.userId;
                             setTimeout(function () {
-                                if (result.deliverRegion) {
-                                    localStorage.deliverRegion = result.deliverRegion;
-                                    location.href = 'orderList.html';
-                                } else {
-                                    location.href = 'commodityManage.html';
-                                }
+                                location.href = 'Administration.html';
                             }, 1000)
                         } else {
                             toast('登录失败');
@@ -94,14 +90,9 @@
         }
     });
     $(function () {
-        let userId = localStorage.getItem('userId');
-        let deliverRegion = localStorage.getItem('deliverRegion');
-        if (userId) {
-            if (deliverRegion) {
-                location.href = 'orderList.html';
-            } else {
-                location.href = 'commodityManage.html';
-            }
+        let localStore = localStorage.getItem('localStore');
+        if (localStore) {
+            location.href = 'Administration.html';
         }
     });
 </script>

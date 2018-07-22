@@ -23,7 +23,7 @@
 <div id="vueData">
     <header>
         <div class="title_header dis_flex">
-            <div class="dis_flex">
+            <div class="dis_flex" @click="goBack">
                 <img src="img/return_2.png">
             </div>
             <div>
@@ -66,22 +66,22 @@
         </div>
     </div>
     <footer>
-        <div class="list_li dis_flex">
+        <div class="list_li dis_flex" v-for="commodity in commodities">
             <div class="dis_flex">
-                <img src="img/bottom_img.png">
+                <img :src="commodity.picture">
                 <div class="dis_flex">
                     <div class="dis_flex">
-                        <span>死肥宅快乐时</span>
-                        <span>50000ml</span>
-                        <span>胖虎</span>
+                        <span>{{commodity.commodityName}}</span>
+                        <span></span>
+                        <span></span>
                     </div>
                     <div>
-                        <span>￥5000.00</span>
+                        <span></span>
                     </div>
                 </div>
             </div>
             <div class="dis_flex">
-                <span>x5</span>
+                <span>x{{commodity.number}}</span>
             </div>
         </div>
     </footer>
@@ -90,11 +90,12 @@
 <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 <script>
     let localStore = JSON.parse(localStorage.localStore);
-    let pageIndex = 1, pageCount = 20;
+    let pageIndex = 1, pageCount = 20, totalPage = 0;
     let vm = new Vue({
         el: '#vueData',
         data: {
             classify: [],
+            commodities: [],
             categoryId: '',
             categoryName: '选择类别',
             startDate: '',
@@ -105,7 +106,11 @@
                 vm.categoryId = categoryId;
                 vm.categoryName = categoryName;
             }, querySale() {
+                emptyData();
                 querySaleAll();
+                loadCountmoney();
+            },goBack(){
+                history.back();
             }
         }
     });
@@ -124,6 +129,7 @@
             startDate: vm.startDate === '' ? '' : vm.startDate,
             endDate: vm.endDate === '' ? '' : vm.endDate
         }, function (res) {
+            console.log(res);
             if (res.success) {
                 vm.money = res.money;
             }
@@ -131,7 +137,6 @@
     }
 
     function querySaleAll(cbOk, cbErr) {
-        console.log(vm.startDate);
         $.ajax({
             url: '/shanduonewretail/jorder/commodityList', data: {
                 token: localStore.token,
@@ -140,12 +145,23 @@
                 page: pageIndex,
                 pageSize: pageCount
             }, success: function (res) {
-                console.log(res);
+                if (res.success) {
+                    vm.commodities = vm.commodities.concat(res.data);
+                    totalPage = res.totalPage;
+                }
                 cbOk && cbOk();
             }, error: function () {
                 cbErr && cbErr();
             }
         });
+    }
+
+    function emptyData() {
+        let ary = vm.commodities;
+        ary.splice(0, ary.length);
+        vm.commodities = ary;
+        pageIndex = 1;
+        totalPage = 0;
     }
 </script>
 </html>

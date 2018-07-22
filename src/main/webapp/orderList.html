@@ -59,74 +59,44 @@
                 <div class="swiper-slide">
                     <div class="frame">
                         <!--没有订单时显示-->
-                        <!--<span class="dis_inli" v-if="orders[0].arrayResult.length==0">没有订单</span>-->
-                        <ul :style="{maxHeight: winHeight+'px'}">
-                            <li class="item">
+                        <span class="dis_inli" v-if="ds[currentTab].arrayResult.length==0">没有订单</span>
+                        <ul :style="{maxHeight: winHeight+'px'}" v-else>
+                            <li class="item" v-for="(item,key) in ds[currentTab].arrayResult">
                                 <div class="item-right">
-                                    <div class="title price">订单ID：12345654321</div>
+                                    <div class="title price">订单ID：{{item.id}}</div>
                                     <div class="subtitle">
-                                        <div>
+                                        <div v-for="detail in item.details">
                                             <div class="dis_flex">
-                                                <span>肥宅快乐水</span>
-                                                <span>x3</span>
+                                                <span>{{detail.commodityName}}</span>
+                                                <span>x{{detail.commodityNumber}}</span>
                                             </div>
                                             <div>
                                                 <span>售价:</span>
-                                                <span>500</span>
-                                            </div>
-                                        </div>
-                                        <div>
-                                            <div class="dis_flex">
-                                                <span>肥宅快乐水</span>
-                                                <span>x3</span>
-                                            </div>
-                                            <div>
-                                                <span>售价:</span>
-                                                <span>500</span>
-                                            </div>
-                                        </div>
-                                        <div>
-                                            <div class="dis_flex">
-                                                <span>肥宅快乐水</span>
-                                                <span>x3</span>
-                                            </div>
-                                            <div>
-                                                <span>售价:</span>
-                                                <span>500</span>
-                                            </div>
-                                        </div>
-                                        <div>
-                                            <div class="dis_flex">
-                                                <span>肥宅快乐水</span>
-                                                <span>x3</span>
-                                            </div>
-                                            <div>
-                                                <span>售价:</span>
-                                                <span>500</span>
+                                                <span>{{detail.price}}</span>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="subtitle_div">
                                         <span>合计:</span>
-                                        <span>1500</span>
+                                        <span>{{item.totalPrice}}</span>
                                     </div>
                                     <div class="bg_div_hui">
                                         <div>
                                             <span>收货人：</span>
-                                            <span>阿西吧</span>
+                                            <span>{{item.userName}}</span>
                                         </div>
                                         <div>
                                             <span>收货地址：</span>
-                                            <span>湖南省长沙市xxxxxxxxxxxxxxxxx</span>
+                                            <span>{{item.userAddress}}</span>
                                         </div>
                                         <div>
                                             <span>备注：</span>
-                                            <span>哈哈哈哈哈哈哈哈哈哈色氨酸我的速度我达瓦大大我的</span>
+                                            <span>{{item.remarks}}</span>
                                         </div>
                                     </div>
                                     <div class="number dis_flex">
-                                            <a href="javascript:">接单</a>
-                                            <a href="javascript:">拒绝</a>
+                                        <a href="javascript:" @click="exctueMethod(key,'/shanduonewretail/jorder/receivingorder', item.id )">接单</a>
+                                        <a href="javascript:" @click="exctueMethod(key,'/shanduonewretail/jorder/cancelorder', item.id )">拒绝</a>
                                     </div>
                                 </div>
                             </li>
@@ -139,73 +109,43 @@
                 <div class="swiper-slide" style="display:none;">
                     <div class="frame">
                         <!--没有订单时显示-->
-                        <!--<span class="dis_inli" v-if="orders[0].arrayResult.length==0">没有订单</span>-->
-                        <ul :style="{maxHeight: winHeight+'px'}">
-                            <li class="item">
+                        <span class="dis_inli" v-if="ds[currentTab].arrayResult.length==0">没有订单</span>
+                        <ul :style="{maxHeight: winHeight+'px'}" v-else>
+                            <li class="item" v-for="(item,key) in ds[currentTab].arrayResult">
                                 <div class="item-right">
-                                    <div class="title price">订单ID：12345654321</div>
+                                    <div class="title price">订单ID：{{item.id}}</div>
                                     <div class="subtitle">
-                                        <div>
+                                        <div v-for="detail in item.details">
                                             <div class="dis_flex">
-                                                <span>肥宅快乐水</span>
-                                                <span>x3</span>
+                                                <span>{{detail.commodityName}}</span>
+                                                <span>x{{detail.commodityNumber}}</span>
                                             </div>
                                             <div>
                                                 <span>售价:</span>
-                                                <span>500</span>
-                                            </div>
-                                        </div>
-                                        <div>
-                                            <div class="dis_flex">
-                                                <span>肥宅快乐水</span>
-                                                <span>x3</span>
-                                            </div>
-                                            <div>
-                                                <span>售价:</span>
-                                                <span>500</span>
-                                            </div>
-                                        </div>
-                                        <div>
-                                            <div class="dis_flex">
-                                                <span>肥宅快乐水</span>
-                                                <span>x3</span>
-                                            </div>
-                                            <div>
-                                                <span>售价:</span>
-                                                <span>500</span>
-                                            </div>
-                                        </div>
-                                        <div>
-                                            <div class="dis_flex">
-                                                <span>肥宅快乐水</span>
-                                                <span>x3</span>
-                                            </div>
-                                            <div>
-                                                <span>售价:</span>
-                                                <span>500</span>
+                                                <span>{{detail.price}}</span>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="subtitle_div">
                                         <span>合计:</span>
-                                        <span>1500</span>
+                                        <span>{{item.totalPrice}}</span>
                                     </div>
                                     <div class="bg_div_hui">
                                         <div>
                                             <span>收货人：</span>
-                                            <span>阿西吧</span>
+                                            <span>{{item.userName}}</span>
                                         </div>
                                         <div>
                                             <span>收货地址：</span>
-                                            <span>湖南省长沙市xxxxxxxxxxxxxxxxx</span>
+                                            <span>{{item.userAddress}}</span>
                                         </div>
                                         <div>
                                             <span>备注：</span>
-                                            <span>哈哈哈哈哈哈哈哈哈哈色氨酸我的速度我达瓦大大我的</span>
+                                            <span>{{item.remarks}}</span>
                                         </div>
                                     </div>
                                     <div class="number dis_flex">
-                                        <a href="javascript:">完成</a>
+                                        <a href="javascript:" @click="exctueMethod(key,'/shanduonewretail/jorder/finishorder', item.id )">配送完成</a>
                                     </div>
                                 </div>
                             </li>
@@ -218,128 +158,47 @@
                 <div class="swiper-slide" style="display:none;">
                     <div class="frame">
                         <!--没有订单时显示-->
-                        <!--<span class="dis_inli" v-if="orders[0].arrayResult.length==0">没有订单</span>-->
-                        <ul :style="{maxHeight: winHeight+'px'}">
-                            <li class="item">
+                        <span class="dis_inli" v-if="ds[currentTab].arrayResult.length==0">没有订单</span>
+                        <ul :style="{maxHeight: winHeight+'px'}" v-else>
+                            <li class="item" v-for="(item,key) in ds[currentTab].arrayResult">
                                 <div class="item-right">
-                                    <div class="title price">订单ID：12345654321</div>
+                                    <div class="title price">订单ID：{{item.id}}</div>
                                     <div class="subtitle">
-                                        <div>
+                                        <div v-for="detail in item.details">
                                             <div class="dis_flex">
-                                                <span>肥宅快乐水</span>
-                                                <span>x3</span>
+                                                <span>{{detail.commodityName}}</span>
+                                                <span>x{{detail.commodityNumber}}</span>
                                             </div>
                                             <div>
                                                 <span>售价:</span>
-                                                <span>500</span>
-                                            </div>
-                                        </div>
-                                        <div>
-                                            <div class="dis_flex">
-                                                <span>肥宅快乐水</span>
-                                                <span>x3</span>
-                                            </div>
-                                            <div>
-                                                <span>售价:</span>
-                                                <span>500</span>
-                                            </div>
-                                        </div>
-                                        <div>
-                                            <div class="dis_flex">
-                                                <span>肥宅快乐水</span>
-                                                <span>x3</span>
-                                            </div>
-                                            <div>
-                                                <span>售价:</span>
-                                                <span>500</span>
-                                            </div>
-                                        </div>
-                                        <div>
-                                            <div class="dis_flex">
-                                                <span>肥宅快乐水</span>
-                                                <span>x3</span>
-                                            </div>
-                                            <div>
-                                                <span>售价:</span>
-                                                <span>500</span>
+                                                <span>{{detail.price}}</span>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="subtitle_div">
                                         <span>合计:</span>
-                                        <span>1500</span>
+                                        <span>{{item.totalPrice}}</span>
                                     </div>
                                     <div class="bg_div_hui">
                                         <div>
                                             <span>收货人：</span>
-                                            <span>阿西吧</span>
+                                            <span>{{item.userName}}</span>
                                         </div>
                                         <div>
                                             <span>收货地址：</span>
-                                            <span>湖南省长沙市xxxxxxxxxxxxxxxxx</span>
+                                            <span>{{item.userAddress}}</span>
                                         </div>
                                         <div>
                                             <span>备注：</span>
-                                            <span>哈哈哈哈哈哈哈哈哈哈色氨酸我的速度我达瓦大大我的</span>
+                                            <span>{{item.remarks}}</span>
                                         </div>
                                     </div>
                                     <div class="number dis_flex">
-                                        <a href="javascript:">删除</a>
+                                        <!--<a href="javascript:" @click="exctueMethod(key,'/yapingzh/delOrder.do', order.id )">删除</a>-->
                                     </div>
                                 </div>
                             </li>
                         </ul>
-                    </div>
-                </div>
-            </div>
-<!--            <div class="swiper-wrapper">
-                <div class="swiper-slide" style="display:none;">
-                    <div class="frame">
-                        &lt;!&ndash;没有订单时显示&ndash;&gt;
-                        <span class="dis_inli" v-if="orders[2].arrayResult.length==0">没有订单</span>
-                        <div v-else>
-                            <div>
-                                <div class="dis_flex">
-                                    <input type="datetime-local" v-model="startTime">
-                                    <span>至</span>
-                                    <input type="datetime-local" v-model="endTime">
-                                    <input type="button" value="查询" @click="statisticsQuery">
-                                </div>
-                                <div class="dis_flex" v-if="census">
-                                    <p>订单：{{census.totalNumber}}</p>
-                                    <p>总额：{{census.turnover}}</p>
-                                    <select name="region" v-if="userId==1" @change="selectChange">
-                                        <option selected="selected" value="-1">-选择区域-</option>
-                                        <option v-for="(area,index) in areaArray" :value="index">{{area.userName}}
-                                        </option>
-                                    </select>
-                                </div>
-                                <div class="dis_flex" v-else>
-                                    <p>订单：0</p>
-                                    <p>总额：0</p>
-                                </div>
-                            </div>
-                            <ul :style="{maxHeight: winHeight-80+'px'}">
-                                <li class="item" v-for="(order,index) in orders[2].arrayResult">
-                                    <div class="item-right">
-                                        <div class="title" v-for="details in order.orderDetailsList">
-                                            {{details.commodityName}}
-                                        </div>
-                                        <div class="subtitle">
-                                            <span>备注:</span>
-                                            <span>{{order.remarks}}</span>
-                                        </div>
-                                        <div class="number dis_flex">
-                                            <span class="price">￥{{order.totalPrice}}</span>
-                                            <div class="dis_flex">
-                                                <a href="javascript:"
-                                                   @click="exctueMethod(index,'/yapingzh/delOrder.do', order.id )">删除</a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </li>
-                            </ul>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -348,73 +207,43 @@
                 <div class="swiper-slide" style="display:none;">
                     <div class="frame">
                         <!--没有订单时显示-->
-                        <!--<span class="dis_inli" v-if="orders[0].arrayResult.length==0">没有订单</span>-->
-                        <ul :style="{maxHeight: winHeight+'px'}">
-                            <li class="item">
+                        <span class="dis_inli" v-if="ds[currentTab].arrayResult.length==0">没有订单</span>
+                        <ul :style="{maxHeight: winHeight+'px'}" v-else>
+                            <li class="item" v-for="(item,key) in ds[currentTab].arrayResult">
                                 <div class="item-right">
-                                    <div class="title price">订单ID：12345654321</div>
+                                    <div class="title price">订单ID：{{item.id}}</div>
                                     <div class="subtitle">
-                                        <div>
+                                        <div v-for="detail in item.details">
                                             <div class="dis_flex">
-                                                <span>肥宅快乐水</span>
-                                                <span>x3</span>
+                                                <span>{{detail.commodityName}}</span>
+                                                <span>x{{detail.commodityNumber}}</span>
                                             </div>
                                             <div>
                                                 <span>售价:</span>
-                                                <span>500</span>
-                                            </div>
-                                        </div>
-                                        <div>
-                                            <div class="dis_flex">
-                                                <span>肥宅快乐水</span>
-                                                <span>x3</span>
-                                            </div>
-                                            <div>
-                                                <span>售价:</span>
-                                                <span>500</span>
-                                            </div>
-                                        </div>
-                                        <div>
-                                            <div class="dis_flex">
-                                                <span>肥宅快乐水</span>
-                                                <span>x3</span>
-                                            </div>
-                                            <div>
-                                                <span>售价:</span>
-                                                <span>500</span>
-                                            </div>
-                                        </div>
-                                        <div>
-                                            <div class="dis_flex">
-                                                <span>肥宅快乐水</span>
-                                                <span>x3</span>
-                                            </div>
-                                            <div>
-                                                <span>售价:</span>
-                                                <span>500</span>
+                                                <span>{{detail.price}}</span>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="subtitle_div">
                                         <span>合计:</span>
-                                        <span>1500</span>
+                                        <span>{{item.totalPrice}}</span>
                                     </div>
                                     <div class="bg_div_hui">
                                         <div>
                                             <span>收货人：</span>
-                                            <span>阿西吧</span>
+                                            <span>{{item.userName}}</span>
                                         </div>
                                         <div>
                                             <span>收货地址：</span>
-                                            <span>湖南省长沙市xxxxxxxxxxxxxxxxx</span>
+                                            <span>{{item.userAddress}}</span>
                                         </div>
                                         <div>
                                             <span>备注：</span>
-                                            <span>哈哈哈哈哈哈哈哈哈哈色氨酸我的速度我达瓦大大我的</span>
+                                            <span>{{item.remarks}}</span>
                                         </div>
                                     </div>
                                     <div class="number dis_flex">
-                                        <a href="javascript:">删除</a>
+                                        <!--<a href="javascript:" @click="exctueMethod(key,'/yapingzh/delOrder.do', order.id )">删除</a>-->
                                     </div>
                                 </div>
                             </li>
@@ -429,35 +258,26 @@
 <script src="js/mescroll.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 <script type="text/javascript">
-    let userId = localStorage.getItem('userId');
+    let localStore = JSON.parse(localStorage.localStore), currentPage = 1, totalPage = 0, pageSize = 20;
     let vm = new Vue({
         el: '#vueData',
         data: {
             //获取屏幕分辨率高度
             winHeight: null,
             currentTab: 0,
-            pageSize: 20,
-            orders: [{
-                currentPage: 1,
-                totalpage: 0,
-                arrayResult: [],
-                state: 1
-            }, {
-                currentPage: 1,
-                totalpage: 0,
+            ds: [{
                 arrayResult: [],
                 state: 2
             }, {
-                currentPage: 1,
-                totalpage: 0,
+                arrayResult: [],
+                state: 3
+            }, {
                 arrayResult: [],
                 state: 4
+            }, {
+                arrayResult: [],
+                state: 6
             }],
-            census: null,
-            userId: 0,
-            areaArray: [],
-            startTime: '',
-            endTime: '',
             mescroll: null
         },
         mounted: function () {
@@ -473,40 +293,26 @@
                     auto: false
                 }
             });
+
+            $('.swiper-container-ul-li').on('click', function () {
+                let selectIndex = $(event.currentTarget).index();
+                if (vm.currentTab === selectIndex) {
+                    return;
+                }
+                vm.currentTab = selectIndex;
+                emptyData();
+                $(event.currentTarget).addClass('actives').siblings('li').removeClass('actives');
+                $('.swiper-wrapper').eq(vm.currentTab).show().children().show().parent().siblings('.swiper-wrapper').hide();
+                loadData();
+            });
         },
         methods: {
-            statisticsQuery() {
-                if ($.trim(vm.startTime).length > 0 && $.trim(vm.endTime).length > 0) {
-                    let startTime = new Date(vm.startTime);
-                    let endTime = new Date(vm.endTime);
-                    if (endTime.getTime() < startTime.getTime()) {
-                        toast('结束时间不正确');
-                        return;
-                    }
-                    $.ajax({
-                        type: 'POST',
-                        url: '/yapingzh/businessStatisticsByTime.do',
-                        dataType: 'json',
-                        data: {
-                            "census.startTime": vm.startTime,
-                            "census.endTime": vm.endTime
-                        },
-                        success: (res) => {
-                            if (res.success) {
-                                vm.census = res.data;
-                            }
-                        }
-                    });
-                } else {
-                    toast('请选择时间段');
-                }
-            },
             upCallback() {
                 let that = this;
-                if (vm.orders[vm.currentTab].totalpage > vm.orders[vm.currentTab].currentPage) {
-                    vm.orders[vm.currentTab].currentPage += 1;
-                    loadDate(function () {
-                        that.mescroll.endByPage(vm.pageSize, vm.orders[vm.currentTab].totalpage);
+                if (totalPage > currentPage) {
+                    currentPage += 1;
+                    loadData(function () {
+                        that.mescroll.endByPage(pageSize, totalPage);
                     }, function () {
                         that.mescroll.endErr();
                     });
@@ -515,27 +321,26 @@
                 }
             }, downCallback() {
                 let that = this;
-                businessStatistics();
                 emptyData();
-                loadDate(function () {
-                    that.mescroll.endByPage(vm.pageSize, vm.orders[vm.currentTab].totalpage);
+                loadData(function () {
+                    that.mescroll.endByPage(pageSize, totalPage);
                 }, function () {
                     that.mescroll.endErr();
                 });
             },
             goBack() {
                 history.back();
-            }, exctueMethod(key, url, orderId) {
+            },exctueMethod(key, url, orderId) {
                 layer.open({
                     content: "执行这个操作？"
                     , btn: ['是的', '取消']
                     , yes: function (index) {
-                        $.getJSON(url, {"orderId": orderId, "userId": userId}, function (result) {
+                        $.getJSON(url, {"orderId": orderId, "token": localStore.token}, function (result) {
                             if (result.success) {
-                                let oldData = vm.orders[vm.currentTab].arrayResult;
+                                let oldData = vm.ds[vm.currentTab].arrayResult;
                                 oldData.splice(key, 1);
-                                vm.orders[vm.currentTab].arrayResult = oldData;
-                                toast(result.msg);
+                                vm.ds[vm.currentTab].arrayResult = oldData;
+                                toast(result.result);
                             } else {
                                 toast('操作失败');
                             }
@@ -543,79 +348,44 @@
                         layer.close(index);
                     }
                 });
-            }, logout() {
-                localStorage.removeItem("userId");
-                localStorage.removeItem("deliverRegion");
-                location.href = 'login.html';
-            }, selectChange(e) {
-                let indexVal = e.target.value;
-                if (indexVal >= 0) {
-                    let userInfo = vm.areaArray[indexVal];
-                    $.getJSON('/yapingzh/businessStatisticsByArea.do', {"census.area": userInfo.deliverRegion}, function (res) {
-                        if (res.success) {
-                            vm.census = res.data;
-                        }
-                    });
-                }
-            },
+            }
         }
     });
     $(function () {
-        vm.userId = localStorage.userId;
-        $('.swiper-container-ul li').on('click', function () {
-            let alink = $(this);
-            let selectId = alink.index();
-            if (vm.currentTab === selectId) {
-                return;
-            }
-            vm.currentTab = selectId;
-            emptyData();
-            $(alink).addClass('actives').siblings('li').removeClass('actives');
-            $('.swiper-wrapper').eq(vm.currentTab).show().children().show().parent().siblings('.swiper-wrapper').hide();
-            loadDate();
-        });
-        businessStatistics();
-        if (!localStorage.deliverRegion) {
-            $.get('/yapingzh/loadAreaArray.do', function (res) {
-                if (res.success) {
-                    vm.areaArray = res.areaArray;
-                }
-            });
-        }
+        loadData();
     });
-    function businessStatistics() {
-        $.getJSON('/yapingzh/businessStatistics.do', function (res) {
-            if (res.success) {
-                vm.census = res.data;
-            }
-        });
-    }
-    function loadDate(cbOK, cbErr) {
+
+    function loadData(cbOk, cbErr) {
         $.ajax({
             type: 'GET',
-            url: '/yapingzh/loadOrders.do',
+            url: '/shanduonewretail/jorder/orderList',
             data: {
-                "state": vm.orders[vm.currentTab].state,
-                "userId": userId,
-                "pageIndex": vm.orders[vm.currentTab].currentPage,
-                "pageCount": vm.pageSize
+                token: localStore.token,
+                state: vm.ds[vm.currentTab].state,
+                startDate: '',
+                endDate: '',
+                page: currentPage,
+                pageSize: pageSize
             },
             dataType: 'json',
-            success: function (result) {
-                vm.orders[vm.currentTab].totalpage = result.totalPage;
-                vm.orders[vm.currentTab].arrayResult = vm.orders[vm.currentTab].arrayResult.concat(result.commodityOrders);
-                cbOK && cbOK();
+            success: function (res) {
+                if (res.success && res.data.length > 0) {
+                    vm.ds[vm.currentTab].arrayResult = vm.ds[vm.currentTab].arrayResult.concat(res.data);
+                    totalPage = res.totalPage;
+                }
+                cbOk && cbOk();
             }, error: function () {
                 cbErr && cbErr();
             }
         });
     }
+
     function emptyData() {
-        let ary = vm.orders[vm.currentTab].arrayResult;
+        let ary = vm.ds[vm.currentTab].arrayResult;
         ary.splice(0, ary.length);
-        vm.orders[vm.currentTab].arrayResult = ary;
-        vm.orders[vm.currentTab].currentPage = 1;
-        vm.orders[vm.currentTab].totalpage = 0;
+        vm.ds[vm.currentTab].arrayResult = ary;
+        currentPage = 1;
+        totalPage = 0;
     }
 </script>
 </html>
