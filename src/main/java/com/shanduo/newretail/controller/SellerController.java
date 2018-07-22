@@ -27,6 +27,7 @@ import com.shanduo.newretail.service.SellerService;
 import com.shanduo.newretail.util.JsonStringUtils;
 import com.shanduo.newretail.util.PatternUtils;
 import com.shanduo.newretail.util.StringUtils;
+import com.shanduo.newretail.util.WxFileUtils;
 
 @Controller
 @RequestMapping(value = "jseller")
@@ -176,6 +177,10 @@ public class SellerController {
 		Map<String, Object> userSellerMap = new HashMap<String, Object>();
 		userSellerMap = JsonStringUtils.getMap(userSeller);
 		userSellerMap.put("id", id);
+		if(!(userSellerMap.get("sellerPicture").toString()).contains(".jpg")){
+			String picture = WxFileUtils.downloadImage(userSellerMap.get("accessToken").toString(), userSellerMap.get("sellerPicture").toString());
+			userSellerMap.put("sellerPicture", picture);
+		}
 		userSellerMap.put("accessToken", accessTokenService.selectAccessToken(WxPayConsts.APPID).getAccessToken());
 		if(StringUtils.isNull(userSellerMap.get("phone")+"") || PatternUtils.patternPhone(userSellerMap.get("phone").toString())){
 			Log.warn("电话号码错误");
@@ -237,5 +242,36 @@ public class SellerController {
 			return new ErrorBean(ErrorConsts.CODE_10004,"查询失败");
 		}
 		return new SuccessBean(sellerAllTypeList);
+	}
+	
+	/**
+	 * 查询该业务员有多少店铺
+	 * @param request
+	 * @param token
+	 * @return
+	 */
+	@RequestMapping(value = "selectsalesmansubordinate",method={RequestMethod.POST,RequestMethod.GET})
+	@ResponseBody
+	//http://localhost:8081/shanduonewretail/jseller/selectsalesmansubordinate?token=1
+	public ResultBean selectSalesmanSubordinate(HttpServletRequest request,String token) {
+		if(StringUtils.isNull(token)) {
+			Log.warn("token为空");
+			return new ErrorBean(ErrorConsts.CODE_10002,"token为空");
+		}
+		String id = baseService.checkUserToken(token);
+		if(null==id){
+			Log.warn("token失效");
+			return new ErrorBean(ErrorConsts.CODE_10001,"token失效");
+		}
+		List<Map<String,Object>>  sellerList  =new ArrayList<Map<String,Object>>();
+		try {
+			sellerList  = sellerService.selectSalesmanSubordinate(id);
+			if(sellerList.isEmpty()){
+				return new ErrorBean();
+			}
+		} catch (Exception e) {
+			return new ErrorBean(ErrorConsts.CODE_10004,"查询失败");
+		}
+		return new SuccessBean(sellerList);
 	}
 }

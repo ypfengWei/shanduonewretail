@@ -101,8 +101,7 @@ public class SellerServiceImpl implements SellerService {
 		UserSeller userSeller = new UserSeller();
 		userSeller.setId(userSellerMap.get("id").toString());
 		userSeller.setSellerName(userSellerMap.get("sellerName").toString());
-		String sellerPicture = WxFileUtils.downloadImage(userSellerMap.get("accessToken").toString(), userSellerMap.get("sellerPicture").toString());
-		userSeller.setSellerPicture(sellerPicture);
+		userSeller.setSellerPicture(userSellerMap.get("sellerPicture").toString());
 		userSeller.setNotice(userSellerMap.get("notice").toString());
 		userSeller.setPhone(userSellerMap.get("phone").toString());
 		userSeller.setSellerType(Integer.valueOf(userSellerMap.get("sellerType").toString()));
@@ -174,6 +173,13 @@ public class SellerServiceImpl implements SellerService {
 	public List<Map<String,Object>> selectSellerType() {
 		
 		return categoryMapper.selectSellerType();
+	}
+
+
+	@Override
+	public List<Map<String, Object>> selectSalesmanSubordinate(String id) {
+		
+		return userSellerMapper.selectSalesmanSubordinate(id);
 	}
 
 }

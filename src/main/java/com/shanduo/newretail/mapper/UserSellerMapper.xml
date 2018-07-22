@@ -281,6 +281,12 @@
     from user_seller
     where id = #{id,jdbcType=VARCHAR}
   </select>
+  <select id="selectSalesmanSubordinate" parameterType="java.lang.String" resultType="map">
+    select 
+    seller_name, seller_picture, notice
+    from user_seller
+    where parent_id = #{parentId,jdbcType=VARCHAR}
+  </select>
   <update id="updateMoney" >
     update user_seller
     set 

@@ -29,4 +29,6 @@ public interface SellerService {
 	int selectMoney (BigDecimal money,String id);
 	
 	List<Map<String,Object>> selectSellerType();
+	
+	List<Map<String,Object>> selectSalesmanSubordinate(String id);
 }
