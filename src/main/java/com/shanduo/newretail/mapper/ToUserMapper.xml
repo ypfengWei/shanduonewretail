@@ -13,6 +13,11 @@
     <result column="gmt_modified" jdbcType="TIMESTAMP" property="gmtModified" />
     <result column="is_deleted" jdbcType="BIT" property="isDeleted" />
   </resultMap>
+  <resultMap id="UserInfo" type="com.shanduo.newretail.entity.service.UserInfo">
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="mobile_phone" jdbcType="VARCHAR" property="phone" />
+  </resultMap>
   <sql id="Base_Column_List">
     id, open_id, name, mobile_phone, password,parent_id, jurisdiction, gmt_create, gmt_modified,
     is_deleted
@@ -175,5 +180,18 @@
     id
     from to_user
     where jurisdiction = '1'
+  </select>
+  <select id="countParent" parameterType="java.lang.String" resultType="java.lang.Integer">
+    select 
+    count(id)
+    from to_user
+    where parent_id = #{parentId,jdbcType=VARCHAR}
+  </select>
+  <select id="listParent" resultMap="UserInfo">
+    select 
+    id, name, mobile_phone
+    from to_user
+    where parent_id = #{0}
+    limit #{1},#{2}
   </select>
 </mapper>
