@@ -48,7 +48,7 @@
             <div class="sort_li dis_flex" v-for="(store,index) in stores"
                  @click="storeDetail(store.businessSign,store.id)">
                 <div class="dis_flex">
-                    <img src="img/icon_16.png">
+                    <img :src="store.sellerPicture?imagePath+store.sellerPicture:'img/icon_16.png'">
                     <span>{{store.sellerName}}</span>
                 </div>
                 <div class="dis_flex">
@@ -69,6 +69,7 @@
         vm = new Vue({
             el: '#vueData',
             data: {
+                imagePath:imagePath,
                 category: [],
                 stores: []
             },

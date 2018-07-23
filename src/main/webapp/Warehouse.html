@@ -48,7 +48,8 @@
                                 <div id="mescroll" class="right mescroll">
                                     <ul>
                                         <!--类别商品-->
-                                        <li v-for="(commodity,index) in commodityArray">
+                                        <li v-if="commodityArray.length==0"><span>没有商品</span></li>
+                                        <li v-else v-for="(commodity,index) in commodityArray">
                                             <div>
                                                 <div class="item">
                                                     <div class="item-left" @click="onclick1(index)">
@@ -119,8 +120,6 @@
             classify: [],
             commodityArray: [],
             currentCommodity: null,
-            totalPrice: 0,
-            totalCount: 0,
             mescroll: null,
             commodityIdList:[]
         },
@@ -171,11 +170,6 @@
             closeDiglog() {
                 $('#outerdiv').fadeOut("fast");
             },
-            gwcToggle() {
-                if (this.totalPrice > 0) {
-                    $('.gwcTog').toggle();
-                }
-            },
             changer(classifyId) {
                 let selectId = $(event.currentTarget).parent().index();
                 if (itemIndex === selectId) {
@@ -216,8 +210,8 @@
             let newData = res.commodityInfoList;
             for (let i in newData) {
                 newData[i].picture = {
-                    myStyle: {backgroundImage: "url('/yapingzh/picture/" + newData[i].introducePicture + "')"},
-                    imgPath: '/yapingzh/picture/' + newData[i].introducePicture
+                    myStyle: {backgroundImage: "url('/yapingzh/picture/" + newData[i].picture + "')"},
+                    imgPath: '/yapingzh/picture/' + newData[i].picture
                 };
             }
             vm.commodityArray = vm.commodityArray.concat(newData);
