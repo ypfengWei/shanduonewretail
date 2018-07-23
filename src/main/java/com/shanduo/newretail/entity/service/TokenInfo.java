@@ -13,6 +13,7 @@ import com.shanduo.newretail.entity.ToUser;
 public class TokenInfo {
 	private String token;
 	private String name;
+	private String openId;
     private String phone;
     private String jurisdiction;
     
@@ -23,6 +24,7 @@ public class TokenInfo {
     public TokenInfo(String token,ToUser user) {
     	this.token = token;
     	this.name = user.getName();
+    	this.openId = user.getOpenId();
     	this.phone = user.getMobilePhone();
     	this.jurisdiction = user.getJurisdiction();
     }
@@ -39,6 +41,13 @@ public class TokenInfo {
 	public void setName(String name) {
 		this.name = name;
 	}
+	public String getOpenId() {
+        return openId;
+    }
+
+    public void setOpenId(String openId) {
+        this.openId = openId == null ? null : openId.trim();
+    }
 	public String getPhone() {
 		return phone;
 	}

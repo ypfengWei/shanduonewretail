@@ -30,5 +30,5 @@ public interface ToUserMapper {
     
     List<UserInfo> listParent(String parentId, Integer pageNum, Integer pageSize);
     
-    int updateopenId(String openId, String id);
+    int updateopenId(String openId, String phone);
 }

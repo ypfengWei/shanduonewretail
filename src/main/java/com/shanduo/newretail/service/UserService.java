@@ -110,7 +110,7 @@ public interface UserService {
 
 	ToUser selectUser(String id);
 	
-	int updateopenId(String openId, String id);
+	int updateopenId(String openId, String phone);
 	
 	/**
 	 * 查询下级

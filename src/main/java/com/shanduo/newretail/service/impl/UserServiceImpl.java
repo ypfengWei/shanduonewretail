@@ -170,8 +170,8 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public int updateopenId(String openId, String id) {
+	public int updateopenId(String openId, String phone) {
 		
-		return userMapper.updateopenId(openId, id);
+		return userMapper.updateopenId(openId, phone);
 	}
 }
