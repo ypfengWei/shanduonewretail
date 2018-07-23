@@ -129,7 +129,7 @@ public class PayController {
         }
         String xmlString  = inputString.toString();
         request.getReader().close();
-        log.info("微信退款回调接口返回XML数据:" + xmlString);
+//        log.info("微信退款回调接口返回XML数据:" + xmlString);
         Map<String, Object> resultMap = WxPayUtils.Str2Map(xmlString);
     	String returnCode = resultMap.get("return_code").toString();
 		if(!"SUCCESS".equals(returnCode)) {

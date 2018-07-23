@@ -239,7 +239,6 @@ public class OrderServiceImpl implements OrderService {
             param.put("remark",new TemplateData("对你造成的不便敬请谅解","#4395ff"));
             WX_TemplateMsgUtil.sendWechatMsgToUser(accessToken, openId,regTempId, "", "#000000", packJsonmsg(param));
 	    }
-		
 		return 1;
 	}
 

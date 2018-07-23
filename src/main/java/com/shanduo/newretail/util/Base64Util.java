@@ -1,5 +1,6 @@
 package com.shanduo.newretail.util;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.Writer;
 
@@ -7,307 +8,115 @@ import com.itextpdf.text.pdf.codec.Base64.OutputStream;
 
 public class Base64Util {
 	
-	private static final char S_BASE64CHAR[] = { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S',
-			'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't',
-			'u', 'v', 'w', 'x', 'y', 'z', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '+', '/' };
-	private static final byte S_DECODETABLE[];
- 
-	static {
-		S_DECODETABLE = new byte[128];
-		for (int i = 0; i < S_DECODETABLE.length; i++)
-			S_DECODETABLE[i] = 127;
- 
-		for (int i = 0; i < S_BASE64CHAR.length; i++)
-			S_DECODETABLE[S_BASE64CHAR[i]] = (byte) i;
- 
-	}
- 
-	/**
-	 * 
-	 * @param ibuf
-	 * @param obuf
-	 * @param wp
-	 * @return
-	 */
-	private static int decode0(char ibuf[], byte obuf[], int wp) {
-		int outlen = 3;
-		if (ibuf[3] == '=')
-			outlen = 2;
-		if (ibuf[2] == '=')
-			outlen = 1;
-		int b0 = S_DECODETABLE[ibuf[0]];
-		int b1 = S_DECODETABLE[ibuf[1]];
-		int b2 = S_DECODETABLE[ibuf[2]];
-		int b3 = S_DECODETABLE[ibuf[3]];
-		switch (outlen) {
-		case 1: // '\001'
-			obuf[wp] = (byte) (b0 << 2 & 252 | b1 >> 4 & 3);
-			return 1;
- 
-		case 2: // '\002'
-			obuf[wp++] = (byte) (b0 << 2 & 252 | b1 >> 4 & 3);
-			obuf[wp] = (byte) (b1 << 4 & 240 | b2 >> 2 & 15);
-			return 2;
- 
-		case 3: // '\003'
-			obuf[wp++] = (byte) (b0 << 2 & 252 | b1 >> 4 & 3);
-			obuf[wp++] = (byte) (b1 << 4 & 240 | b2 >> 2 & 15);
-			obuf[wp] = (byte) (b2 << 6 & 192 | b3 & 63);
-			return 3;
-		}
-		throw new RuntimeException("Internal error");
-	}
- 
-	/**
-	 * 
-	 * @param data
-	 * @param off
-	 * @param len
-	 * @return
-	 */
-	public static byte[] decode(char data[], int off, int len) {
-		char ibuf[] = new char[4];
-		int ibufcount = 0;
-		byte obuf[] = new byte[(len / 4) * 3 + 3];
-		int obufcount = 0;
-		for (int i = off; i < off + len; i++) {
-			char ch = data[i];
-			if (ch != '=' && (ch >= S_DECODETABLE.length || S_DECODETABLE[ch] == 127))
-				continue;
-			ibuf[ibufcount++] = ch;
-			if (ibufcount == ibuf.length) {
-				ibufcount = 0;
-				obufcount += decode0(ibuf, obuf, obufcount);
-			}
-		}
- 
-		if (obufcount == obuf.length) {
-			return obuf;
-		}
-		else {
-			byte ret[] = new byte[obufcount];
-			System.arraycopy(obuf, 0, ret, 0, obufcount);
-			return ret;
-		}
-	}
- 
-	/**
-	 * 
-	 * @param data
-	 * @return
-	 */
-	public static byte[] decode(String data) {
-		char ibuf[] = new char[4];
-		int ibufcount = 0;
-		byte obuf[] = new byte[(data.length() / 4) * 3 + 3];
-		int obufcount = 0;
-		for (int i = 0; i < data.length(); i++) {
-			char ch = data.charAt(i);
-			if (ch != '=' && (ch >= S_DECODETABLE.length || S_DECODETABLE[ch] == 127))
-				continue;
-			ibuf[ibufcount++] = ch;
-			if (ibufcount == ibuf.length) {
-				ibufcount = 0;
-				obufcount += decode0(ibuf, obuf, obufcount);
-			}
-		}
- 
-		if (obufcount == obuf.length) {
-			return obuf;
-		}
-		else {
-			byte ret[] = new byte[obufcount];
-			System.arraycopy(obuf, 0, ret, 0, obufcount);
-			return ret;
-		}
-	}
- 
-	/**
-	 * 
-	 * @param data
-	 * @param off
-	 * @param len
-	 * @param ostream
-	 * @throws IOException
-	 */
-	public static void decode(char data[], int off, int len, OutputStream ostream) throws IOException {
-		char ibuf[] = new char[4];
-		int ibufcount = 0;
-		byte obuf[] = new byte[3];
-		for (int i = off; i < off + len; i++) {
-			char ch = data[i];
-			if (ch != '=' && (ch >= S_DECODETABLE.length || S_DECODETABLE[ch] == 127))
-				continue;
-			ibuf[ibufcount++] = ch;
-			if (ibufcount == ibuf.length) {
-				ibufcount = 0;
-				int obufcount = decode0(ibuf, obuf, 0);
-				ostream.write(obuf, 0, obufcount);
-			}
-		}
- 
-	}
- 
-	/**
-	 * 
-	 * @param data
-	 * @param ostream
-	 * @throws IOException
-	 */
-	public static void decode(String data, OutputStream ostream) throws IOException {
-		char ibuf[] = new char[4];
-		int ibufcount = 0;
-		byte obuf[] = new byte[3];
-		for (int i = 0; i < data.length(); i++) {
-			char ch = data.charAt(i);
-			if (ch != '=' && (ch >= S_DECODETABLE.length || S_DECODETABLE[ch] == 127))
-				continue;
-			ibuf[ibufcount++] = ch;
-			if (ibufcount == ibuf.length) {
-				ibufcount = 0;
-				int obufcount = decode0(ibuf, obuf, 0);
-				ostream.write(obuf, 0, obufcount);
-			}
-		}
- 
-	}
- 
-	/**
-	 * 
-	 * @param data
-	 * @return
-	 */
-	public static String encode(byte data[]) {
-		return encode(data, 0, data.length);
-	}
- 
-	/**
-	 * 
-	 * @param data
-	 * @param off
-	 * @param len
-	 * @return
-	 */
-	public static String encode(byte data[], int off, int len) {
-		if (len <= 0)
-			return "";
-		char out[] = new char[(len / 3) * 4 + 4];
-		int rindex = off;
-		int windex = 0;
-		int rest;
-		for (rest = len - off; rest >= 3; rest -= 3) {
-			int i = ((data[rindex] & 255) << 16) + ((data[rindex + 1] & 255) << 8) + (data[rindex + 2] & 255);
-			out[windex++] = S_BASE64CHAR[i >> 18];
-			out[windex++] = S_BASE64CHAR[i >> 12 & 63];
-			out[windex++] = S_BASE64CHAR[i >> 6 & 63];
-			out[windex++] = S_BASE64CHAR[i & 63];
-			rindex += 3;
-		}
- 
-		if (rest == 1) {
-			int i = data[rindex] & 255;
-			out[windex++] = S_BASE64CHAR[i >> 2];
-			out[windex++] = S_BASE64CHAR[i << 4 & 63];
-			out[windex++] = '=';
-			out[windex++] = '=';
-		}
-		else if (rest == 2) {
-			int i = ((data[rindex] & 255) << 8) + (data[rindex + 1] & 255);
-			out[windex++] = S_BASE64CHAR[i >> 10];
-			out[windex++] = S_BASE64CHAR[i >> 4 & 63];
-			out[windex++] = S_BASE64CHAR[i << 2 & 63];
-			out[windex++] = '=';
-		}
-		return new String(out, 0, windex);
-	}
- 
-	/**
-	 * 
-	 * @param data
-	 * @param off
-	 * @param len
-	 * @param ostream
-	 * @throws IOException
-	 */
-	public static void encode(byte data[], int off, int len, OutputStream ostream) throws IOException {
-		if (len <= 0)
-			return;
-		byte out[] = new byte[4];
-		int rindex = off;
-		int rest;
-		for (rest = len - off; rest >= 3; rest -= 3) {
-			int i = ((data[rindex] & 255) << 16) + ((data[rindex + 1] & 255) << 8) + (data[rindex + 2] & 255);
-			out[0] = (byte) S_BASE64CHAR[i >> 18];
-			out[1] = (byte) S_BASE64CHAR[i >> 12 & 63];
-			out[2] = (byte) S_BASE64CHAR[i >> 6 & 63];
-			out[3] = (byte) S_BASE64CHAR[i & 63];
-			ostream.write(out, 0, 4);
-			rindex += 3;
-		}
- 
-		if (rest == 1) {
-			int i = data[rindex] & 255;
-			out[0] = (byte) S_BASE64CHAR[i >> 2];
-			out[1] = (byte) S_BASE64CHAR[i << 4 & 63];
-			out[2] = 61;
-			out[3] = 61;
-			ostream.write(out, 0, 4);
-		}
-		else if (rest == 2) {
-			int i = ((data[rindex] & 255) << 8) + (data[rindex + 1] & 255);
-			out[0] = (byte) S_BASE64CHAR[i >> 10];
-			out[1] = (byte) S_BASE64CHAR[i >> 4 & 63];
-			out[2] = (byte) S_BASE64CHAR[i << 2 & 63];
-			out[3] = 61;
-			ostream.write(out, 0, 4);
-		}
-	}
- 
-	/**
-	 * 
-	 * @param data
-	 * @param off
-	 * @param len
-	 * @param writer
-	 * @throws IOException
-	 */
-	public static void encode(byte data[], int off, int len, Writer writer) throws IOException {
-		if (len <= 0)
-			return;
-		char out[] = new char[4];
-		int rindex = off;
-		int rest = len - off;
-		int output = 0;
-		do {
-			if (rest < 3)
-				break;
-			int i = ((data[rindex] & 255) << 16) + ((data[rindex + 1] & 255) << 8) + (data[rindex + 2] & 255);
-			out[0] = S_BASE64CHAR[i >> 18];
-			out[1] = S_BASE64CHAR[i >> 12 & 63];
-			out[2] = S_BASE64CHAR[i >> 6 & 63];
-			out[3] = S_BASE64CHAR[i & 63];
-			writer.write(out, 0, 4);
-			rindex += 3;
-			rest -= 3;
-			if ((output += 4) % 76 == 0)
-				writer.write("\n");
-		}
-		while (true);
-		if (rest == 1) {
-			int i = data[rindex] & 255;
-			out[0] = S_BASE64CHAR[i >> 2];
-			out[1] = S_BASE64CHAR[i << 4 & 63];
-			out[2] = '=';
-			out[3] = '=';
-			writer.write(out, 0, 4);
-		}
-		else if (rest == 2) {
-			int i = ((data[rindex] & 255) << 8) + (data[rindex + 1] & 255);
-			out[0] = S_BASE64CHAR[i >> 10];
-			out[1] = S_BASE64CHAR[i >> 4 & 63];
-			out[2] = S_BASE64CHAR[i << 2 & 63];
-			out[3] = '=';
-			writer.write(out, 0, 4);
-		}
-	}
+	private static char[] base64EncodeChars = new char[] { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L',
+            'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f', 'g',
+            'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '0', '1',
+            '2', '3', '4', '5', '6', '7', '8', '9', '+', '/', };
+
+    private static byte[] base64DecodeChars = new byte[] { -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+            -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+            -1, 62, -1, -1, -1, 63, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, -1, -1, -1, -1, -1, -1, -1, 0, 1, 2, 3, 4,
+            5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, -1, -1, -1, -1, -1, -1, 26,
+            27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, -1, -1,
+            -1, -1, -1 };
+
+    private Base64Util() {
+    	
+    }
+
+    /**
+     * 将字节数组编码为字符串
+     *
+     * @param data
+     */
+    public static String encode(byte[] data) {
+        StringBuffer sb = new StringBuffer();
+        int len = data.length;
+        int i = 0;
+        int b1, b2, b3;
+
+        while (i < len) {
+            b1 = data[i++] & 0xff;
+            if (i == len) {
+                sb.append(base64EncodeChars[b1 >>> 2]);
+                sb.append(base64EncodeChars[(b1 & 0x3) << 4]);
+                sb.append("==");
+                break;
+            }
+            b2 = data[i++] & 0xff;
+            if (i == len) {
+                sb.append(base64EncodeChars[b1 >>> 2]);
+                sb.append(base64EncodeChars[((b1 & 0x03) << 4) | ((b2 & 0xf0) >>> 4)]);
+                sb.append(base64EncodeChars[(b2 & 0x0f) << 2]);
+                sb.append("=");
+                break;
+            }
+            b3 = data[i++] & 0xff;
+            sb.append(base64EncodeChars[b1 >>> 2]);
+            sb.append(base64EncodeChars[((b1 & 0x03) << 4) | ((b2 & 0xf0) >>> 4)]);
+            sb.append(base64EncodeChars[((b2 & 0x0f) << 2) | ((b3 & 0xc0) >>> 6)]);
+            sb.append(base64EncodeChars[b3 & 0x3f]);
+        }
+        return sb.toString();
+    }
+
+    /**
+     * 解密
+     *
+     * @param str
+     */
+    public static byte[] decode(String str) throws Exception {
+        byte[] data = str.getBytes("GBK");
+        int len = data.length;
+        ByteArrayOutputStream buf = new ByteArrayOutputStream(len);
+        int i = 0;
+        int b1, b2, b3, b4;
+
+        while (i < len) {
+
+            /* b1 */
+            do {
+                b1 = base64DecodeChars[data[i++]];
+            } while (i < len && b1 == -1);
+            if (b1 == -1) {
+                break;
+            }
+
+            /* b2 */
+            do {
+                b2 = base64DecodeChars[data[i++]];
+            } while (i < len && b2 == -1);
+            if (b2 == -1) {
+                break;
+            }
+            buf.write((b1 << 2) | ((b2 & 0x30) >>> 4));
+
+            /* b3 */
+            do {
+                b3 = data[i++];
+                if (b3 == 61) {
+                    return buf.toByteArray();
+                }
+                b3 = base64DecodeChars[b3];
+            } while (i < len && b3 == -1);
+            if (b3 == -1) {
+                break;
+            }
+            buf.write(((b2 & 0x0f) << 4) | ((b3 & 0x3c) >>> 2));
+
+            /* b4 */
+            do {
+                b4 = data[i++];
+                if (b4 == 61) {
+                    return buf.toByteArray();
+                }
+                b4 = base64DecodeChars[b4];
+            } while (i < len && b4 == -1);
+            if (b4 == -1) {
+                break;
+            }
+            buf.write(((b3 & 0x03) << 6) | b4);
+        }
+        return buf.toByteArray();
+    }
 }
