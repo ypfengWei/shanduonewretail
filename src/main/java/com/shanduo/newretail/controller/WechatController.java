@@ -1,7 +1,9 @@
 package com.shanduo.newretail.controller;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.math.BigInteger;
+import java.net.URLEncoder;
 import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -15,7 +17,8 @@ import javax.servlet.http.HttpServletRequest;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.sun.org.apache.xalan.internal.xsltc.compiler.Template;
+
+import org.apache.http.HttpEntity;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -25,11 +28,15 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.shanduo.newretail.consts.ErrorConsts;
 import com.shanduo.newretail.consts.WxPayConsts;
 import com.shanduo.newretail.entity.AccessToken;
 import com.shanduo.newretail.entity.JsApiTicket;
@@ -37,17 +44,22 @@ import com.shanduo.newretail.entity.common.ErrorBean;
 import com.shanduo.newretail.entity.common.ResultBean;
 import com.shanduo.newretail.entity.common.SuccessBean;
 import com.shanduo.newretail.service.AccessTokenService;
+import com.shanduo.newretail.service.BaseService;
 import com.shanduo.newretail.service.JsApiTicketService;
 import com.shanduo.newretail.util.HttpRequest;
 import com.shanduo.newretail.util.SHA1;
+import com.shanduo.newretail.util.StringUtils;
 
 @Controller
 @RequestMapping(value = "jwechat")
 public class WechatController {
+	private static final Logger Log = LoggerFactory.getLogger(WechatController.class);
 	@Autowired
 	private JsApiTicketService jsApiTicketService;
 	@Autowired
 	private AccessTokenService accessTokenService;
+	@Autowired
+    private BaseService baseService;
 	/*配置微信网页jsapi调用环境*/
 	@RequestMapping(value = "selectinitjssdk",method={RequestMethod.POST,RequestMethod.GET})
 	@ResponseBody
@@ -168,11 +180,11 @@ public class WechatController {
                     JSONObject child=new JSONObject();
                     child.put("type","view");
                     child.put("name","闪多新零售");
-                    child.put("url","https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxe9811ac767f05237&redirect_uri=http://lixinrong.vicp.io/shanduonewretail/index.html&response_type=code&scope=snsapi_userinfo#wechat_redirect");
+                    child.put("url","https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxe0870cb2d63b008d&redirect_uri=https://yapinkeji.com/shanduonewretail/index.html&response_type=code&scope=snsapi_userinfo#wechat_redirect");
                     JSONObject child2=new JSONObject();
                     child2.put("type","view");
                     child2.put("name","后台管理");
-                    child2.put("url","http://lixinrong.vicp.io/shanduonewretail/login.html");
+                    child2.put("url","https://yapinkeji.com/shanduonewretail/login.html");
                     jsonArray.add(child);
                     jsonArray.add(child2);
                     root.put("button",jsonArray);
@@ -244,27 +256,92 @@ public class WechatController {
         }
         return null;
     }
-    /*@ResponseBody
-	@RequestMapping(value = "getopenids")
-    public  String getMenu(String token) throws IOException {
-    	 String requestUrl ="https://api.weixin.qq.com/cgi-bin/menu/delete?access_token=" + token;
-    	 JSONObject jsonObject = HttpRequest.httpsRequest(requestUrl, "GET", null);
-    	 requestUrl ="https://api.weixin.qq.com/cgi-bin/menu/create?access_token=" + token;
-    	 jsonObject = HttpRequest.httpsRequest(requestUrl, "GET", null);
-    	 Map<String, Object> map = new HashMap<>();
-    	 map.put("appid", WxPayConsts.APPID);
-         map.put("host",WxPayConsts.APPSECRET);
-         Template freeMarkerConfigurer = null;
-		Template tpl = freeMarkerConfigurer.getConfiguration().getTemplate("menu.json");
-        //JSON.parseObject(WebUtils.createMenu(token.getAccess_token(), FreeMarkerTemplateUtils.processTemplateIntoString(tpl, map)));
-        try {
-          //  if (response.getStatusLine().getStatusCode() == org.apache.http.HttpStatus.SC_OK) {
-                return null;
-           // }
-        } finally {
-            //closeConn(httpClient, response);
+    /*获取业务员的二维码*/
+    @ResponseBody
+    @RequestMapping(value = "salesmancode")
+    public ResultBean salesmanCode(String token) {
+    	if (StringUtils.isNull(token)) {
+            Log.warn("token为空");
+            return new ErrorBean(ErrorConsts.CODE_10002, "token为空");
         }
-      //  return null;
+        String id = baseService.checkUserToken(token);
+        if (null == id) {
+            Log.warn("token失效");
+            return new ErrorBean(ErrorConsts.CODE_10001, "token失效");
+        }
+        if (id != null) {
+        	AccessToken accessToken = accessTokenService.selectAccessToken(WxPayConsts.APPID);
+            JSONObject jsonObject = create_qrcode(accessToken.getAccessToken(), "{\"expire_seconds\": 2592000,\"action_name\": \"QR_SCENE\", \"action_info\": {\"scene\": {\"scene_str\": \"yaping_NUMBER\"}}}".replace("NUMBER", id));
+            if (jsonObject != null) {
+                HttpEntity entity = download_qrcode(jsonObject.getString("ticket"));
+                if (entity != null) {
+                    try {
+                        setFileName("wx_NUMBER.jpg".replace("NUMBER", id));
+                        setInputStream(entity.getContent());
+                        return null;
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
+        return null;
     }
-*/
+    private void setInputStream(InputStream content) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private void setFileName(String replace) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public static JSONObject create_qrcode(String token, String content) {
+        JSONObject jsonObject = null;
+        CloseableHttpClient client = HttpClients.createDefault();
+        CloseableHttpResponse response = null;
+        HttpPost method = new HttpPost("https://api.weixin.qq.com/cgi-bin/qrcode/create?access_token=" + token);
+        try {
+            StringEntity entity = new StringEntity(content, "UTF-8");
+            method.addHeader("Content-type", "application/json; charset=utf-8");
+            method.setHeader("Accept", "application/json");
+            method.setEntity(entity);
+            response = client.execute(method);
+            if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
+                jsonObject = JSON.parseObject(EntityUtils.toString(response.getEntity()));
+                if (jsonObject.containsKey("ticket")) {
+                    String ticket = jsonObject.getString("ticket");
+                    jsonObject.replace("ticket", URLEncoder.encode(ticket, "utf-8"));
+                    return jsonObject;
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+        	try {
+                if (response != null) {
+                    response.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return jsonObject;
+    }
+
+    public static HttpEntity download_qrcode(String ticket) {
+        CloseableHttpClient client = HttpClients.createDefault();
+        CloseableHttpResponse response = null;
+        HttpGet method = new HttpGet("https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket=" + ticket);
+        try {
+            response = client.execute(method);
+            if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
+                return response.getEntity();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 }

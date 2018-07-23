@@ -22,7 +22,7 @@
 <div id="vueData">
     <header>
         <div class="title_header dis_flex">
-            <div class="dis_flex">
+            <div class="dis_flex" @click="goBack">
                 <img src="img/return_2.png">
             </div>
             <div>
@@ -78,6 +78,9 @@
             disabled: false
         },
         methods: {
+            goBack(){
+                history.back();
+            },
             sendMSM() {
                 if (checkPhone(vm.salesman.phone)) {
                     $.ajax({

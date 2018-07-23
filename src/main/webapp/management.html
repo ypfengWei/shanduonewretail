@@ -15,14 +15,13 @@
     <link rel="stylesheet" type="text/css" href="css/management.css">
     <title></title>
     <script src="js/jquery-3.3.1.js"></script>
-
 </head>
 <body>
 <div id="vueData">
     <header>
         <div>
             <div class="title_header dis_flex">
-                <div class="dis_flex">
+                <div class="dis_flex" @click="goBack">
                     <img src="img/return_3.png">
                 </div>
                 <div>
@@ -69,8 +68,10 @@
     let vm = new Vue({
         el: '#vueData',
         methods: {
-            toRegisterView(){
-                location.href='register.html?registerTypeId=4';
+            toRegisterView() {
+                location.href = 'register.html?registerTypeId=4';
+            }, goBack() {
+                history.back();
             }
         }
     });
