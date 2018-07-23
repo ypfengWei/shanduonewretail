@@ -191,7 +191,7 @@ public class OrderServiceImpl implements OrderService {
 			    Map<String,TemplateData> param = new HashMap<>();
 	            param.put("first",new TemplateData("尊敬的【"+order.getUserName()+"】","#4395ff"));
 	            param.put("keyword1",new TemplateData(order.getId(),"#4395ff"));
-	            Format format = new SimpleDateFormat("MM月DD日 HH:mm:ss");
+	            Format format = new SimpleDateFormat("MM月dd日 HH:mm:ss");
 	    		String date = format.format(new Date());
 	            param.put("keyword2",new TemplateData(date,"#4395ff"));
 	            param.put("remark",new TemplateData("商家已接单","#4395ff"));
@@ -231,7 +231,7 @@ public class OrderServiceImpl implements OrderService {
             param.put("first",new TemplateData("退款通知","#4395ff"));
             param.put("keyword1",new TemplateData(order.getTotalPrice().toString(),"#4395ff"));
             param.put("keyword2",new TemplateData("店家退款","#4395ff"));
-            Format format = new SimpleDateFormat("MM月DD日 HH:mm:ss");
+            Format format = new SimpleDateFormat("MM月dd日 HH:mm:ss");
     		String date = format.format(new Date());
             param.put("keyword3",new TemplateData(date,"#4395ff"));
             param.put("keyword4",new TemplateData("微信钱包","#4395ff"));
