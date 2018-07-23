@@ -1,5 +1,9 @@
 package com.shanduo.newretail.service.impl;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,11 +13,13 @@ import org.springframework.transaction.annotation.Transactional;
 import com.shanduo.newretail.consts.DefaultConsts;
 import com.shanduo.newretail.entity.ToUser;
 import com.shanduo.newretail.entity.service.TokenInfo;
+import com.shanduo.newretail.entity.service.UserInfo;
 import com.shanduo.newretail.mapper.ToUserMapper;
 import com.shanduo.newretail.mapper.UserTokenMapper;
 import com.shanduo.newretail.service.SellerService;
 import com.shanduo.newretail.service.UserService;
 import com.shanduo.newretail.util.MD5Utils;
+import com.shanduo.newretail.util.Page;
 import com.shanduo.newretail.util.UUIDGenerator;
 
 /**
@@ -148,5 +154,18 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public ToUser selectUser(String id) {
 		return userMapper.selectByPrimaryKey(id);
+	}
+
+	@Override
+	public Map<String, Object> listParent(String parentId, Integer pageNum, Integer pageSize) {
+		int totalRecord = userMapper.countParent(parentId);
+		Page page = new Page(totalRecord, pageSize, pageNum);
+		pageNum = (page.getPageNum() - 1) * page.getPageSize();
+		List<UserInfo> list = userMapper.listParent(parentId, pageNum, page.getPageSize());
+		Map<String, Object> resultMap = new HashMap<String, Object>(3);
+		resultMap.put("page", page.getPageNum());
+		resultMap.put("totalPage", page.getTotalPage());
+		resultMap.put("data", list);
+		return resultMap;
 	}
 }

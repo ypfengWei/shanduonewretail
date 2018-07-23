@@ -1,6 +1,9 @@
 package com.shanduo.newretail.mapper;
 
+import java.util.List;
+
 import com.shanduo.newretail.entity.ToUser;
+import com.shanduo.newretail.entity.service.UserInfo;
 
 public interface ToUserMapper {
     int deleteByPrimaryKey(String id);
@@ -22,4 +25,8 @@ public interface ToUserMapper {
     int updatePassswordByPhone(String phone, String password);
     
     String selectAdministratorsId();
+    
+    int countParent(String parentId);
+    
+    List<UserInfo> listParent(String parentId, Integer pageNum, Integer pageSize);
 }

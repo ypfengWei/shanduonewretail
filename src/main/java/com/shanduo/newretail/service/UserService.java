@@ -1,5 +1,7 @@
 package com.shanduo.newretail.service;
 
+import java.util.Map;
+
 import com.shanduo.newretail.entity.ToUser;
 import com.shanduo.newretail.entity.service.TokenInfo;
 
@@ -99,6 +101,7 @@ public interface UserService {
 	 * @throws
 	 */
 	int updatePassswordByPhone(String phone, String password);
+	
 	/**
 	 * 查询管理员账号
 	 * @return
@@ -106,4 +109,17 @@ public interface UserService {
 	String selectAdministratorsId();
 
 	ToUser selectUser(String id);
+	
+	/**
+	 * 查询下级
+	 * @Title: listParent
+	 * @Description: TODO
+	 * @param @param parentId
+	 * @param @param pageNum
+	 * @param @param pageSize
+	 * @param @return
+	 * @return Map<String, Object>
+	 * @throws
+	 */
+	Map<String, Object> listParent(String parentId, Integer pageNum, Integer pageSize);
 }
