@@ -15,12 +15,13 @@
     <link rel="stylesheet" type="text/css" href="css/Salesman.css">
     <title></title>
     <script src="js/jquery-3.3.1.js"></script>
+    <script src="js/utils.js"></script>
 </head>
 <body>
     <div id="vueData">
         <header>
             <div class="title_header dis_flex">
-                <div class="dis_flex">
+                <div class="dis_flex" @click="goBack">
                     <img src="img/return_2.png">
                 </div>
                 <div>
@@ -41,23 +42,18 @@
                 <span>我的业绩：</span>
                 <div class="col_hui">
                     <span>店铺数：</span>
-                    <span>2</span>
+                    <span>{{salesManChildStore.length}}</span>
                 </div>
             </div>
             <div>
-                <div class="dis_flex div_li div_complex">
-                    <img src="img/rectangle_3.png">
-                    <div class="dis_flex">
-                        <span>闪多新零售</span>
-                        <span class="col_hui ">公告：需要香烟请在备注栏备注，谢谢！</span>
-                    </div>
+                <div v-if="salesManChildStore.length==0" class="dis_flex div_li div_complex">
+                    <span>你还没有店铺</span>
                 </div>
-                <div class="dis_flex div_li div_complex">
-                    <img src="img/rectangle_3.png">
+                <div v-else class="dis_flex div_li div_complex" v-for="store in salesManChildStore">
+                    <img :src="store.sellerPicture?imagePath+store.sellerPicture:'img/rectangle_3.png'">
                     <div class="dis_flex">
-                        <span>闪多新零售</span>
-                        <span class="col_hui " :style="{width: Width+'px'}">
-                            公告：需要香烟请在备注栏备注，谢谢！谢谢！谢谢！谢谢！谢谢！谢谢！谢谢！谢谢！</span>
+                        <span>{{store.sellerName}}</span>
+                        <span class="col_hui ">公告：{{store.notice}}</span>
                     </div>
                 </div>
             </div>
@@ -71,22 +67,37 @@
         el: '#vueData',
         data: {
             //获取屏幕分辨率高度
+            imagePath:imagePath,
             Width: null,
-            salesMan:{}
+            salesMan:{},
+            salesManChildStore:[]
         },
         mounted: function () {
             //获取屏幕分辨率高度
             let that = this;
             that.Width = window.screen.width - 82;
+        },methods:{
+            goBack(){
+                history.back();
+            }
         }
-    })
+    });
     $(function () {
         loadSalesManDetial();
+        querySalesManHaveStore();
     });
     function loadSalesManDetial() {
         $.get('/shanduonewretail/juser/selectuser',{token:localStore.token},function (res) {
             if(res.success){
                 vm.salesMan=res.result;
+            }
+        });
+    }
+    function querySalesManHaveStore() {
+        $.get('/shanduonewretail/jseller/selectsalesmansubordinate',{token:localStore.token},function (res) {
+            console.log(res);
+            if(res.success){
+                vm.salesManChildStore=salesManChildStore.concat(res.result);
             }
         });
     }

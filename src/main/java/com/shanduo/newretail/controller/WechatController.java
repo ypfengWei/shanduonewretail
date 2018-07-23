@@ -186,11 +186,11 @@ public class WechatController {
                     JSONObject child=new JSONObject();
                     child.put("type","view");
                     child.put("name","闪多新零售");
-                    child.put("url","https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxe9811ac767f05237&redirect_uri=http://lixinrong.vicp.io/shanduonewretail/index.html&response_type=code&scope=snsapi_userinfo#wechat_redirect");
+                    child.put("url","https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxe0870cb2d63b008d&redirect_uri=https://yapinkeji.com/shanduonewretail/index.html&response_type=code&scope=snsapi_userinfo#wechat_redirect");
                     JSONObject child2=new JSONObject();
                     child2.put("type","view");
                     child2.put("name","后台管理");
-                    child2.put("url","http://lixinrong.vicp.io/shanduonewretail/login.html");
+                    child2.put("url","https://yapinkeji.com/shanduonewretail/login.html");
                     jsonArray.add(child);
                     jsonArray.add(child2);
                     root.put("button",jsonArray);

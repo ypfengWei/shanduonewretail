@@ -47,7 +47,6 @@ function getGoods(storeId, categoryId, typeId, pageIndex, pageCount, cbOk, cbErr
         dataType: "JSON",
         data: {id: storeId, categoryId: categoryId, typeId: typeId, page: pageIndex, pageSize: pageCount},
         success: function (result) {
-            console.log(result)
             if (result.success) {
                 cbOk && cbOk(result.result);
             }
@@ -65,7 +64,6 @@ function getGoodsAll(token, categoryId, page, pageSize, cbOk, cbErr) {
         dataType: "JSON",
         data: {token: token, categoryId: categoryId, page: page, pageSize: pageSize},
         success: function (result) {
-            console.log(result)
             if (result.success) {
                 cbOk && cbOk(result.result);
             }
