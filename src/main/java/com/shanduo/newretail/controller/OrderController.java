@@ -460,9 +460,9 @@ public class OrderController {
 		}
 		String prepayId = resultMap.get("prepay_id").toString();
 		Map<String, String> responseMap = new HashMap<String, String>(7);
-		responseMap.put("appid", WxPayConsts.APPID);
-		responseMap.put("prepayid", "prepay_id=" + prepayId);
-		responseMap.put("noncestr", UUIDGenerator.getUUID());
+		responseMap.put("appId", WxPayConsts.APPID);
+		responseMap.put("package", "prepay_id=" + prepayId);
+		responseMap.put("nonceStr", UUIDGenerator.getUUID());
 		Long timeStamp = System.currentTimeMillis() / 1000;
 		responseMap.put("timeStamp", timeStamp + "");
 		responseMap.put("signType", "MD5");
@@ -470,7 +470,7 @@ public class OrderController {
 		String responseString = WxPayUtils.createLinkString(responseMap);
 		//MD5运算生成签名
 		String responseSign = WxPayUtils.sign(responseString, WxPayConsts.KEY, "utf-8").toUpperCase();
-		responseMap.put("sign", responseSign);
+		responseMap.put("paySign", responseSign);
 		return ResultUtils.success(responseMap);
 	}
 }
