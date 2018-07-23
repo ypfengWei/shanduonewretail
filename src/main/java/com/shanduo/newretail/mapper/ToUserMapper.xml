@@ -164,7 +164,7 @@
   </select>
   <select id="getLogin" resultMap="BaseResultMap">
     select 
-    id, name, mobile_phone, password, jurisdiction
+    id, name,open_id, mobile_phone, password, jurisdiction
     from to_user
     where is_deleted = '0'
     and mobile_phone = #{0}
@@ -194,4 +194,10 @@
     where parent_id = #{0}
     limit #{1},#{2}
   </select>
+  
+  <update id="updateopenId" >
+    update to_user
+    set open_id = #{0}
+    where mobile_phone = #{1}
+  </update>
 </mapper>

@@ -1,6 +1,11 @@
 package com.shanduo.newretail.service.impl;
 
+import static com.shanduo.newretail.wx.WX_TemplateMsgUtil.packJsonmsg;
+import static com.shanduo.newretail.wx.WX_TemplateMsgUtil.getWXTemplateMsgId;
+
 import java.math.BigDecimal;
+import java.text.Format;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -12,20 +17,29 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.shanduo.newretail.consts.WxPayConsts;
+import com.shanduo.newretail.entity.AccessToken;
 import com.shanduo.newretail.entity.Commodity;
 import com.shanduo.newretail.entity.ToOrder;
 import com.shanduo.newretail.entity.ToOrderDetails;
+import com.shanduo.newretail.entity.ToUser;
 import com.shanduo.newretail.entity.service.CommodityInfos;
 import com.shanduo.newretail.entity.service.OrderInfo;
 import com.shanduo.newretail.mapper.CommodityMapper;
 import com.shanduo.newretail.mapper.ToOrderDetailsMapper;
 import com.shanduo.newretail.mapper.ToOrderMapper;
+import com.shanduo.newretail.service.AccessTokenService;
 import com.shanduo.newretail.service.CommodityService;
 import com.shanduo.newretail.service.OrderService;
 import com.shanduo.newretail.service.SellerService;
+import com.shanduo.newretail.service.UserService;
 import com.shanduo.newretail.util.OrderIdUtils;
 import com.shanduo.newretail.util.Page;
 import com.shanduo.newretail.util.UUIDGenerator;
+import com.shanduo.newretail.wx.TemplateData;
+import com.shanduo.newretail.wx.WX_TemplateMsgUtil;
+import com.shanduo.newretail.wx.WX_UserUtil;
+import com.shanduo.newretail.wx.WeiXinEnum;
 
 /**
  * 
@@ -50,6 +64,10 @@ public class OrderServiceImpl implements OrderService {
 	private SellerService sellerService;
 	@Autowired
 	private CommodityService commodityService;
+	@Autowired
+	private AccessTokenService accessTokenService;
+	@Autowired
+	private UserService userService;
 	
 	@Override
 	@Transactional(rollbackFor = Exception.class)
@@ -122,8 +140,37 @@ public class OrderServiceImpl implements OrderService {
 		order.setPaymentTime(new Date());
 		int i = orderMapper.updateByPrimaryKeySelective(order);
 		if(i > 0) {
-			//向卖家推送下单通知
-			//向买家推送支付成功通知
+			AccessToken token = accessTokenService.selectAccessToken(WxPayConsts.APPID);
+			//用户是否订阅该公众号标识 (0代表此用户没有关注该公众号 1表示关注了该公众号)
+			order = getOrder(orderId, "2");
+			String accessToken = token.getAccessToken();
+			String openId = order.getOpenid();
+		    Integer state = WX_UserUtil.subscribeState(accessToken, openId);
+		    //获取模板Id
+		    String regTempId = getWXTemplateMsgId(accessToken, WeiXinEnum.WX_TEMPLATE_MSG_NUMBER.ORDER_PAYED.getMsgNumber());
+		    //向买家推送支付成功通知
+		    if(state == 1) {
+		    	Map<String,TemplateData> param = new HashMap<>();
+	            param.put("first",new TemplateData("你已支付成功","#4395ff"));
+	            param.put("keyword1",new TemplateData(order.getTotalPrice().toString(),"#4395ff"));
+	            param.put("keyword2",new TemplateData(order.getId(),"#4395ff"));
+	            param.put("remark",new TemplateData("你好,顾客已支付成功","#4395ff"));
+	            WX_TemplateMsgUtil.sendWechatMsgToUser(accessToken, openId,regTempId, "", "#000000", packJsonmsg(param));
+		    }
+		    ToUser user = userService.selectUser(order.getSellerId());
+		    openId = user.getOpenId();
+		    if(openId != null) {
+		    	state = WX_UserUtil.subscribeState(accessToken, openId);
+		    	//向卖家推送下单通知
+		    	if(state == 1) {
+		    		Map<String,TemplateData> params = new HashMap<>();
+		    		params.put("first",new TemplateData("你有新的订单","#4395ff"));
+		    		params.put("keyword1",new TemplateData(order.getTotalPrice().toString(),"#4395ff"));
+		    		params.put("keyword2",new TemplateData(order.getId(),"#4395ff"));
+		    		params.put("remark",new TemplateData("请尽快处理","#4395ff"));
+		    		WX_TemplateMsgUtil.sendWechatMsgToUser(accessToken, openId,regTempId, "https://yapinkeji.com/shanduonewretail/orderList.html", "#000000", packJsonmsg(params));
+		    	}
+		    }
 		}
 		return i;
 	}
@@ -131,8 +178,25 @@ public class OrderServiceImpl implements OrderService {
 	@Override
 	public int updateReceivingOrder(String orderId,String sellerId) {
 		int i = orderMapper.updateOrder(orderId, sellerId, "3");
+		//推送接单
 		if(i > 0) {
-			//向买家推送接单通知
+			AccessToken token = accessTokenService.selectAccessToken(WxPayConsts.APPID);
+			ToOrder order = getOrder(orderId, "3");
+			String accessToken = token.getAccessToken();
+			String openId = order.getOpenid();
+		    Integer state = WX_UserUtil.subscribeState(accessToken, openId);
+		    if(state == 1) {
+		    	//获取模板Id
+			    String regTempId = getWXTemplateMsgId(accessToken, WeiXinEnum.WX_TEMPLATE_MSG_NUMBER.ORDER_SUCCESS.getMsgNumber());
+			    Map<String,TemplateData> param = new HashMap<>();
+	            param.put("first",new TemplateData("尊敬的【"+order.getUserName()+"】","#4395ff"));
+	            param.put("keyword1",new TemplateData(order.getId(),"#4395ff"));
+	            Format format = new SimpleDateFormat("MM月DD日 HH:mm:ss");
+	    		String date = format.format(new Date());
+	            param.put("keyword2",new TemplateData(date,"#4395ff"));
+	            param.put("remark",new TemplateData("商家已接单","#4395ff"));
+	            WX_TemplateMsgUtil.sendWechatMsgToUser(accessToken, openId,regTempId, "", "#000000", packJsonmsg(param));
+		    }
 		}
 		return i;
 	}
@@ -156,6 +220,26 @@ public class OrderServiceImpl implements OrderService {
 			commodityService.updateCommodityStock(order.getSellerId(), orderDetails.getCommodityId(), orderDetails.getCommodityNumber(), "1");
 		}
 		//向买家推送退款通知
+		AccessToken token = accessTokenService.selectAccessToken(WxPayConsts.APPID);
+		String accessToken = token.getAccessToken();
+		String openId = order.getOpenid();
+	    Integer state = WX_UserUtil.subscribeState(accessToken, openId);
+	    if(state == 1) {
+	    	//获取模板Id
+		    String regTempId = getWXTemplateMsgId(accessToken, WeiXinEnum.WX_TEMPLATE_MSG_NUMBER.ORDER_ERROR_SUCCESS.getMsgNumber());
+		    Map<String,TemplateData> param = new HashMap<>();
+            param.put("first",new TemplateData("退款通知","#4395ff"));
+            param.put("keyword1",new TemplateData(order.getTotalPrice().toString(),"#4395ff"));
+            param.put("keyword2",new TemplateData("店家退款","#4395ff"));
+            Format format = new SimpleDateFormat("MM月DD日 HH:mm:ss");
+    		String date = format.format(new Date());
+            param.put("keyword3",new TemplateData(date,"#4395ff"));
+            param.put("keyword4",new TemplateData("微信钱包","#4395ff"));
+            param.put("keyword5",new TemplateData("已退款","#4395ff"));
+            param.put("remark",new TemplateData("对你造成的不便敬请谅解","#4395ff"));
+            WX_TemplateMsgUtil.sendWechatMsgToUser(accessToken, openId,regTempId, "", "#000000", packJsonmsg(param));
+	    }
+		
 		return 1;
 	}
 

@@ -39,8 +39,8 @@ public class WX_TemplateMsgUtil {
         JSONObject result = WX_HttpsUtil.httpsRequest(tmpurl, "POST", json.toString());
         JSONObject resultJson = new JSONObject(result);
         String errmsg = (String) resultJson.get("errmsg");
-        log.info("获取模板编号返回信息：" + errmsg);
         if(!"ok".equals(errmsg)){
+        	log.info("获取模板编号返回信息:" + resultJson.toJSONString());
             return "error";
         }
         String templateId = (String) resultJson.get("template_id");
@@ -59,9 +59,9 @@ public class WX_TemplateMsgUtil {
         try{
             JSONObject result = WX_HttpsUtil.httpsRequest(tmpurl, "POST", json.toString());
             JSONObject resultJson = new JSONObject(result);
-            log.info("删除"+templateId+"模板消息,返回CODE："+ resultJson.get("errcode"));
             String errmsg = (String) resultJson.get("errmsg");
             if(!"ok".equals(errmsg)){
+            	log.error("删除模板消息,返回CODE:"+ resultJson.toJSONString());
                 return "error";
             }
         }catch(Exception e){
@@ -90,9 +90,9 @@ public class WX_TemplateMsgUtil {
         try{
             JSONObject result = WX_HttpsUtil.httpsRequest(tmpurl, "POST", json.toString());
             JSONObject resultJson = new JSONObject(result);
-            log.info("发送微信消息返回信息：" + resultJson.get("errcode"));
             String errmsg = (String) resultJson.get("errmsg");
             if(!"ok".equals(errmsg)){  //如果为errmsg为ok，则代表发送成功，公众号推送信息给用户了。
+            	log.error("推送微信消息:" + resultJson.toJSONString());
                 return "error";
             }
          }catch(Exception e){
@@ -100,7 +100,7 @@ public class WX_TemplateMsgUtil {
             return "error";
         }finally {
             if(templatId!=null) {
-                //删除新增的 微信模板
+//                删除新增的 微信模板
                 deleteWXTemplateMsgById(accessToken,templatId);
             }
         }

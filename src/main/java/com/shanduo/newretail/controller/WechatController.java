@@ -1,8 +1,14 @@
 package com.shanduo.newretail.controller;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 import java.math.BigInteger;
+import java.net.URL;
+import java.net.URLConnection;
 import java.net.URLEncoder;
 import java.security.SecureRandom;
 import java.util.ArrayList;
@@ -172,6 +178,7 @@ public class WechatController {
         try {
             AccessToken token = accessTokenService.selectAccessToken(WxPayConsts.APPID);
             if (token != null) {
+            	delMenu(token.getAccessToken());
                 JSONObject jsonObject = JSON.parseObject(getMenu(token.getAccessToken()));
                 if (jsonObject.containsKey("errcode")) {
                     jsonObject.clear();
@@ -225,6 +232,34 @@ public class WechatController {
         return null;
     }
     /**
+     * 删除自定义菜单
+     */
+    public static String delMenu(String token) {
+        HttpGet method = new HttpGet("https://api.weixin.qq.com/cgi-bin/menu/delete?access_token=" + token);
+        CloseableHttpResponse response = null;
+        CloseableHttpClient httpClient = HttpClients.createDefault();
+        try {
+            response = httpClient.execute(method);
+            if (response.getStatusLine().getStatusCode() == org.apache.http.HttpStatus.SC_OK) {
+                return EntityUtils.toString(response.getEntity());
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+        	 try {
+                 if (response != null) {
+                     response.close();
+                 }
+                 if (httpClient != null) {
+                     httpClient.close();
+                 }
+             } catch (IOException e) {
+                 e.printStackTrace();
+             }
+        }
+        return null;
+    }
+    /**
      * 创建自定义菜单
      */
     public static String createMenu(String token, String menu) {
@@ -262,32 +297,94 @@ public class WechatController {
     public ResultBean salesmanCode(String token) {
     	if (StringUtils.isNull(token)) {
             Log.warn("token为空");
-            return new ErrorBean(ErrorConsts.CODE_10002, "token为空");
+         //   return new ErrorBean(ErrorConsts.CODE_10002, "token为空");
         }
         String id = baseService.checkUserToken(token);
         if (null == id) {
             Log.warn("token失效");
-            return new ErrorBean(ErrorConsts.CODE_10001, "token失效");
+        //    return new ErrorBean(ErrorConsts.CODE_10001, "token失效");
         }
         if (id != null) {
         	AccessToken accessToken = accessTokenService.selectAccessToken(WxPayConsts.APPID);
-            JSONObject jsonObject = create_qrcode(accessToken.getAccessToken(), "{\"expire_seconds\": 2592000,\"action_name\": \"QR_SCENE\", \"action_info\": {\"scene\": {\"scene_str\": \"yaping_NUMBER\"}}}".replace("NUMBER", id));
-            if (jsonObject != null) {
-                HttpEntity entity = download_qrcode(jsonObject.getString("ticket"));
-                if (entity != null) {
-                    try {
-                        setFileName("wx_NUMBER.jpg".replace("NUMBER", id));
-                        setInputStream(entity.getContent());
-                        return null;
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
+        	//获取数据的地址（微信提供）
+            String url = "https://api.weixin.qq.com/cgi-bin/qrcode/create?access_token="+accessToken.getAccessToken();
+   
+            //发送给微信服务器的数据
+            String jsonStr = "{\"expire_seconds\": 2592000,\"action_name\": \"QR_SCENE\", \"action_info\": {\"scene\": {\"id\": "+id+"}}}";
+   
+            //将得到的字符串转化成json对象
+         //   String response = sendPost(jsonStr, url);
+            return new SuccessBean(sendPost(jsonStr, url));
+            //JSONObject jsonObject = create_qrcode(accessToken.getAccessToken(), "{\"expire_seconds\": 2592000,\"action_name\": \"QR_SCENE\", \"action_info\": {\"scene\": {\"scene_str\": \"yaping_NUMBER\"}}}".replace("NUMBER", id));
+         //   if (jsonObject != null) {
+           //     HttpEntity entity = download_qrcode(jsonObject.getString("ticket"));
+            //    if (entity != null) {
+            //        try {
+             //       	 String response = RequestMethod.sendPost(jsonStr, url);
+              //           return response.toString();
+                      //  setFileName("wx_NUMBER.jpg".replace("NUMBER", id));
+                       // setInputStream(entity.getContent());
+                      //  return null;
+               //     } catch (IOException e) {
+               //         e.printStackTrace();
+              //      }
+            //    }
+          //  }
         }
         return null;
     }
-    private void setInputStream(InputStream content) {
+    public static BufferedReader sendPost(String param, String url) {
+        PrintWriter out = null;
+        BufferedReader in = null;
+        String result = "";
+        try {
+            URL realUrl = new URL(url);
+            // 打开和URL之间的连接
+            URLConnection conn = realUrl.openConnection();
+            // 设置通用的请求属性
+            conn.setRequestProperty("accept", "*/*");
+            conn.setRequestProperty("connection", "Keep-Alive");
+            conn.setRequestProperty("user-agent",
+                      "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1;SV1)");
+            // 发送POST请求必须设置如下两行
+            conn.setDoOutput(true);
+            conn.setDoInput(true);
+            // 获取URLConnection对象对应的输出流
+            // out = new PrintWriter(conn.getOutputStream());
+            out = new PrintWriter(new OutputStreamWriter(
+                      conn.getOutputStream(), "utf-8"));
+            // 发送请求参数
+            out.print(param);
+            // flush输出流的缓冲
+            out.flush();
+            // 定义BufferedReader输入流来读取URL的响应
+            in = new BufferedReader(new InputStreamReader(
+                      conn.getInputStream(), "UTF-8"));
+            return in;
+           /* String line;
+            while ((line = in.readLine()) != null) {
+                 result += line;
+            }*/
+        } catch (Exception e) {
+            System.out.println("发送 POST 请求出现异常！" + e);
+            e.printStackTrace();
+        }
+        // 使用finally块来关闭输出流、输入流
+        finally {
+            try {
+                 if (out != null) {
+                      out.close();
+                 }
+                 if (in != null) {
+                      in.close();
+                 }
+            } catch (IOException ex) {
+                 ex.printStackTrace();
+            }
+        }
+        return null;
+   }
+   /* private void setInputStream(InputStream content) {
 		// TODO Auto-generated method stub
 		
 	}
@@ -295,7 +392,7 @@ public class WechatController {
 	private void setFileName(String replace) {
 		// TODO Auto-generated method stub
 		
-	}
+	}*/
 
 	public static JSONObject create_qrcode(String token, String content) {
         JSONObject jsonObject = null;

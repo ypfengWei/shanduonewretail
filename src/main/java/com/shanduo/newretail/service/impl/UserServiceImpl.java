@@ -168,4 +168,10 @@ public class UserServiceImpl implements UserService {
 		resultMap.put("data", list);
 		return resultMap;
 	}
+
+	@Override
+	public int updateopenId(String openId, String phone) {
+		
+		return userMapper.updateopenId(openId, phone);
+	}
 }

@@ -12,14 +12,12 @@ public class WeiXinEnum {
 	// 缓存类型     
     public enum CACHE_TYPE {
         CACHE_WX_ACCESS_TOKEN,//模板消息access_token
-    }    
+    } 
     // 模板消息编号
     public enum WX_TEMPLATE_MSG_NUMBER{
-        USER_REGISTER_SUCCESS(0,"OPENTM407796225", "注册成功"),
-        ORDER_PAYED_SUCCESS(1, "4gw_InBDybb4gl5f1B9XTuT3rlnhWBMfskduFcNZBz4","订单支付成功"),
-    	ORDER_SUCCESS(2,"YmkEkD4zM3hoz6lIZJNL3cv99UPQZuUQjVEuffQctLs","购买成功通知"),
-    	ORDER_ERROR_SUCCESS(2,"YmkEkD4zM3hoz6lIZJNL3cv99UPQZuUQjVEuffQctLs","订单退款通知");
-//        ORDER_...;
+        ORDER_PAYED(1, "OPENTM400231951","支付成功通知"),
+    	ORDER_SUCCESS(2,"OPENTM411855700","派单成功提醒"),
+    	ORDER_ERROR_SUCCESS(3,"OPENTM415964302","退款通知");
         private int code;
         private String msgNumber;
         private String label;
