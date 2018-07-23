@@ -70,8 +70,7 @@
                                                         <div class="number dis_flex">
                                                             <span class="price"
                                                                   @click="onclick3(index)">￥{{commodity.price}}</span>
-                                                            <input type="checkbox" name="Drink" v-model="commodityIdList"
-                                                                   checked="checked"/>
+                                                            <input type="checkbox" :value="commodity.id" name="Drink" v-model="commodityIdList"/>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -208,6 +207,7 @@
     function adapter(classifyId, cbOK, cbErr) {
         getGoodsAll(localStore.token, classifyId, pageIndex, pageCount, function (res) {
             let newData = res.commodityInfoList;
+            console.log(newData)
             for (let i in newData) {
                 newData[i].picture = {
                     myStyle: {backgroundImage: "url('/yapingzh/picture/" + newData[i].picture + "')"},

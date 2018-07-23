@@ -172,7 +172,6 @@
                         $.each(vm.classify, function (i, item) {
                             if (item.id === vm.commodity.categoryId) {
                                 vm.categoryIndex = i;
-                                console.log(vm.categoryIndex);
                                 return false;
                             }
                         })
@@ -183,10 +182,10 @@
             document.title = '添加商品';
             vm.titleName = '添加商品';
             vm.submitName = '添加上传';
+            getCommodityAllType(localStore.token, function (res) {
+                vm.classify = res.result;
+            });
         }
-        getCommodityAllType(localStore.token, function (res) {
-            vm.classify = res.result;
-        });
         init_wx_js_sdk(href, function (result) {
             //初始化接口环境
             wx.config({
