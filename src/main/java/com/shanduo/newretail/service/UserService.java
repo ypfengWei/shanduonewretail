@@ -110,6 +110,8 @@ public interface UserService {
 
 	ToUser selectUser(String id);
 	
+	int updateopenId(String openId, String id);
+	
 	/**
 	 * 查询下级
 	 * @Title: listParent
