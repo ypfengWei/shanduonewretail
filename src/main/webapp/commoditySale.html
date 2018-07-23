@@ -44,9 +44,9 @@
                                             </li>
                                         </ul>-->
                     <span>类别：</span>
-                    <select>
+                    <select @click="selCategory">
                         <option value="-1">请选择</option>
-                        <option v-for="(item,index) in classify" ：value="index">{{item.category_name}}</option>
+                        <option v-for="(item,index) in classify" :value="index">{{item.category_name}}</option>
                     </select>
                 </div>
                 <div>
@@ -109,7 +109,7 @@
             selCategory(e) {
                 let index = e.target.value;
                 if (index > -1) {
-                    vm.categoryId = categoryId;
+                    vm.categoryId = vm.classify[index].id;
                 }
             }, querySale() {
                 emptyData();
@@ -123,8 +123,9 @@
 
     $(function () {
         getCommodityAllType(localStore.token, function (res) {
-            console.log(res)
-            vm.classify = vm.classify.concat(res.result);
+            if (res.success) {
+                vm.classify = vm.classify.concat(res.result);
+            }
         });
         loadCountmoney();
     });

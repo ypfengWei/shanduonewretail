@@ -59,7 +59,7 @@
 </body>
 <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 <script>
-    let registerTypeId=GetQueryString('registerTypeId');
+    let registerTypeId = GetQueryString('registerTypeId');
     let localStore = JSON.parse(localStorage.localStore);
     let interval = null;
     let aging = 120;
@@ -78,7 +78,7 @@
             disabled: false
         },
         methods: {
-            goBack(){
+            goBack() {
                 history.back();
             },
             sendMSM() {

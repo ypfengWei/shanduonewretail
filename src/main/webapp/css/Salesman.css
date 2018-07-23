@@ -95,6 +95,7 @@ div.title_header>div:last-child>span{
 .div_li{
     height: 80px;
     align-items: center;
+    position: relative;
 }
 .div_li>img{
     width: 60px;
@@ -106,6 +107,21 @@ div.title_header>div:last-child>span{
     padding-left: 10px;
     font-size: 12px;
 }
+.div_li>span{
+    position: absolute;
+    top: 25px;
+    right: 25px;
+    display: inline-block;
+    padding: 5px 15px;
+    color: #fff;
+    font-size: 14px;
+    text-align: center;
+    height: 20px;
+    line-height: 20px;
+    background: linear-gradient(to right, #FF9254 , #FF5B2B);
+    border-radius: 20px;
+}
+
 .body>div:first-child>div>span:first-child{
     font-size: 15px;
     margin-bottom: 5px;

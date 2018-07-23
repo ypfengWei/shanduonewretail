@@ -51,6 +51,11 @@
 </body>
 <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 <script>
+    let code = GetQueryString('code');
+    if (!code) {
+        location.href = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxe0870cb2d63b008d&redirect_uri=https://yapinkeji.com/shanduonewretail/login.html&response_type=code&scope=snsapi_userinfo#wechat_redirect';
+    }
+
     let vm = new Vue({
         el: '#vueData',
         data: {
@@ -68,11 +73,12 @@
                     dataType: "json",
                     data: {
                         "phone": vm.userName,
-                        "password": vm.password
+                        "password": vm.password,
+                        "code": code
                     },
                     success: function (res) {
                         if (res.success) {
-                            localStorage.setItem('localStore',JSON.stringify(res));
+                            localStorage.setItem('localStore', JSON.stringify(res));
                             toast('登录成功!');
                             setTimeout(function () {
                                 location.href = 'Administration.html';

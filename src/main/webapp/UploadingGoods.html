@@ -148,6 +148,7 @@
             url: url,
             data: obj,
             success: function (res) {
+                console.log(res);
                 if (res.success) {
                     toast('操作成功');
                     setTimeout(function () {

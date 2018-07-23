@@ -90,13 +90,23 @@
                                             <span>{{item.userAddress}}</span>
                                         </div>
                                         <div>
+                                            <span>下单时间：</span>
+                                            <span>{{item.gmtCreate}}</span>
+                                        </div>
+                                        <div>
+                                            <span>联系电话：</span>
+                                            <span>{{item.userPhone}}</span>
+                                        </div>
+                                        <div>
                                             <span>备注：</span>
                                             <span>{{item.remarks}}</span>
                                         </div>
                                     </div>
                                     <div class="number dis_flex">
-                                        <a href="javascript:" @click="exctueMethod(key,'/shanduonewretail/jorder/receivingorder', item.id )">接单</a>
-                                        <a href="javascript:" @click="exctueMethod(key,'/shanduonewretail/jorder/cancelorder', item.id )">拒绝</a>
+                                        <a href="javascript:"
+                                           @click="exctueMethod(key,'/shanduonewretail/jorder/receivingorder', item.id )">接单</a>
+                                        <a href="javascript:"
+                                           @click="exctueMethod(key,'/shanduonewretail/jorder/cancelorder', item.id )">拒绝</a>
                                     </div>
                                 </div>
                             </li>
@@ -140,12 +150,21 @@
                                             <span>{{item.userAddress}}</span>
                                         </div>
                                         <div>
+                                            <span>下单时间：</span>
+                                            <span>{{item.gmtCreate}}</span>
+                                        </div>
+                                        <div>
+                                            <span>联系电话：</span>
+                                            <span>{{item.userPhone}}</span>
+                                        </div>
+                                        <div>
                                             <span>备注：</span>
                                             <span>{{item.remarks}}</span>
                                         </div>
                                     </div>
                                     <div class="number dis_flex">
-                                        <a href="javascript:" @click="exctueMethod(key,'/shanduonewretail/jorder/finishorder', item.id )">配送完成</a>
+                                        <a href="javascript:"
+                                           @click="exctueMethod(key,'/shanduonewretail/jorder/finishorder', item.id )">配送完成</a>
                                     </div>
                                 </div>
                             </li>
@@ -187,6 +206,14 @@
                                         <div>
                                             <span>收货地址：</span>
                                             <span>{{item.userAddress}}</span>
+                                        </div>
+                                        <div>
+                                            <span>下单时间：</span>
+                                            <span>{{item.gmtCreate}}</span>
+                                        </div>
+                                        <div>
+                                            <span>联系电话：</span>
+                                            <span>{{item.userPhone}}</span>
                                         </div>
                                         <div>
                                             <span>备注：</span>
@@ -236,6 +263,14 @@
                                         <div>
                                             <span>收货地址：</span>
                                             <span>{{item.userAddress}}</span>
+                                        </div>
+                                        <div>
+                                            <span>下单时间：</span>
+                                            <span>{{item.gmtCreate}}</span>
+                                        </div>
+                                        <div>
+                                            <span>联系电话：</span>
+                                            <span>{{item.userPhone}}</span>
                                         </div>
                                         <div>
                                             <span>备注：</span>
@@ -330,7 +365,7 @@
             },
             goBack() {
                 history.back();
-            },exctueMethod(key, url, orderId) {
+            }, exctueMethod(key, url, orderId) {
                 layer.open({
                     content: "执行这个操作？"
                     , btn: ['是的', '取消']
@@ -370,6 +405,9 @@
             dataType: 'json',
             success: function (res) {
                 if (res.success && res.data.length > 0) {
+                    $.each(res.data, function (i, item) {
+                        res.data[i].gmtCreate = getLocalTime(item.gmtCreate);
+                    });
                     vm.ds[vm.currentTab].arrayResult = vm.ds[vm.currentTab].arrayResult.concat(res.data);
                     totalPage = res.totalPage;
                 }

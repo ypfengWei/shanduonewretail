@@ -37,6 +37,7 @@
                     <span>{{salesMan.name}}</span>
                     <span class="col_hui ">电话：{{salesMan.mobilePhone}}</span>
                 </div>
+                <span @click="toRegisterView">注册商户</span>
             </div>
             <div class="dis_flex">
                 <span>我的业绩：</span>
@@ -79,6 +80,8 @@
         },methods:{
             goBack(){
                 history.back();
+            },toRegisterView() {
+                location.href = 'register.html?registerTypeId=3';
             }
         }
     });

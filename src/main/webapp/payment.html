@@ -173,11 +173,11 @@
                             if (res.success) {
                                 //发起微信支付
                                 wx.chooseWXPay({
-                                    timestamp: res.data.timeStamp,
-                                    nonceStr: res.data.nonceStr,
-                                    package: res.data.package,
-                                    signType: res.data.signType,
-                                    paySign: res.data.paySign,
+                                    timestamp: res.timeStamp,
+                                    nonceStr: res.nonceStr,
+                                    package: res.package,
+                                    signType: res.signType,
+                                    paySign: res.paySign,
                                     success: function (res) {
                                         emptyDB();
                                         location.href = 'pay_success.html';
