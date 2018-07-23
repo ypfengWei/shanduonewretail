@@ -75,7 +75,7 @@ body{
 }
 .swiper-container-div {
   list-style: none;
-  overflow: hidden;
+  overflow-y: scroll;
   background-color: #f7f7f7;
   width: 110px;
 }

@@ -39,8 +39,8 @@
             <img :src="storeImg?storeImg:'img/rectangle_3.png'"
                  @click="onLoadImg">
             <div class="dis_flex">
-                <span>闪多新零售</span>
-                <input type="text" v-model="storeInfo.notice">
+                <input v-model="storeInfo.sellerName"/>
+                <input type="text" placeholder="备注:" v-model="storeInfo.notice">
             </div>
         </div>
         <div class="div_li dis_flex">
@@ -72,7 +72,7 @@
         </div>
         <div class="div_li dis_flex">
             <span>地址:</span>
-            <span class="col_hui" @click="chooseAddress" v-if="storeInfo.address">{{storeInfo.address}}</span>
+            <span class="col_hui" v-if="storeInfo.address">{{storeInfo.address}}</span>
             <span class="col_hui" @click="chooseAddress" v-else>请选择地址</span>
         </div>
     </div>
@@ -127,6 +127,7 @@
                 localStorage.removeItem('localStoreInfo');
                 localStorage.removeItem('localStoreTypeIndex');
                 localStorage.removeItem('localStoreType');
+                localStorage.removeItem('storeImg');
                 location.href = 'Administration.html';
             }, chooseAddress() {
                 //todo
@@ -147,11 +148,13 @@
                                 localId: res.localIds[0], // 图片的localID
                                 success: function (res) {
                                     vm.storeImg = res.localData;
+
                                 }
                             });
                         } else {
                             vm.storeImg = res.localIds[0];
                         }
+                        localStorage.storeImg = vm.storeImg;
                     }
                 });
             }, saveStoreInfo() {
@@ -165,7 +168,11 @@
                             localStorage.removeItem('localStoreInfo');
                             localStorage.removeItem('localStoreTypeIndex');
                             localStorage.removeItem('localStoreType');
-                            location.href = 'Administration.html';
+                            localStorage.removeItem('storeImg');
+                            toast('修改成功，正在跳转...');
+                            setTimeout(function () {
+                                location.href = 'Administration.html';
+                            },1000);
                         } else {
                             toast('修改未完成');
                         }
@@ -217,6 +224,9 @@
     }
 
     function initData() {
+        if (localStorage.storeImg) {
+            vm.storeImg = localStorage.storeImg;
+        }
         if (localStorage.localStoreInfo) {
             vm.storeInfo = JSON.parse(localStorage.localStoreInfo);
             vm.storeType = JSON.parse(localStorage.localStoreType);
@@ -228,12 +238,14 @@
                     token: localStore.token,
                     typeId: 1
                 }, success: function (res) {
+                    console.log(res)
                     if (res.success) {
                         vm.storeInfo = res.result;
                         vm.storeInfo.endDate = getMyDate(vm.storeInfo.endDate);
                         vm.storeInfo.startDate = getMyDate(vm.storeInfo.startDate);
                         if (vm.storeInfo.sellerPicture) {
-                            vm.storeImg = imagePath + vm.storeInfo.sellerPicture
+                            vm.storeImg = imagePath + vm.storeInfo.sellerPicture;
+                            localStorage.storeImg = vm.storeImg;
                         }
                         $.getJSON('/shanduonewretail/jseller/selectselleralltype', function (res) {
                             if (res.success) {
@@ -278,6 +290,7 @@
             localStorage.removeItem('localStoreInfo');
             localStorage.removeItem('localStoreTypeIndex');
             localStorage.removeItem('localStoreType');
+            localStorage.removeItem('storeImg');
             location.href = 'Administration.html';
         }, false);
     });

@@ -7,13 +7,14 @@
     <result column="name" jdbcType="VARCHAR" property="name" />
     <result column="mobile_phone" jdbcType="VARCHAR" property="mobilePhone" />
     <result column="password" jdbcType="VARCHAR" property="password" />
+    <result column="parent_id" jdbcType="VARCHAR" property="parentId" />
     <result column="jurisdiction" jdbcType="CHAR" property="jurisdiction" />
     <result column="gmt_create" jdbcType="TIMESTAMP" property="gmtCreate" />
     <result column="gmt_modified" jdbcType="TIMESTAMP" property="gmtModified" />
     <result column="is_deleted" jdbcType="BIT" property="isDeleted" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, open_id, name, mobile_phone, password, jurisdiction, gmt_create, gmt_modified, 
+    id, open_id, name, mobile_phone, password,parent_id, jurisdiction, gmt_create, gmt_modified,
     is_deleted
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
@@ -28,11 +29,11 @@
   </delete>
   <insert id="insert" parameterType="com.shanduo.newretail.entity.ToUser">
     insert into to_user (id, open_id, name, 
-      mobile_phone, password, jurisdiction, 
+      mobile_phone, password,parent_id, jurisdiction,
       gmt_create, gmt_modified, is_deleted
       )
     values (#{id,jdbcType=VARCHAR}, #{openId,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, 
-      #{mobilePhone,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, #{jurisdiction,jdbcType=CHAR}, 
+      #{mobilePhone,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, #{parentId,jdbcType=VARCHAR}, #{jurisdiction,jdbcType=CHAR},
       #{gmtCreate,jdbcType=TIMESTAMP}, #{gmtModified,jdbcType=TIMESTAMP}, #{isDeleted,jdbcType=BIT}
       )
   </insert>
@@ -53,6 +54,9 @@
       </if>
       <if test="password != null">
         password,
+      </if>
+      <if test="parentId != null">
+        parent_id,
       </if>
       <if test="jurisdiction != null">
         jurisdiction,
@@ -83,6 +87,9 @@
       <if test="password != null">
         #{password,jdbcType=VARCHAR},
       </if>
+      <if test="parentId != null">
+        #{parentId,jdbcType=VARCHAR},
+      </if>
       <if test="jurisdiction != null">
         #{jurisdiction,jdbcType=CHAR},
       </if>
@@ -112,6 +119,9 @@
       <if test="password != null">
         password = #{password,jdbcType=VARCHAR},
       </if>
+      <if test="parentId != null">
+        parent_id = #{parentId,jdbcType=VARCHAR},
+      </if>
       <if test="jurisdiction != null">
         jurisdiction = #{jurisdiction,jdbcType=CHAR},
       </if>
@@ -133,6 +143,7 @@
       name = #{name,jdbcType=VARCHAR},
       mobile_phone = #{mobilePhone,jdbcType=VARCHAR},
       password = #{password,jdbcType=VARCHAR},
+      parent_id = #{parentId,jdbcType=VARCHAR},
       jurisdiction = #{jurisdiction,jdbcType=CHAR},
       gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
       gmt_modified = #{gmtModified,jdbcType=TIMESTAMP},

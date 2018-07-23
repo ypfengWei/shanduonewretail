@@ -12,11 +12,10 @@
     <!--苹果手机：在web app应用下状态条（屏幕顶部条）的颜色,默认值为default（白色），可以定为black（黑色）和black-translucent（灰色半透明）。-->
     <meta name="apple-touch-fullscreen" content="yes"/>
     <!--苹果手机：如果把一个web app添加到了主屏幕中，那么从主屏幕中打开这个web app则全屏显示-->
-    <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="css/commoditySale.css">
     <script src="js/jquery-3.3.1.js"></script>
-    <script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <script src="js/service.js"></script>
+    <script src="js/utils.js"></script>
     <title></title>
 </head>
 <body>
@@ -36,14 +35,19 @@
         <div>
             <div class="dis_flex Choice_list">
                 <div class="btn-group">
-                    <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
-                        类别：{{categoryName}}
-                    </button>
-                    <ul class="dropdown-menu" role="menu">
-                        <li v-for="(item,index) in classify"><a href="#"
-                                                                @click="selCategory(item.id,item.category_name)">{{item.category_name}}</a>
-                        </li>
-                    </ul>
+                    <!--                    <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+                                            类别：{{categoryName}}
+                                        </button>
+                                        <ul class="dropdown-menu" role="menu">
+                                            <li v-for="(item,index) in classify"><a href="#"
+                                                                                    @click="selCategory(item.id,item.category_name)">{{item.category_name}}</a>
+                                            </li>
+                                        </ul>-->
+                    <span>类别：</span>
+                    <select>
+                        <option value="-1">请选择</option>
+                        <option v-for="(item,index) in classify" ：value="index">{{item.category_name}}</option>
+                    </select>
                 </div>
                 <div>
                     <span>商品销售总额：</span>
@@ -68,7 +72,7 @@
     <footer>
         <div class="list_li dis_flex" v-for="commodity in commodities">
             <div class="dis_flex">
-                <img :src="commodity.picture">
+                <img :src="imagePath+commodity.picture">
                 <div class="dis_flex">
                     <div class="dis_flex">
                         <span>{{commodity.commodityName}}</span>
@@ -94,22 +98,24 @@
     let vm = new Vue({
         el: '#vueData',
         data: {
+            imagePath: imagePath,
             classify: [],
             commodities: [],
             categoryId: '',
-            categoryName: '选择类别',
             startDate: '',
             endDate: '',
             money: 0
         }, methods: {
-            selCategory(categoryId, categoryName) {
-                vm.categoryId = categoryId;
-                vm.categoryName = categoryName;
+            selCategory(e) {
+                let index = e.target.value;
+                if (index > -1) {
+                    vm.categoryId = categoryId;
+                }
             }, querySale() {
                 emptyData();
                 querySaleAll();
                 loadCountmoney();
-            },goBack(){
+            }, goBack() {
                 history.back();
             }
         }
@@ -117,6 +123,7 @@
 
     $(function () {
         getCommodityAllType(localStore.token, function (res) {
+            console.log(res)
             vm.classify = vm.classify.concat(res.result);
         });
         loadCountmoney();
@@ -129,7 +136,6 @@
             startDate: vm.startDate === '' ? '' : vm.startDate,
             endDate: vm.endDate === '' ? '' : vm.endDate
         }, function (res) {
-            console.log(res);
             if (res.success) {
                 vm.money = res.money;
             }

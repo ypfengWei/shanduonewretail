@@ -14,6 +14,7 @@
     <!--苹果手机：如果把一个web app添加到了主屏幕中，那么从主屏幕中打开这个web app则全屏显示-->
     <link rel="stylesheet" type="text/css" href="css/Salesman.css">
     <title></title>
+    <script src="js/jquery-3.3.1.js"></script>
 </head>
 <body>
     <div id="vueData">
@@ -32,8 +33,8 @@
             <div class="dis_flex div_li">
                 <img src="img/ewm.png">
                 <div class="dis_flex">
-                    <span>业务员一号</span>
-                    <span class="col_hui ">电话：15873024293</span>
+                    <span>{{salesMan.name}}</span>
+                    <span class="col_hui ">电话：{{salesMan.mobilePhone}}</span>
                 </div>
             </div>
             <div class="dis_flex">
@@ -65,12 +66,13 @@
 </body>
 <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 <script type="text/javascript">
-    let userId = localStorage.getItem('userId');
+    let localStore = JSON.parse(localStorage.localStore);
     let vm = new Vue({
         el: '#vueData',
         data: {
             //获取屏幕分辨率高度
             Width: null,
+            salesMan:{}
         },
         mounted: function () {
             //获取屏幕分辨率高度
@@ -78,5 +80,15 @@
             that.Width = window.screen.width - 82;
         }
     })
+    $(function () {
+        loadSalesManDetial();
+    });
+    function loadSalesManDetial() {
+        $.get('/shanduonewretail/juser/selectuser',{token:localStore.token},function (res) {
+            if(res.success){
+                vm.salesMan=res.result;
+            }
+        });
+    }
 </script>
 </html>

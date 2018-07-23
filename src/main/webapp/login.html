@@ -27,8 +27,7 @@
                 <div>
                     <span>登录</span>
                 </div>
-                <div @click="gotoRegisterView">
-                    <span>去注册</span>
+                <div>
                 </div>
             </div>
         </header>
@@ -58,9 +57,6 @@
             userName: '',
             password: ''
         }, methods: {
-            gotoRegisterView(){
-                location.href="register.html";
-            },
             sellersLogin() {
                 if ($.trim(vm.userName) === '' || $.trim(vm.password) === '') {
                     toast('登录名或密码不能为空!');

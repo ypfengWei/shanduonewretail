@@ -27,6 +27,7 @@ import com.shanduo.newretail.util.UUIDGenerator;
 @Service
 public class UserServiceImpl implements UserService {
 
+
 	private static final Logger log = LoggerFactory.getLogger(UserServiceImpl.class);
 	
 	@Autowired
@@ -38,7 +39,7 @@ public class UserServiceImpl implements UserService {
 	
 	@Override
 	@Transactional(rollbackFor = Exception.class)
-	public int saveUser(String openId, String phone, String password, String parentId, String typrId, String name) {
+	public int saveUser(String openId, String phone, String password, String parentId, String typeId, String name) {
 		String id = UUIDGenerator.getUUID();
 		password = MD5Utils.getInstance().getMD5(password);
 //		String name = phone.replaceAll("(\\d{3})\\d{4}(\\d{4})","$1****$2");
@@ -48,13 +49,14 @@ public class UserServiceImpl implements UserService {
 		user.setName(name);
 		user.setMobilePhone(phone);
 		user.setPassword(password);
-		user.setJurisdiction(typrId);
+		user.setJurisdiction(typeId);
+		user.setParentId(parentId);
 		int i = userMapper.insertSelective(user);
 		if(i < 1) {
 			log.warn("regin user is error waith phone:{} and password:{}", phone, password);
 			throw new RuntimeException();
 		}
-		if(!typrId.equals(DefaultConsts.ROLE_MERCHANT)) {
+		if(!typeId.equals(DefaultConsts.ROLE_MERCHANT)) {
 			return 1;
 		}
 		i = sellerService.insertSeller(id, name, phone, parentId);
@@ -143,4 +145,8 @@ public class UserServiceImpl implements UserService {
 		return userMapper.selectAdministratorsId();
 	}
 
+	@Override
+	public ToUser selectUser(String id) {
+		return userMapper.selectByPrimaryKey(id);
+	}
 }

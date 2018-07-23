@@ -78,16 +78,9 @@ div.title_header>div:last-child>img{
 
 }
 
-.btn-primary,.btn-primary.active.focus, .btn-primary.active:focus, .btn-primary.active:hover, .btn-primary:active.focus, .btn-primary:active:focus, .btn-primary:active:hover, .open>.dropdown-toggle.btn-primary.focus, .open>.dropdown-toggle.btn-primary:focus, .open>.dropdown-toggle.btn-primary:hover,.btn-primary.active, .btn-primary:active, .open>.dropdown-toggle.btn-primary,.btn-primary:hover,.btn-primary.focus, .btn-primary:focus{
-    background: linear-gradient(to right, #FF9254 , #FF5B2B);
-    border: none;
-    text-align: left;
-}
 .btn-group{
-
-}
-.btn-primary{
-    border-radius: 20px;
+    display: flex;
+    align-items: center;
 }
 .Choice_list{
     justify-content: space-between;

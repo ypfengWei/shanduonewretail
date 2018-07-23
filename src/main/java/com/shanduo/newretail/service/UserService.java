@@ -1,5 +1,6 @@
 package com.shanduo.newretail.service;
 
+import com.shanduo.newretail.entity.ToUser;
 import com.shanduo.newretail.entity.service.TokenInfo;
 
 /**
@@ -103,4 +104,6 @@ public interface UserService {
 	 * @return
 	 */
 	String selectAdministratorsId();
+
+	ToUser selectUser(String id);
 }

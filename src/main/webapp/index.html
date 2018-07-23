@@ -34,9 +34,9 @@
     </header>
     <div class="body">
         <div class="pos_top">
-            <div class="inp_div">
+<!--            <div class="inp_div">
                 <input type="text" placeholder="搜索">
-            </div>
+            </div>-->
             <div class="dis_flex sort">
                 <div v-for="(item,key) in category" :class="key==0?'active':''" @click="changer(item.seller_type)">
                     <span>{{item.category_name}}</span>
@@ -114,8 +114,10 @@
                         lat = res.latitude; // 纬度，浮点数，范围为90 ~ -90
                         lon = res.longitude; // 经度，浮点数，范围为180 ~ -180。
                         getClassify(lat, lon, function (res) {
+                            console.log(res)
                             vm.category = vm.category.concat(res.result);
                             getClassifyBySellerType(lat, lon, vm.category[0].seller_type, function (res) {
+                                console.log(res)
                                 vm.stores = vm.stores.concat(res.result);
                             });
                         });

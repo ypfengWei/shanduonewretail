@@ -2,6 +2,7 @@ package com.shanduo.newretail.controller;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.shanduo.newretail.entity.ToUser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -89,6 +90,13 @@ public class UserController {
 //			log.warn("openId is null waith openId:{}", openId);
 //			return ResultUtils.error(ErrorConsts.CODE_10002, "openId为空");
 //		}
+		if(!"4".equals(typeId)){
+			parentId = baseService.checkUserToken(parentId);
+			if (null==parentId){
+				log.warn("token");
+				return ResultUtils.error(ErrorConsts.CODE_10002, "token错误");
+			}
+		}
 		try {
 			userService.saveUser(openId, phone, password, parentId, typeId, name);
 		} catch (Exception e) {
@@ -129,6 +137,20 @@ public class UserController {
 		}
 		return ResultUtils.success(token);
 	}
+    @RequestMapping(value = "selectuser",method={RequestMethod.POST,RequestMethod.GET})
+    @ResponseBody
+    public JSONObject selectUser(HttpServletRequest request, String token) {
+        if (StringUtils.isNull(token)) {
+            log.warn("token为空");
+            return ResultUtils.error(ErrorConsts.CODE_10002, "token为空");
+        }
+        String id = baseService.checkUserToken(token);
+        if (null == id) {
+            log.warn("token失效");
+            return ResultUtils.error(ErrorConsts.CODE_10001, "token失效");
+        }
+        return ResultUtils.success(userService.selectUser(id));
+    }
 	
 	/**
 	 * 修改手机号

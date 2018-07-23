@@ -23,7 +23,7 @@
     <title>商品选择</title>
 </head>
 <body>
-<div id="vueData" class="mescroll">
+<div id="vueData">
     <div class="body">
         <article id="menu">
             <div class="swiper-container">
@@ -45,7 +45,7 @@
                         <!--类别1-->
                         <div class="swiper-slide tab-pane fade in active" id="One1">
                             <div class="content">
-                                <div class="right">
+                                <div id="mescroll" class="right mescroll">
                                     <ul>
                                         <!--类别商品-->
                                         <li v-for="(commodity,index) in commodityArray">
@@ -69,7 +69,7 @@
                                                         <div class="number dis_flex">
                                                             <span class="price"
                                                                   @click="onclick3(index)">￥{{commodity.price}}</span>
-                                                            <input type="checkbox" name="Drink" value="cola"
+                                                            <input type="checkbox" name="Drink" v-model="commodityIdList"
                                                                    checked="checked"/>
                                                         </div>
                                                     </div>
@@ -102,8 +102,8 @@
         </article>
     </div>
     <footer>
-        <div class="dis_flex">
-            <a href="javascript:">确认</a>
+        <div class="dis_flex" @click="addWarehouseCommodity">
+            <a href="javascript:">添加</a>
         </div>
     </footer>
 </div>
@@ -121,11 +121,12 @@
             currentCommodity: null,
             totalPrice: 0,
             totalCount: 0,
-            mescroll: null
+            mescroll: null,
+            commodityIdList:[]
         },
         mounted: function () {
             let that = this;
-            that.mescroll = new MeScroll("vueData", {
+            that.mescroll = new MeScroll("mescroll", {
                 up: {
                     callback: that.upCallback,
                     auto: false
@@ -161,6 +162,8 @@
                 } else {
                     that.mescroll.endErr();
                 }
+            },addWarehouseCommodity(){
+                console.log(vm.commodityIdList);
             },
             imgShow() {
                 $('#outerdiv').fadeIn("fast");
@@ -203,7 +206,8 @@
     $(function () {
         getCommodityAllType(localStore.token, function (res) {
             vm.classify = res.result;
-            adapter(vm.classify[0].id);
+            currentClassifyid = vm.classify[0].id;
+            adapter(currentClassifyid);
         });
     });
 

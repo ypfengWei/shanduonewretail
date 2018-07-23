@@ -114,13 +114,7 @@
         data: {
             cart: null,
             totalPrice: 0,
-            contactInfo: {
-            	cityName: '长沙',
-                countryName: '岳麓区',
-                recevername: '李新荣',
-                recevertel: '18680602795',
-                receveraddr: 'xx街道'
-            },
+            contactInfo: null,
             remarks: '',
             in_operation: true,
             currentTime: null
@@ -149,22 +143,22 @@
                 if (vm.contactInfo) {
                     let orderDetails = [];
                     let commodityOrder = {
-                    	sellerId:storeId,
-                    	openId: openid,
+                        sellerId: storeId,
+                        openId: openid,
                         remarks: vm.remarks,
-                        name:vm.contactInfo.recevername,
-                        phone:vm.contactInfo.recevertel,
-                        address:vm.contactInfo.cityName + vm.contactInfo.countryName + vm.contactInfo.receveraddr
+                        name: vm.contactInfo.recevername,
+                        phone: vm.contactInfo.recevertel,
+                        address: vm.contactInfo.cityName + vm.contactInfo.countryName + vm.contactInfo.receveraddr
                     };
                     $.each(vm.cart, function (i, commodity) {
                         if (commodity.count > 0) {
                             orderDetails.push({
-                            	commodityId: commodity.commodityId,
-                            	number: commodity.count
+                                commodityId: commodity.commodityId,
+                                number: commodity.count
                             });
                         }
                     });
-                    commodityOrder.list=orderDetails;
+                    commodityOrder.list = orderDetails;
                     $.ajax({
                         type: "POST",
                         url: "/shanduonewretail/jorder/payorder",

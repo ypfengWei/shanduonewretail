@@ -14,6 +14,8 @@
     <!--苹果手机：如果把一个web app添加到了主屏幕中，那么从主屏幕中打开这个web app则全屏显示-->
     <link rel="stylesheet" type="text/css" href="css/management.css">
     <title></title>
+    <script src="js/jquery-3.3.1.js"></script>
+
 </head>
 <body>
 <div id="vueData">
@@ -33,7 +35,7 @@
                     <span>张三</span>
                     <span>电话：158xxxx4293</span>
                 </div>
-                <div class="dis_flex">
+                <div class="dis_flex" @click="toRegisterView">
                     <span class="col_cheng">注册业务员</span>
                 </div>
             </div>
@@ -62,4 +64,15 @@
     </div>
 </div>
 </body>
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script>
+    let vm = new Vue({
+        el: '#vueData',
+        methods: {
+            toRegisterView(){
+                location.href='register.html?registerTypeId=4';
+            }
+        }
+    });
+</script>
 </html>

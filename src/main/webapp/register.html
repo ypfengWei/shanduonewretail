@@ -14,6 +14,9 @@
     <!--苹果手机：如果把一个web app添加到了主屏幕中，那么从主屏幕中打开这个web app则全屏显示-->
     <link rel="stylesheet" type="text/css" href="css/login.css">
     <title></title>
+    <script src="js/jquery-3.3.1.js"></script>
+    <script src="js/layer.js"></script>
+    <script src="js/utils.js"></script>
 </head>
 <body>
 <div id="vueData">
@@ -34,32 +37,124 @@
         <div>
             <div>
                 <img src="img/name.png">
-                <input name="name" placeholder="输入你的姓名"/>
+                <input name="name" placeholder="输入你的姓名" v-model="salesman.name"/>
             </div>
             <div class="phone_div">
                 <img src="img/phone.png">
-                <input name="phone" placeholder="输入手机号"/>
-                <button>获取验证码</button>
+                <input name="phone" placeholder="输入手机号" v-model="salesman.phone"/>
+                <button :disabled="disabled" @click="sendMSM">{{hint}}</button>
             </div>
             <div>
                 <img src="img/VerificationCode.png">
-                <input name="verificationCode" placeholder="输入验证码"/>
+                <input name="verificationCode" placeholder="输入验证码" v-model="salesman.code"/>
             </div>
             <div>
                 <img src="img/Password.png">
-                <input type="password" name="password" placeholder="输入密码"/>
+                <input type="password" name="password" placeholder="输入密码不少于8位" v-model="salesman.password"/>
             </div>
-            <div>立即注册</div>
+            <div @click="register">立即注册</div>
         </div>
     </div>
 </div>
 </body>
 <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 <script>
+    let registerTypeId=GetQueryString('registerTypeId');
+    let localStore = JSON.parse(localStorage.localStore);
+    let interval = null;
+    let aging = 120;
     let vm = new Vue({
         el: '#vueData',
-        data: {},
-        methods: {}
+        data: {
+            salesman: {
+                typeId: registerTypeId,// 注册类型:2.区域管理;3.店铺;4.业务员;
+                phone: '',
+                code: '',
+                password: '',
+                parentId: localStore.token,
+                name: ''
+            },
+            hint: '获取验证码',
+            disabled: false
+        },
+        methods: {
+            sendMSM() {
+                if (checkPhone(vm.salesman.phone)) {
+                    $.ajax({
+                        url: '/shanduonewretail/code/envoyer',
+                        data: {phone: vm.salesman.phone, typeId: 1},
+                        dataType: 'json',
+                        type: 'POST',
+                        header: {
+                            'content-type': 'application/x-www-form-urlencoded'
+                        },
+                        success: function (res) {
+                            if (res.success) {
+                                vm.disabled = true;
+                                countDown();
+                                toast(res.result);
+                            }
+                        }
+                    })
+                } else {
+                    toast('请输入手机号')
+                }
+            }, register() {
+                if (!checkRegisterInput()) {
+                    return;
+                }
+                $.ajax({
+                    url: '/shanduonewretail/juser/registeruser',
+                    data: vm.salesman,
+                    dataType: 'json',
+                    type: 'POST',
+                    header: {
+                        'content-type': 'application/x-www-form-urlencoded'
+                    },
+                    success: function (res) {
+                        console.log(res);
+                        if (res.success) {
+                            toast('注册成功');
+                            setTimeout(function () {
+                                location.href = 'management.html';
+                            }, 1000);
+                        } else {
+                            toast(res.errCodeDes);
+                        }
+                    }
+                })
+            }
+        }
     });
+
+    function checkRegisterInput() {
+        //!phone || !auth_code || !pwd
+        if (!checkPhone(vm.salesman.phone)) {
+            toast('手机号格式不对');
+            return false;
+        }
+        if (!checkInput(vm.salesman.code)) {
+            toast('验证码没填');
+            return false;
+        }
+        if (!checkInput(vm.salesman.password) || vm.salesman.password.length < 8) {
+            toast('密码没填或长度不够');
+            return false;
+        }
+        return true;
+    }
+
+    function countDown() {
+        interval = setInterval(function () {
+            aging--;
+            vm.hint = aging + '秒';
+            if (aging <= 0) {
+                clearInterval(interval);
+                vm.hint = '获取验证码';
+                aging = 120;
+                vm.disabled = false;
+            }
+        }, 1000)
+    }
 </script>
 </html>

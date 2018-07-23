@@ -77,7 +77,7 @@
                 <img src="img/return_5.png">
             </div>
         </div>
-        <div class="category dis_flex ">
+        <div class="category dis_flex " @click="salesmanView">
             <div class="dis_flex">
                 <img src="img/business.png">
                 <span>业务员管理</span>
@@ -86,7 +86,7 @@
                 <img src="img/return_5.png">
             </div>
         </div>
-        <div class="category dis_flex ">
+        <div class="category dis_flex " @click="areaManagerView">
             <div class="dis_flex">
                 <img src="img/region.png">
                 <span>区域管理</span>
@@ -95,10 +95,19 @@
                 <img src="img/return_5.png">
             </div>
         </div>
+        <div class="category dis_flex " @click="superAreaManagerView">
+            <div class="dis_flex">
+                <img src="img/region.png">
+                <span>总区域管理</span>
+            </div>
+            <div class="dis_flex">
+                <img src="img/return_5.png">
+            </div>
+        </div>
     </div>
     <footer>
         <div>
-            <a href="javascript:">退出登录</a>
+            <a href="javascript:" @click="logout">退出登录</a>
         </div>
     </footer>
 </div>
@@ -118,7 +127,21 @@
                 location.href = "orderList.html";
             }, putForwardManagerView() {
                 location.href = "putForward.html";
+            }, logout() {
+                localStorage.removeItem("localStore");
+                location.href = 'login.html';
+            }, salesmanView() {
+                location.href = 'Salesman.html';
+            },areaManagerView(){
+                location.href = 'management.html';
+            },superAreaManagerView(){
+                location.href = 'regionManagement.html';
             }
+        }
+    });
+    $(function () {
+        if (!localStorage.localStore) {
+            location.href = 'login.html'
         }
     });
 </script>
