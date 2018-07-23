@@ -178,6 +178,7 @@ public class WechatController {
         try {
             AccessToken token = accessTokenService.selectAccessToken(WxPayConsts.APPID);
             if (token != null) {
+            	delMenu(token.getAccessToken());
                 JSONObject jsonObject = JSON.parseObject(getMenu(token.getAccessToken()));
                 if (jsonObject.containsKey("errcode")) {
                     jsonObject.clear();
@@ -227,6 +228,34 @@ public class WechatController {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+        }
+        return null;
+    }
+    /**
+     * 删除自定义菜单
+     */
+    public static String delMenu(String token) {
+        HttpGet method = new HttpGet("https://api.weixin.qq.com/cgi-bin/menu/delete?access_token=" + token);
+        CloseableHttpResponse response = null;
+        CloseableHttpClient httpClient = HttpClients.createDefault();
+        try {
+            response = httpClient.execute(method);
+            if (response.getStatusLine().getStatusCode() == org.apache.http.HttpStatus.SC_OK) {
+                return EntityUtils.toString(response.getEntity());
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+        	 try {
+                 if (response != null) {
+                     response.close();
+                 }
+                 if (httpClient != null) {
+                     httpClient.close();
+                 }
+             } catch (IOException e) {
+                 e.printStackTrace();
+             }
         }
         return null;
     }
