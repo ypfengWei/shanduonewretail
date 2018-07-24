@@ -39,8 +39,8 @@ public class PresentServiceImpl implements PresentService {
 		presentRecord.setUserId(userId);
 		presentRecord.setAmountCash(new BigDecimal(money));
 		presentRecord.setTypeid(typeId);
+		presentRecord.setUserName(name);
 		if(typeId.equals(DefaultConsts.NUMBER_2)) {
-			presentRecord.setUserName(name);
 			presentRecord.setOpeningBank(openingBank);
 			presentRecord.setBankName(bankName);
 			presentRecord.setCardNumber(cardNumber);
