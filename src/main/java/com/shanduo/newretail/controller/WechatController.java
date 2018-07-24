@@ -2,7 +2,6 @@ package com.shanduo.newretail.controller;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
@@ -42,7 +41,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.shanduo.newretail.consts.ErrorConsts;
 import com.shanduo.newretail.consts.WxPayConsts;
 import com.shanduo.newretail.entity.AccessToken;
 import com.shanduo.newretail.entity.JsApiTicket;
@@ -336,7 +334,6 @@ public class WechatController {
     public static BufferedReader sendPost(String param, String url) {
         PrintWriter out = null;
         BufferedReader in = null;
-        String result = "";
         try {
             URL realUrl = new URL(url);
             // 打开和URL之间的连接

@@ -387,7 +387,7 @@ public class CommodityController {
 			if(!picture.contains(".jpg")){
 				picture = WxFileUtils.downloadImage(accessTokenService.selectAccessToken(WxPayConsts.APPID).getAccessToken(),picture);
 			}
-			int count = commodityService.updateCommodity(name, picture, price, stock, categoryId,userId,commodityId);
+			commodityService.updateCommodity(name, picture, price, stock, categoryId,userId,commodityId);
 		} catch (Exception e) {
 			return new ErrorBean(ErrorConsts.CODE_10004,"修改失败");
 		}

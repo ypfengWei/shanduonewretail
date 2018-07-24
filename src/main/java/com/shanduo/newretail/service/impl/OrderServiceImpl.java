@@ -150,11 +150,11 @@ public class OrderServiceImpl implements OrderService {
 		    String regTempId = getWXTemplateMsgId(accessToken, WeiXinEnum.WX_TEMPLATE_MSG_NUMBER.ORDER_PAYED.getMsgNumber());
 		    //向买家推送支付成功通知
 		    if(state == 1) {
-		    	Map<String,TemplateData> param = new HashMap<>();
+		    	Map<String,TemplateData> param = new HashMap<>(4);
 	            param.put("first",new TemplateData("你已支付成功","#4395ff"));
 	            param.put("keyword1",new TemplateData(order.getTotalPrice().toString(),"#4395ff"));
 	            param.put("keyword2",new TemplateData(order.getId(),"#4395ff"));
-	            param.put("remark",new TemplateData("你好,顾客已支付成功","#4395ff"));
+	            param.put("remark",new TemplateData("商家会尽快派单","#4395ff"));
 	            WX_TemplateMsgUtil.sendWechatMsgToUser(accessToken, openId,regTempId, "", "#000000", packJsonmsg(param));
 		    }
 		    ToUser user = userService.selectUser(order.getSellerId());
@@ -163,8 +163,8 @@ public class OrderServiceImpl implements OrderService {
 		    	state = WX_UserUtil.subscribeState(accessToken, openId);
 		    	//向卖家推送下单通知
 		    	if(state == 1) {
-		    		Map<String,TemplateData> params = new HashMap<>();
-		    		params.put("first",new TemplateData("你有新的订单","#4395ff"));
+		    		Map<String,TemplateData> params = new HashMap<>(4);
+		    		params.put("first",new TemplateData("你有新的待处理订单订单","#4395ff"));
 		    		params.put("keyword1",new TemplateData(order.getTotalPrice().toString(),"#4395ff"));
 		    		params.put("keyword2",new TemplateData(order.getId(),"#4395ff"));
 		    		params.put("remark",new TemplateData("请尽快处理","#4395ff"));
@@ -188,10 +188,10 @@ public class OrderServiceImpl implements OrderService {
 		    if(state == 1) {
 		    	//获取模板Id
 			    String regTempId = getWXTemplateMsgId(accessToken, WeiXinEnum.WX_TEMPLATE_MSG_NUMBER.ORDER_SUCCESS.getMsgNumber());
-			    Map<String,TemplateData> param = new HashMap<>();
+			    Map<String,TemplateData> param = new HashMap<>(4);
 	            param.put("first",new TemplateData("尊敬的【"+order.getUserName()+"】","#4395ff"));
 	            param.put("keyword1",new TemplateData(order.getId(),"#4395ff"));
-	            Format format = new SimpleDateFormat("MM月DD日 HH:mm:ss");
+	            Format format = new SimpleDateFormat("MM月dd日 HH:mm:ss");
 	    		String date = format.format(new Date());
 	            param.put("keyword2",new TemplateData(date,"#4395ff"));
 	            param.put("remark",new TemplateData("商家已接单","#4395ff"));
@@ -227,11 +227,11 @@ public class OrderServiceImpl implements OrderService {
 	    if(state == 1) {
 	    	//获取模板Id
 		    String regTempId = getWXTemplateMsgId(accessToken, WeiXinEnum.WX_TEMPLATE_MSG_NUMBER.ORDER_ERROR_SUCCESS.getMsgNumber());
-		    Map<String,TemplateData> param = new HashMap<>();
-            param.put("first",new TemplateData("退款通知","#4395ff"));
+		    Map<String,TemplateData> param = new HashMap<>(7);
+            param.put("first",new TemplateData("你的订单已退款","#4395ff"));
             param.put("keyword1",new TemplateData(order.getTotalPrice().toString(),"#4395ff"));
             param.put("keyword2",new TemplateData("店家退款","#4395ff"));
-            Format format = new SimpleDateFormat("MM月DD日 HH:mm:ss");
+            Format format = new SimpleDateFormat("MM月dd日 HH:mm:ss");
     		String date = format.format(new Date());
             param.put("keyword3",new TemplateData(date,"#4395ff"));
             param.put("keyword4",new TemplateData("微信钱包","#4395ff"));
@@ -239,7 +239,6 @@ public class OrderServiceImpl implements OrderService {
             param.put("remark",new TemplateData("对你造成的不便敬请谅解","#4395ff"));
             WX_TemplateMsgUtil.sendWechatMsgToUser(accessToken, openId,regTempId, "", "#000000", packJsonmsg(param));
 	    }
-		
 		return 1;
 	}
 

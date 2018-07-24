@@ -1,6 +1,5 @@
 package com.shanduo.newretail.wx;
 
-import static com.shanduo.newretail.wx.WX_TemplateMsgUtil.getWXTemplateMsgId;
 import static com.shanduo.newretail.wx.WX_TemplateMsgUtil.packJsonmsg;
 
 import java.util.HashMap;
