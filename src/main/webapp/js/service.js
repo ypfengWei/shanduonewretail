@@ -9,7 +9,6 @@ function getClassify(lat, lon, back) {
 
 function getCommodityAllType(token, back) {
     $.getJSON("/shanduonewretail/jcommodity/selectcommodityalltype", {token: token}, function (result) {
-        console.log(result)
         if (result.success) {
             back && back(result);
         }

@@ -70,7 +70,8 @@
         </div>
     </div>
     <footer>
-        <div class="list_li dis_flex" v-for="commodity in commodities">
+        <div v-if="commodities.length==0"><span>没有记录</span></div>
+        <div v-else class="list_li dis_flex" v-for="commodity in commodities">
             <div class="dis_flex">
                 <img :src="imagePath+commodity.picture">
                 <div class="dis_flex">

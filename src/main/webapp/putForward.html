@@ -73,7 +73,6 @@
             page: pageIndex,
             pageSize: pageSize
         }, function (res) {
-            console.log(res);
             if (res.success && res.data.length > 0) {
                 vm.record = vm.record.concat(res.data);
                 totalPage = res.totalPage;

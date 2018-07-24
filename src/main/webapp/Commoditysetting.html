@@ -266,7 +266,6 @@
 
     function adapter(categoryId, cbOK, cbErr) {
         getGoods(localStore.token, categoryId, 2, pageIndex, pageCount, function (res) {
-            console.log(res);
             let newData = res.commodityInfoList;
             for (let i in newData) {
                 newData[i].picture = {

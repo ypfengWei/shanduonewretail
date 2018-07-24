@@ -107,7 +107,10 @@ div.title_header>div:last-child>img{
     left: 0;
     width: 100%;
     border-bottom: 1px solid #F4F4F4;
-    padding: 10px;
+    padding: 10px 0;
+}
+.body>div>div{
+    padding: 0 10px;
 }
 .list_li{
     padding: 10px;

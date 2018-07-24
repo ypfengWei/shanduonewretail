@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport"
-          content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
+          content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"/>
     <meta content="telephone=no,email=no" name="format-detection">
     <!--禁止自动识别电话号码和邮箱-->
     <meta content="yes" name="apple-mobile-web-app-capable">
     <!--苹果手机：会删除默认的工具栏和菜单栏，网站开启对web app程序的支持-->
-    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black"/>
     <!--苹果手机：在web app应用下状态条（屏幕顶部条）的颜色,默认值为default（白色），可以定为black（黑色）和black-translucent（灰色半透明）。-->
-    <meta name="apple-touch-fullscreen" content="yes" />
+    <meta name="apple-touch-fullscreen" content="yes"/>
     <!--苹果手机：如果把一个web app添加到了主屏幕中，那么从主屏幕中打开这个web app则全屏显示-->
     <link rel="stylesheet" href="css/bootstrap.css">
     <link rel="stylesheet" href="css/shop.css">
@@ -19,7 +19,6 @@
     <script src="js/layer.js"></script>
     <script src="js/utils.js"></script>
     <script src="js/service.js"></script>
-    <script src="js/store_service.js"></script>
     <title>店铺</title>
 </head>
 <body>
@@ -86,17 +85,19 @@
                                                         <div class="title" @click="onclick2(index)">{{commodity.name}}
                                                         </div>
                                                         <div class="subtitle" @click="onclick2(index)">
-                                                            {{commodity.introduceDetails}}</div>
+                                                            库存:{{commodity.stock}}
+                                                        </div>
                                                         <div class="number dis_flex">
                                                             <span class="price" @click="onclick3(index)">￥{{commodity.price}}</span>
                                                             <p class="plan dis_flex">
                                                                 <a href="javascript:"
-                                                                   @click.prevent="addoff(commodity.id)" class="add_left"
+                                                                   @click.prevent="addoff(commodity.id)"
+                                                                   class="add_left"
                                                                    v-if="commodity.count>0"></a> <span
-                                                                    v-if="commodity.count>0">{{commodity.count}}</span> <a
-                                                                    href="javascript:"
-                                                                    @click.prevent="addon(commodity.id,commodity.name,commodity.price,commodity.introduceDetails,commodity.picture.imgPath)"
-                                                                    class="add_right"></a>
+                                                                    v-if="commodity.count>0">{{commodity.count}}</span>
+                                                                <a href="javascript:"
+                                                                   @click.prevent="addon(commodity.id,commodity.name,commodity.price,commodity.introduceDetails,commodity.picture.imgPath)"
+                                                                   class="add_right"></a>
                                                             </p>
                                                         </div>
                                                     </div>
@@ -114,7 +115,7 @@
             <!--商品详情-->
             <div id="outerdiv" class="dis_flex" v-if="currentCommodity">
                 <div class="dis_flex">
-                    <img id="bigimg" :src="currentCommodity.picture.imgPath" />
+                    <img id="bigimg" :src="currentCommodity.picture.imgPath"/>
                     <div class="title">{{currentCommodity.name}}</div>
                     <div class="subtitle">{{currentCommodity.introduceDetails}}</div>
                     <div class="number dis_flex">
@@ -184,10 +185,16 @@
             cart: [],
             totalPrice: 0,
             totalCount: 0,
-            mescroll: null
+            mescroll: null,
+            localCart: null
         },
         mounted: function () {
             let that = this;
+            if (localStorage.localCart) {
+                that.localCart = JSON.parse(localStorage.localCart);
+            } else {
+                that.localCart = [];
+            }
             that.mescroll = new MeScroll("vueData", { //请至少在vue的mounted生命周期初始化mescroll,以确保您配置的id能够被找到
                 up: {
                     callback: that.upCallback, //
@@ -226,7 +233,7 @@
                     that.mescroll.endErr();
                 }
             },
-            goBack(){
+            goBack() {
                 history.back();
             },
             imgShow() {
@@ -241,33 +248,7 @@
                 }
             },
             addoff(commodityId) {
-                cartAction('del', {commodityId: commodityId}, function () {
-                    queryCartAll(function (res) {
-                        vm.cart = res;
-                    });
-                }, function () {
-                    queryCartAll(function (res) {
-                        vm.cart = res;
-                    });
-
-                });
-            },
-            emptyCart() {
-                emptyDB();
-                let ary = vm.cart;
-                ary.splice(0, ary.length);
-                vm.cart = ary;
-            },
-            cartUpdate(action, commodityId) {
-                cartAction(action, {commodityId: commodityId}, function () {
-                    queryCartAll(function (res) {
-                        vm.cart = res;
-                    });
-                }, function () {
-                    queryCartAll(function (res) {
-                        vm.cart = res;
-                    });
-                });
+                cartAction('del', {commodityId: commodityId});
             },
             addon(commodityId, commodityName, commodityPrice, commodityDesc, commodityPicture) {
                 cartAction('add', {
@@ -277,16 +258,16 @@
                     commodityDesc: commodityDesc,
                     commodityPicture: commodityPicture,
                     count: 1
-                }, function () {
-                    queryCartAll(function (res) {
-                        vm.cart = res;
-                    });
-                }, function () {
-                    queryCartAll(function (res) {
-                        vm.cart = res;
-                    });
                 });
-
+            },
+            emptyCart() {
+                emptyCart();
+                let ary = vm.cart;
+                ary.splice(0, ary.length);
+                vm.cart = ary;
+            },
+            cartUpdate(action, commodityId) {
+                cartAction(action, {commodityId: commodityId});
             },
             changer(classifyId) {
                 let that = this;
@@ -307,6 +288,7 @@
                     } else {
                         that.mescroll.endSuccess(pageCount, false);
                     }
+                    notifyDataSetChanged();
                 }, function () {
                     that.mescroll.endErr();
                 });
@@ -325,7 +307,7 @@
             },
             submitOrderView() {
                 if (vm.totalCount > 0) {
-                    location.href = 'payment.html?storeId='+storeId;
+                    location.href = 'payment.html?storeId=' + storeId;
                 } else {
                     toast('客官选一件吧!');
                 }
@@ -345,7 +327,22 @@
         if ($(".gwcTog").css("display") === 'block' && vm.totalCount === 0) {
             $('.gwcTog').toggle();
         }
+
+        let onat = false;
+        $.each(vm.localCart, function (i, item) {
+            if (storeId === item.storeId) {
+                onat = true;
+                vm.localCart[i].cartItem = vm.cart;
+                return false;
+            }
+        });
+        if (!onat) {
+            vm.localCart.push({storeId: storeId, cartItem: vm.cart});
+        }
+        localStorage.localCart = JSON.stringify(vm.localCart);
         notifyDataSetChanged();
+    }, {
+        deep: true
     });
 
     function notifyDataSetChanged() {
@@ -369,31 +366,27 @@
     }
 
     $(function () {
-        init();
-        getStoreClassify(storeId,1,function (result) {
+        getStoreClassify(storeId, 1, function (result) {
             vm.classify = result;
             currentClassifyid = vm.classify[0].id;
-            adapter(currentClassifyid);
+            adapter(currentClassifyid, function () {
+                queryCartAll(storeId);
+            });
         });
     });
 
     function adapter(categoryId, cbOK, cbErr) {
-        getGoods(storeId,categoryId,1, pageIndex, pageCount, function (res) {
+        getGoods(storeId, categoryId, 1, pageIndex, pageCount, function (res) {
             let newData = res.commodityInfoList;
             for (let i in newData) {
                 newData[i].picture = {
                     myStyle: {backgroundImage: "url('/yapingzh/picture/" + newData[i].picture + "')"},
                     imgPath: '/yapingzh/picture/' + newData[i].picture
                 };
-                newData[i].count=0;
+                newData[i].count = 0;
             }
             vm.commodityArray = vm.commodityArray.concat(newData);
             totalPage = res.totalPage;
-            queryCartAll(function (res) {
-                if (res.length > 0) {
-                    vm.cart = res;
-                }
-            });
             cbOK && cbOK();
         }, function () {
             cbErr && cbErr();
@@ -406,6 +399,65 @@
         vm.commodityArray = ary;
         totalPage = 0;
         pageIndex = 1;
+    }
+
+    // 获取本地购物车所有商品数据
+    function queryCartAll() {
+        if (vm.localCart.length > 0) {
+            $.each(vm.localCart, function (i, item) {
+                if (storeId === item.storeId) {
+                    vm.cart = item.cartItem;
+                    return false;
+                }
+            });
+        }
+    }
+
+    function delCommodity(commodityId) {
+        $.each(vm.cart, function (i, item) {
+            if (commodityId === item.commodityId) {
+                let ary = vm.cart;
+                ary.splice(i, 1);
+                vm.cart = ary;
+                return false;
+            }
+        });
+    }
+
+    // 清空店铺购物车
+    function emptyCart() {
+        let ary = vm.cart;
+        ary.splice(0, ary.length);
+        vm.cart = ary;
+    }
+
+    function cartAction(actionMode, obj) {
+        let commodity = null;
+        let index = null;
+        $.each(vm.cart, function (i, item) {
+            if (obj.commodityId === item.commodityId) {
+                index = i;
+                commodity = item;
+                return false;
+            }
+        });
+        if ('del' === actionMode) {
+            if (commodity) {
+                let count = commodity.count;
+                if (count > 0) {
+                    count--;
+                    commodity.count = count;
+                    vm.cart[index] = commodity;
+                }
+            }
+        } else if ('add' === actionMode) {
+            if (!commodity) {
+                vm.cart.push(obj);
+            } else {
+                commodity.count += 1;
+                vm.cart[index] = commodity;
+            }
+        }
     }
 </script>
 </html>
