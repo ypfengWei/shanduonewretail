@@ -62,6 +62,26 @@ public class WxPayConsts {
     public static final String CANCEL_URL= ConfigConsts.API_URL+"/jpay/cancel";
     
     /**
+     * 企业付款到零钱接口
+     */
+    public static final String TRANSFERS_URL = "https://api.mch.weixin.qq.com/mmpaymkttransfers/promotion/transfers";
+    
+    /**
+     * 企业付款到零钱查询接口
+     */
+    public static final String GETTRANSFERINFO_URL = "https://api.mch.weixin.qq.com/mmpaymkttransfers/gettransferinfo";
+    
+    /**
+     * 企业付款到银行卡接口
+     */
+    public static final String PAY_BANK_URL = "https://api.mch.weixin.qq.com/mmpaysptrans/pay_bank";
+    
+    /**
+     * 企业付款到银行卡接口
+     */
+    public static final String QUERY_BANK_URL = "https://api.mch.weixin.qq.com/mmpaysptrans/query_bank";
+    
+    /**
      * 调用微信接口的返回值的false
      */
     public static final String FAIL = "FAIL";

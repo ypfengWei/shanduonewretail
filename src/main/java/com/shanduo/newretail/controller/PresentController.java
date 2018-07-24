@@ -17,12 +17,19 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.alibaba.fastjson.JSONObject;
 import com.shanduo.newretail.consts.DefaultConsts;
 import com.shanduo.newretail.consts.ErrorConsts;
+import com.shanduo.newretail.consts.WxPayConsts;
 import com.shanduo.newretail.entity.PresentRecord;
+import com.shanduo.newretail.entity.ToUser;
 import com.shanduo.newretail.service.BaseService;
 import com.shanduo.newretail.service.PresentService;
 import com.shanduo.newretail.service.SellerService;
+import com.shanduo.newretail.service.UserService;
+import com.shanduo.newretail.util.ClientCustomSSL;
+import com.shanduo.newretail.util.IpUtils;
 import com.shanduo.newretail.util.ResultUtils;
 import com.shanduo.newretail.util.StringUtils;
+import com.shanduo.newretail.util.UUIDGenerator;
+import com.shanduo.newretail.util.WxPayUtils;
 
 /**
  * 提现接口层
@@ -44,6 +51,8 @@ public class PresentController {
 	private SellerService sellerService;
 	@Autowired
 	private PresentService presentService;
+	@Autowired
+	private UserService userService;
 	
 	/**
 	 * 申请提现
@@ -101,7 +110,6 @@ public class PresentController {
 		try {
 			presentService.savePresent(userId, money, typeId, name, openingBank, bankName, cardNumber);
 		} catch (Exception e) {
-			e.printStackTrace();
 			return ResultUtils.error(ErrorConsts.CODE_10004, "申请失败");
 		}
 		return ResultUtils.success("申请成功");
@@ -268,4 +276,138 @@ public class PresentController {
 		return ResultUtils.success(resultMap);
 	}
 	
+	/**
+	 * 微信提现
+	 * @Title: wxPay
+	 * @Description: TODO
+	 * @param @param request
+	 * @param @param token
+	 * @param @param money
+	 * @param @param name
+	 * @param @param typeId
+	 * @param @return
+	 * @param @throws Exception
+	 * @return JSONObject
+	 * @throws
+	 */
+	@RequestMapping(value = "wxpay",method={RequestMethod.POST,RequestMethod.GET})
+	@ResponseBody
+	public JSONObject wxPay(HttpServletRequest request,String token,String money,String name,String typeId) throws Exception {
+		String userId = baseService.checkUserToken(token);
+		if(userId == null) {
+			return ResultUtils.error(ErrorConsts.CODE_10001, "请重新登录");
+		}
+		if(baseService.checkUserRole(userId, DefaultConsts.ROLE_MERCHANT)) {
+			return ResultUtils.error(ErrorConsts.CODE_10003, ErrorConsts.USER_LIMITED_AUTHORITY);
+		}
+		if(StringUtils.isNull(typeId) || !typeId.matches("^[12]$")) {
+			return ResultUtils.error(ErrorConsts.CODE_10002, "提现类型错误");
+		}
+		if(StringUtils.isNull(money) || !money.matches("^\\d*(\\.\\d{0,2})$")) {
+			log.warn("提现金额错误");
+			return ResultUtils.error(ErrorConsts.CODE_10002, "提现金额错误");
+		}
+		if(StringUtils.isNull(name)) {
+			return ResultUtils.error(ErrorConsts.CODE_10002, "姓名为空");
+		}
+		if("1".equals(typeId)) {
+			if(sellerService.selectMoney(new BigDecimal(money), userId) == 0) {
+				return ResultUtils.error(ErrorConsts.CODE_10003, "余额不足");
+			}
+			String presentId = "";
+			try {
+				presentId = presentService.savePresent(userId, money, typeId, name, null, null, null);
+			} catch (Exception e) {
+				return ResultUtils.error(ErrorConsts.CODE_10004, "申请失败");
+			}
+			return transfers(request, userId, name, money, presentId);
+		}else {
+			return ResultUtils.error(ErrorConsts.CODE_10004, "银行卡提现维护中");
+		}
+//		return ResultUtils.error(ErrorConsts.CODE_10004, "操作错误");
+	}
+	
+	
+	private JSONObject transfers(HttpServletRequest request, String userId, String name, String money, String presentId) throws Exception {
+		//价格，单位为分
+		BigDecimal amount = new BigDecimal(money);
+		amount = amount.multiply(new BigDecimal("100"));
+		//订单总金额
+		Integer moneys = amount.intValue();
+		ToUser user = userService.selectUser(userId);
+		Map<String, String> paramsMap = new HashMap<>(11);
+		paramsMap.put("mch_appid", WxPayConsts.MCH_ID);
+		paramsMap.put("appid", WxPayConsts.APPID);
+		paramsMap.put("nonce_str", UUIDGenerator.getUUID());
+		paramsMap.put("partner_trade_no", presentId);
+		paramsMap.put("openid", user.getOpenId());
+		paramsMap.put("check_name", "FORCE_CHECK");
+		paramsMap.put("re_user_name", name);
+		paramsMap.put("amount", moneys.toString());
+		paramsMap.put("desc", "用户提现");
+		paramsMap.put("spbill_create_ip", IpUtils.getIpAddress(request));
+		//把数组所有元素，按照“参数=参数值”的模式用“&”字符拼接成字符串
+		String paramsString = WxPayUtils.createLinkString(paramsMap);
+		//MD5运算生成签名
+		String sign = WxPayUtils.sign(paramsString, WxPayConsts.KEY, "utf-8").toUpperCase();
+		//签名
+		paramsMap.put("sign", sign);
+		String paramsXml = WxPayUtils.map2Xmlstring(paramsMap);
+		String result = ClientCustomSSL.doRefund(WxPayConsts.TRANSFERS_URL, paramsXml);
+		Map<String, Object> resultMap = WxPayUtils.Str2Map(result);
+		String returnCode = resultMap.get("return_code").toString();
+		if(!returnCode.equals("SUCCESS")) {
+			log.error(resultMap.get("return_msg").toString());
+			return ResultUtils.error(ErrorConsts.CODE_10004,"提现出错");
+		}
+		String resultCode = resultMap.get("result_code").toString();
+		if(resultCode.equals("SUCCESS")) {
+			int i = presentService.updateSucceed(presentId);
+			if(i < 1) {
+				return ResultUtils.error(ErrorConsts.CODE_10004, "提现失败");
+			}
+			return ResultUtils.success("提现成功");
+		}else {
+			paramsMap = new HashMap<>(5);
+			paramsMap.put("mch_id", WxPayConsts.MCH_ID);
+			paramsMap.put("appid", WxPayConsts.APPID);
+			paramsMap.put("nonce_str", UUIDGenerator.getUUID());
+			paramsMap.put("partner_trade_no", presentId);
+			//把数组所有元素，按照“参数=参数值”的模式用“&”字符拼接成字符串
+			paramsString = WxPayUtils.createLinkString(paramsMap);
+			//MD5运算生成签名
+			sign = WxPayUtils.sign(paramsString, WxPayConsts.KEY, "utf-8").toUpperCase();
+			//签名
+			paramsMap.put("sign", sign);
+			paramsXml = WxPayUtils.map2Xmlstring(paramsMap);
+			result = ClientCustomSSL.doRefund(WxPayConsts.GETTRANSFERINFO_URL, paramsXml);
+			resultMap = WxPayUtils.Str2Map(result);
+			returnCode = resultMap.get("return_code").toString();
+			if(!returnCode.equals("SUCCESS")) {
+				log.error(resultMap.get("return_msg").toString());
+				return ResultUtils.error(ErrorConsts.CODE_10004,"提现出错");
+			}
+			resultCode = resultMap.get("result_code").toString();
+			if(!resultCode.equals("SUCCESS")) {
+				log.error(resultMap.get("err_code_des").toString());
+				return ResultUtils.error(ErrorConsts.CODE_10004,"提现出错");
+			}
+			String status = resultMap.get("status").toString();
+			if(status.equals("SUCCESS")) {
+				int i = presentService.updateSucceed(presentId);
+				if(i < 1) {
+					return ResultUtils.error(ErrorConsts.CODE_10004, "提现失败");
+				}
+				return ResultUtils.success("提现成功");
+			}else if(status.equals("FAILED")) {
+				try {
+					presentService.updateReject(presentId);
+				} catch (Exception e) {
+					return ResultUtils.error(ErrorConsts.CODE_10004, "拒绝失败");
+				}
+				return ResultUtils.error(ErrorConsts.CODE_10003,"提现失败");
+			}
+			return ResultUtils.error(ErrorConsts.CODE_10003,"提现处理中");
+		}
+	}
 }
