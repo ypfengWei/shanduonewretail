@@ -47,7 +47,20 @@ function getOpenid(code) {
         }
     });
 }
+function getMyDate(str) {
+    let oDate = new Date(str),
+        oHour = oDate.getHours(),
+        oMin = oDate.getMinutes();
+    return getzf(oHour) + ':' + getzf(oMin);
+}
 
+//补0操作
+function getzf(num) {
+    if (parseInt(num) < 10) {
+        num = '0' + num;
+    }
+    return num;
+}
 function init_wx_js_sdk(pageUrl, cbOK) {
     $.getJSON("/shanduonewretail/jwechat/selectinitjssdk", {
         "pageUrl": pageUrl

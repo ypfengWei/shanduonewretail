@@ -210,22 +210,6 @@
         vm.storeInfo.lon = latng.split(',')[1];
         vm.storeInfo.lat = latng.split(',')[0];
     }
-
-    function getMyDate(str) {
-        let oDate = new Date(str),
-            oHour = oDate.getHours(),
-            oMin = oDate.getMinutes();
-        return getzf(oHour) + ':' + getzf(oMin);
-    }
-
-    //补0操作
-    function getzf(num) {
-        if (parseInt(num) < 10) {
-            num = '0' + num;
-        }
-        return num;
-    }
-
     function initData() {
         if (localStorage.storeImg) {
             vm.storeImg = localStorage.storeImg;

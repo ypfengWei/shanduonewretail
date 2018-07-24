@@ -39,6 +39,12 @@ function getStoreClassify(storeId, typeId, back) {
     });
 }
 
+function loadStoreDetail(parameter, cbOk) {
+    $.get('/shanduonewretail/jseller/selectsellerdetails', parameter, function (res) {
+        cbOk && cbOk(res);
+    });
+}
+
 // 根据类别id查询该商店某类别下的商品
 function getGoods(storeId, categoryId, typeId, pageIndex, pageCount, cbOk, cbErr) {
     $.ajax({
