@@ -3,7 +3,6 @@ package com.shanduo.newretail.service;
 import java.util.List;
 import java.util.Map;
 
-import com.shanduo.newretail.entity.Commodity;
 import com.shanduo.newretail.entity.service.CommodityInfo;
 
 

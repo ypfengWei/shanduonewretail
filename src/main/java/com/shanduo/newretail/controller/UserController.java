@@ -95,7 +95,7 @@ public class UserController {
 //			return ResultUtils.error(ErrorConsts.CODE_10002, "openId为空");
 //		}
 		parentId = baseService.checkUserToken(parentId);
-		if (null==parentId){
+		if (null == parentId){
 			log.warn("token");
 			return ResultUtils.error(ErrorConsts.CODE_10002, "token错误");
 		}

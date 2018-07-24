@@ -23,7 +23,7 @@ import com.shanduo.newretail.mapper.UserSellerMapper;
 import com.shanduo.newretail.service.SellerService;
 import com.shanduo.newretail.util.DateUtils;
 import com.shanduo.newretail.util.LocationUtils;
-import com.shanduo.newretail.util.WxFileUtils;
+
 @Service
 public class SellerServiceImpl implements SellerService {
 	private static final Logger Log = LoggerFactory.getLogger(SellerServiceImpl.class);
@@ -31,7 +31,6 @@ public class SellerServiceImpl implements SellerService {
 	private UserSellerMapper userSellerMapper;
 	@Autowired
 	private CategoryMapper categoryMapper;
-	
 	
 	/*
 	 * 查询单个店铺种类下的附近所有店铺
