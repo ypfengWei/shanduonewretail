@@ -367,7 +367,9 @@ public class PresentController {
 				return ResultUtils.error(ErrorConsts.CODE_10004, "提现失败");
 			}
 			return ResultUtils.success("提现成功");
-		}else {
+		}
+		String errCode = resultMap.get("err_code").toString();
+		if(errCode.equals("SYSTEMERROR")) {
 			paramsMap = new HashMap<>(5);
 			paramsMap.put("mch_id", WxPayConsts.MCH_ID);
 			paramsMap.put("appid", WxPayConsts.APPID);
@@ -408,6 +410,9 @@ public class PresentController {
 				return ResultUtils.error(ErrorConsts.CODE_10003,"提现失败");
 			}
 			return ResultUtils.error(ErrorConsts.CODE_10003,"提现处理中");
+		}else {
+			String errCodeDes = resultMap.get("err_code_des").toString();
+			return ResultUtils.error(ErrorConsts.CODE_10003, errCodeDes);
 		}
 	}
 }
