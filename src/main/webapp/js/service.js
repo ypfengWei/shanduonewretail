@@ -78,6 +78,7 @@ function getGoodsAll(token, categoryId, page, pageSize, cbOk, cbErr) {
         }
     });
 }
+/*
 
 function addClassify() {
     var classifyName = $('#classifyName').val();
@@ -101,4 +102,4 @@ function addClassify() {
             toast('未知错误');
         }
     });
-}
+}*/

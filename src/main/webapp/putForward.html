@@ -40,10 +40,11 @@
         </div>
         <div class="dis_flex div_Record">
             <span>提现记录</span>
-            <span>138.5</span>
+            <span>提现总额:0.00</span>
         </div>
         <div>
-            <div class="dis_flex div_bankCard">
+            <span v-if="record.length==0">没有记录</span>
+            <div v-else class="dis_flex div_bankCard" v-for="item in record">
                 <span>银行卡提现</span>
                 <div class="dis_flex">
                     <span class="">+15.3</span>

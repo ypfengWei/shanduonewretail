@@ -103,7 +103,7 @@ div.title_header>div:last-child>img{
 .sort{
     background-color: #fff;
     position: fixed;
-    top: 90px;
+    top: 50px;
     left: 0;
     display: flex;
     height: 40px;

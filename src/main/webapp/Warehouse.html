@@ -162,7 +162,6 @@
                     that.mescroll.endErr();
                 }
             }, addWarehouseCommodity() {
-                layer.open({type: 2});
                 let ids=vm.commodityIdList.join(',').split(',');
                 let jsonIds=[];
                 $.each(ids,function (i, item) {
@@ -172,6 +171,7 @@
                     toast('请勾选商品!');
                     return;
                 }
+                layer.open({type: 2});
                 $.ajax({
                     url:'/shanduonewretail/jcommodity/insertwarehousecommodity',
                     data:{token:localStore.token,commodityIdList:JSON.stringify(jsonIds)},

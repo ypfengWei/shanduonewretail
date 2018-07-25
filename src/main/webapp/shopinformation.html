@@ -137,8 +137,10 @@
                 location.href = 'https://3gimg.qq.com/lightmap/components/locationPicker2/index.html?type=0&backurl=https://yapinkeji.com/shanduonewretail/shopinformation.html&key=Q74BZ-4AT34-QCUU5-XADLJ-XTGQZ-65FQM&referer=near-store';
             }, seleStoreType(e) {
                 let index = e.target.value;
-                vm.storeTypeIndex = index;
-                vm.storeInfo.sellerType = vm.storeType[index].id;
+                if (index>-1) {
+                    vm.storeTypeIndex = index;
+                    vm.storeInfo.sellerType = vm.storeType[index].id;
+                }
             }, onLoadImg() {
                 wx.chooseImage({
                     count: 1,
