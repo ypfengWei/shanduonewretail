@@ -336,8 +336,8 @@ public class PresentController {
 		Integer moneys = amount.intValue();
 		ToUser user = userService.selectUser(userId);
 		Map<String, String> paramsMap = new HashMap<>(11);
-		paramsMap.put("mch_appid", WxPayConsts.MCH_ID);
-		paramsMap.put("appid", WxPayConsts.APPID);
+		paramsMap.put("mch_appid", WxPayConsts.APPID);
+		paramsMap.put("mchid", WxPayConsts.MCH_ID);
 		paramsMap.put("nonce_str", UUIDGenerator.getUUID());
 		paramsMap.put("partner_trade_no", presentId);
 		paramsMap.put("openid", user.getOpenId());
@@ -412,6 +412,7 @@ public class PresentController {
 			return ResultUtils.error(ErrorConsts.CODE_10003,"提现处理中");
 		}else {
 			String errCodeDes = resultMap.get("err_code_des").toString();
+			log.error(resultMap.toString());
 			return ResultUtils.error(ErrorConsts.CODE_10003, errCodeDes);
 		}
 	}
