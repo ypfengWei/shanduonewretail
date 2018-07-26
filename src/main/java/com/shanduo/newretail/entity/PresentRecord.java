@@ -6,27 +6,27 @@ import java.util.Date;
 public class PresentRecord {
     private String id;
 
-    private String userId;
+    private String userId;//用户Id
 
-    private Date presentTime;
+    private Date presentTime;//提现时间
 
-    private BigDecimal amountCash;
+    private BigDecimal amountCash;//提现金额
 
-    private String typeid;
+    private String typeid;//1:微信提现2：银行卡提现
 
-    private String userName;
+    private String userName;//提现人姓名
 
-    private String openingBank;
+    private String openingBank;//开户行名称
 
-    private String bankName;
+    private String bankName;//所在卡银行名称
 
-    private String cardNumber;
+    private String cardNumber;//银行卡号
 
-    private String state;
+    private String state;//1:申请提现2:同意提现;3.拒绝提现;
 
-    private Date gmtCreate;
+    private Date gmtCreate;//创建时间
 
-    private Date gmtModified;
+    private Date gmtModified;//更新时间
 
     public String getId() {
         return id;
