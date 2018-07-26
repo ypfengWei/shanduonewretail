@@ -137,23 +137,26 @@ public class UserController {
 		if(token == null) {
 			return ResultUtils.error(ErrorConsts.CODE_10003, "账号或密码错误");
 		}
-		if("3".equals(token.getJurisdiction())&&null==token.getOpenId()){
-			if (StringUtils.isNull(code)) {
-	            log.warn("code为空");
-	            return ResultUtils.error(ErrorConsts.CODE_10002, "code为空");
-	        }
-			 String requestUrl = "https://api.weixin.qq.com/sns/oauth2/access_token?appid=APPID&secret=SECRET&code=CODE&grant_type=authorization_code".replace("APPID", WxPayConsts.APPID).replace("SECRET", WxPayConsts.APPSECRET).replace("CODE", code);
-		        // 发起GET请求获取凭证
-		       net.sf.json.JSONObject jsonObject = HttpRequest.httpsRequest(requestUrl, "GET", null);
-		       String openId = jsonObject.getString("openid");
-		       try{
-		        	int count = userService.updateopenId(openId, phone);
-		        	if(count<1){
-		        		return ResultUtils.error(ErrorConsts.CODE_10004, "修改openId失败");
-		        	}
-		        }catch (Exception e) {
-		        	return ResultUtils.error(ErrorConsts.CODE_10004, "修改openId失败");
+		if("3".equals(token.getJurisdiction())){
+			if("".equals(token.getOpenId()) || null==token.getOpenId()) {
+				if (StringUtils.isNull(code)) {
+		            log.warn("code为空");
+		            return ResultUtils.error(ErrorConsts.CODE_10002, "code为空");
+		        }
+				 String requestUrl = "https://api.weixin.qq.com/sns/oauth2/access_token?appid=APPID&secret=SECRET&code=CODE&grant_type=authorization_code".replace("APPID", WxPayConsts.APPID).replace("SECRET", WxPayConsts.APPSECRET).replace("CODE", code);
+			        // 发起GET请求获取凭证
+			       net.sf.json.JSONObject jsonObject = HttpRequest.httpsRequest(requestUrl, "GET", null);
+			       String openId = jsonObject.getString("openid");
+			       try{
+			        	int count = userService.updateopenId(openId, phone);
+			        	if(count<1){
+			        		return ResultUtils.error(ErrorConsts.CODE_10004, "修改openId失败");
+			        	}
+			        }catch (Exception e) {
+			        	return ResultUtils.error(ErrorConsts.CODE_10004, "修改openId失败");
 				}
+			}
+			
 		}
 		return ResultUtils.success(token);
 	}

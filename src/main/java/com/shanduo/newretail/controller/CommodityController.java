@@ -137,9 +137,6 @@ public class CommodityController {
 		try {
 			Map<String, Object> resultMap = new HashMap<String, Object>(3);
 			resultMap = commodityService.selectCommodity(Integer.valueOf(categoryId), id,Integer.valueOf(page),Integer.valueOf(pageSize),typeId);
-			if(resultMap.isEmpty()){
-				return new ErrorBean();
-			}
 			return new SuccessBean(resultMap);
 		} catch (Exception e) {
 			return new ErrorBean(ErrorConsts.CODE_10004,"查询失败");
@@ -192,9 +189,6 @@ public class CommodityController {
 		try {
 			Map<String, Object> resultMap = new HashMap<String, Object>(3);
 			resultMap = commodityService.selectWarehouseCommodity(Integer.valueOf(categoryId), id,Integer.valueOf(page),Integer.valueOf(pageSize),userId);
-			if(resultMap.isEmpty()){
-				return new ErrorBean();
-			}
 			return new SuccessBean(resultMap);
 		} catch (Exception e) {
 			return new ErrorBean(ErrorConsts.CODE_10004,"查询失败");

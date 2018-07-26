@@ -257,7 +257,7 @@
     select 
     seller_type,category_name
     from user_seller join category on user_seller.seller_type=(category.id+"")
-    where (((#{0}-lon)*100)*((#{0}-lon)*100)+((#{1}-lat)*100)*((#{1}-lat)*100)) &lt; 1         
+    where (((#{0}-lon)*100)*((#{0}-lon)*100)+((#{1}-lat)*100)*((#{1}-lat)*100)) &lt; 0.49         
    group by seller_type
 
   </select>
@@ -265,7 +265,7 @@
     select 
     <include refid="Base_Column_List" />
     from user_seller
-    where (((#{lon,jdbcType=DECIMAL}-lon)*100)*((#{lon,jdbcType=DECIMAL}-lon)*100)+((#{lat,jdbcType=DECIMAL}-lat)*100)*((#{lat,jdbcType=DECIMAL}-lat)*100)) &lt; 1
+    where (((#{lon,jdbcType=DECIMAL}-lon)*100)*((#{lon,jdbcType=DECIMAL}-lon)*100)+((#{lat,jdbcType=DECIMAL}-lat)*100)*((#{lat,jdbcType=DECIMAL}-lat)*100)) &lt; 0.49
      and seller_type = #{sellerType,jdbcType=CHAR}           
     order by (((#{lon,jdbcType=DECIMAL}-lon)*100)*((#{lon,jdbcType=DECIMAL}-lon)*100)+((#{lat,jdbcType=DECIMAL}-lat)*100)*((#{lat,jdbcType=DECIMAL}-lat)*100)) 
   </select>
