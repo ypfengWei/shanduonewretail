@@ -162,28 +162,28 @@
                     that.mescroll.endErr();
                 }
             }, addWarehouseCommodity() {
-                let ids=vm.commodityIdList.join(',').split(',');
-                let jsonIds=[];
-                $.each(ids,function (i, item) {
+                let ids = vm.commodityIdList.join(',').split(',');
+                let jsonIds = [];
+                $.each(ids, function (i, item) {
                     jsonIds.push(item);
                 });
-                if(vm.commodityIdList.length===0){
+                if (vm.commodityIdList.length === 0) {
                     toast('请勾选商品!');
                     return;
                 }
                 layer.open({type: 2});
                 $.ajax({
-                    url:'/shanduonewretail/jcommodity/insertwarehousecommodity',
-                    data:{token:localStore.token,commodityIdList:JSON.stringify(jsonIds)},
-                    success:function (res) {
-                        if(res.success){
+                    url: '/shanduonewretail/jcommodity/insertwarehousecommodity',
+                    data: {token: localStore.token, commodityIdList: JSON.stringify(jsonIds)},
+                    success: function (res) {
+                        if (res.success) {
                             toast('添加成功');
                             location.reload();
                         }
-                    },complete:function () {
+                    }, complete: function () {
                         setTimeout(function () {
                             layer.closeAll();
-                        },1000);
+                        }, 1000);
                     }
                 });
             },
@@ -230,15 +230,17 @@
 
     function adapter(classifyId, cbOK, cbErr) {
         getGoodsAll(localStore.token, classifyId, pageIndex, pageCount, function (res) {
-            let newData = res.commodityInfoList;
-            for (let i in newData) {
-                newData[i].picture = {
-                    myStyle: {backgroundImage: "url('/yapingzh/picture/" + newData[i].picture + "')"},
-                    imgPath: '/yapingzh/picture/' + newData[i].picture
-                };
+            if (res.commodityInfoList.length > 0) {
+                let newData = res.commodityInfoList;
+                for (let i in newData) {
+                    newData[i].picture = {
+                        myStyle: {backgroundImage: "url('/yapingzh/picture/" + newData[i].picture + "')"},
+                        imgPath: '/yapingzh/picture/' + newData[i].picture
+                    };
+                }
+                vm.commodityArray = vm.commodityArray.concat(newData);
+                totalPage = res.totalPage;
             }
-            vm.commodityArray = vm.commodityArray.concat(newData);
-            totalPage = res.totalPage;
             cbOK && cbOK();
         }, function () {
             cbErr && cbErr();

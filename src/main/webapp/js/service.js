@@ -69,11 +69,11 @@ function getGoodsAll(token, categoryId, page, pageSize, cbOk, cbErr) {
         url: "/shanduonewretail/jcommodity/selectwarehousecommodity",
         dataType: "JSON",
         data: {token: token, categoryId: categoryId, page: page, pageSize: pageSize},
-        success: function (result) {
-            if (result.success) {
-                cbOk && cbOk(result.result);
+        success: function (res) {
+            if (res.success) {
+                cbOk && cbOk(res.result);
             }
-        }, error: () => {
+        }, error: function ()  {
             cbErr && cbErr();
         }
     });

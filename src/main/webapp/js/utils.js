@@ -90,7 +90,7 @@ function checkPhone(str) {
 
 //时间戳转本地时间
 function getLocalTime(nS) {
-    let now = new Date(parseInt(nS) * 1000),
+    let now = new Date(parseInt(nS)),
         y = now.getFullYear(),
         m = now.getMonth() + 1,
         d = now.getDate();
