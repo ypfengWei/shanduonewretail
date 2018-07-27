@@ -16,15 +16,18 @@
     <title>首页</title>
     <script src="js/jquery-3.3.1.js"></script>
     <script src="js/service.js"></script>
+    <script src="js/layer.js"></script>
     <script src="js/utils.js"></script>
     <script src="https://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
+    <script charset="utf-8" src="https://map.qq.com/api/js?v=2.exp"></script>
 </head>
 <body>
 <div id="vueData">
     <header>
         <div class="title_header dis_flex">
-            <div class="dis_flex">
-                <img src="img/return_2.png" alt="">
+            <div class="dis_flex" @click="chooseAddress">
+                <input size="5" v-model="address">
+                <img src="img/address.png" alt="">
             </div>
             <div>
                 <span>闪多新零售</span>
@@ -65,14 +68,18 @@
 <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 <script>
     let code = GetQueryString('code');
+    let addrName = GetQueryString('name');
+    let addr = GetQueryString('addr');
+    let latng = GetQueryString('latng');
     let href = location.href.split('#')[0],
-        lat = 0.00, lon = 0.00, mescroll = null, currentIndex = 0,
+        lat = null, lon = null, mescroll = null, currentIndex = 0,
         vm = new Vue({
             el: '#vueData',
             data: {
                 imagePath: imagePath,
                 category: [],
-                stores: []
+                stores: [],
+                address: ''
             },
             methods: {
                 changer(seller_type) {
@@ -90,17 +97,29 @@
                     if (businessSign) {
                         location.href = 'shop.html?storeId=' + storeId;
                     }
+                }, chooseAddress() {
+                    location.href = 'https://3gimg.qq.com/lightmap/components/locationPicker2/index.html?type=0&backurl=https://yapinkeji.com/shanduonewretail/index.html&key=Q74BZ-4AT34-QCUU5-XADLJ-XTGQZ-65FQM&referer=near-store';
                 }
             }
         });
+    if (addrName) {
+        addrName = decodeURIComponent(addrName);
+        addr = decodeURIComponent(addr);
+        if ('我的位置' === addrName) {
+            vm.address = addr;
+        } else {
+            vm.address = addrName;
+        }
+        lat = latng.split(',')[0];
+        lon = latng.split(',')[1];
+    }
     $(function () {
         if (!openid) {
             if (code) {
                 getOpenid(code);
+            } else {
+                location.href = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxe0870cb2d63b008d&redirect_uri=https://yapinkeji.com/shanduonewretail/index.html&response_type=code&scope=snsapi_userinfo#wechat_redirect';
             }
-            // else {
-            //     location.href = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxe0870cb2d63b008d&redirect_uri=https://yapinkeji.com/shanduonewretail/index.html&response_type=code&scope=snsapi_userinfo#wechat_redirect';
-            // }
         }
         init_wx_js_sdk(href, function (result) {
             //初始化接口环境
@@ -112,24 +131,46 @@
                 jsApiList: ['getLocation', 'hideMenuItems']
             });
             wx.ready(function () {
-                wx.getLocation({
-                    success: function (res) {
-                        lat = res.latitude; // 纬度，浮点数，范围为90 ~ -90
-                        lon = res.longitude; // 经度，浮点数，范围为180 ~ -180。
-                        getClassify(lat, lon, function (res) {
-                            vm.category = vm.category.concat(res.result);
-                            getClassifyBySellerType(lat, lon, vm.category[0].seller_type, function (res) {
-                                vm.stores = vm.stores.concat(res.result);
+                if (!lat) {
+                    wx.getLocation({
+                        success: function (res) {
+                            lat = res.latitude; // 纬度，浮点数，范围为90 ~ -90
+                            lon = res.longitude; // 经度，浮点数，范围为180 ~ -180。
+                            converterAddress(lat, lon, function (res) {
+                                vm.address = res.detail.addressComponents.district;
                             });
+                            getClassify(lat, lon, function (res) {
+                                vm.category = vm.category.concat(res.result);
+                                getClassifyBySellerType(lat, lon, vm.category[0].seller_type, function (res) {
+                                    vm.stores = vm.stores.concat(res.result);
+                                });
+                            });
+                        }
+                    });
+                } else {
+                    getClassify(lat, lon, function (res) {
+                        vm.category = vm.category.concat(res.result);
+                        getClassifyBySellerType(lat, lon, vm.category[0].seller_type, function (res) {
+                            vm.stores = vm.stores.concat(res.result);
                         });
-                    }
-                });
+                    });
+                }
                 wx.hideMenuItems({
                     menuList: ['menuItem:copyUrl', 'menuItem:share:qq', 'menuItem:share:QZone', 'menuItem:openWithQQBrowser', 'menuItem:openWithSafari', 'menuItem:share:email', 'menuItem:readMode']
                 });
             });
         });
     });
+
+    function converterAddress(lat, lng, cbOk) {
+        let geocoder = new qq.maps.Geocoder({
+            complete: function (result) {
+                cbOk && cbOk(result);
+            }
+        });
+        let coord = new qq.maps.LatLng(lat, lng);
+        geocoder.getAddress(coord);
+    }
 
     function emptyData() {
         let ary = vm.stores;

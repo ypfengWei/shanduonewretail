@@ -17,7 +17,7 @@ function toast(msg) {
     layer.open({
         content: msg
         , skin: 'msg'
-        , time: 2 //2秒后自动关闭
+        , time: 3 //2秒后自动关闭
     });
 }
 

@@ -16,6 +16,7 @@
     <link rel="stylesheet" href="css/payment.css">
     <script src="js/jquery-3.3.1.js"></script>
     <script src="https://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
+    <script charset="utf-8" src="https://map.qq.com/api/js?v=2.exp"></script>
     <script src="js/layer.js"></script>
     <script src="js/utils.js"></script>
     <title>支付</title>
@@ -103,6 +104,7 @@
 <script type="text/javascript">
     let href = location.href.split('#')[0];
     let storeId = GetQueryString('storeId');
+    let lat = null, lng = null;
     let localCart = localStorage.localCart;
     if (localCart) {
         localCart = JSON.parse(localCart);
@@ -125,10 +127,35 @@
                         vm.contactInfo = {
                             cityName: res.cityName,
                             countryName: res.countryName,
+                            receveraddr: res.detailInfo,
                             recevername: res.userName,
-                            recevertel: res.telNumber,
-                            receveraddr: res.detailInfo
+                            recevertel: res.telNumber
                         };
+                        converterAddress([res.cityName, res.countryName, res.detailInfo], function (res) {
+                            /*{
+                                "type": "GEO_INFO",
+                                "detail": {
+                                    "address": "湖南省长沙市长沙县金科·时代中心",
+                                    "location": {
+                                        "lat": 28.229271,
+                                        "lng": 113.072594
+                                    },
+                                    "similarity": "0.800000",
+                                    "pcd_conflict_flag": "0",
+                                    "gps_type": "10",
+                                    "addressComponents": {
+                                        "street": "金科·时代中心",
+                                        "district": "长沙县",
+                                        "city": "长沙市",
+                                        "province": "湖南省",
+                                        "country": "中国"
+                                    },
+                                    "similarResults": []
+                                }
+                            }*/
+                            lat = res.detail.location.lat;
+                            lng = res.detail.location.lng;
+                        });
                     }
                 });
             }, submitOrder() {
@@ -155,44 +182,54 @@
                         type: "POST",
                         url: "/shanduonewretail/jorder/payorder",
                         data: {
+                            "lat": lat,
+                            "lon": lng,
                             "data": JSON.stringify(commodityOrder),
                         },
                         header: {
-                            'content-type': 'application/x-www-form-urlencoded'
-                        },
+                            'content-type':
+                                'application/x-www-form-urlencoded'
+                        }
+                        ,
                         dataType: "JSON",
-                        success: function (res) {
-                            if (res.success) {
-                                //发起微信支付
-                                wx.chooseWXPay({
-                                    timestamp: res.timeStamp,
-                                    nonceStr: res.nonceStr,
-                                    package: res.package,
-                                    signType: res.signType,
-                                    paySign: res.paySign,
-                                    success: function (res) {
-                                        emptyCart();
-                                        location.href = 'pay_success.html';
-                                    }, fail: function (res) {
-                                        toast('支付失败');
-                                    }, cancel: function (res) {
-                                        toast('取消支付');
-                                    }
-                                });
-                            } else {
-                                toast('订单错误');
+                        success:
+
+                            function (res) {
+                                if (res.success) {
+                                    //发起微信支付
+                                    wx.chooseWXPay({
+                                        timestamp: res.timeStamp,
+                                        nonceStr: res.nonceStr,
+                                        package: res.package,
+                                        signType: res.signType,
+                                        paySign: res.paySign,
+                                        success: function (res) {
+                                            emptyCart();
+                                            location.href = 'pay_success.html';
+                                        }, fail: function (res) {
+                                            toast('支付失败');
+                                        }, cancel: function (res) {
+                                            toast('取消支付');
+                                        }
+                                    });
+                                } else {
+                                    toast('订单错误');
+                                }
                             }
-                        },
+
+                        ,
                         error: function () {
                             toast('请求错误');
                         }
-                    });
+                    })
+                    ;
                 } else {
                     toast('请选择收货地址');
                 }
             }
         }
     });
+
     // 清空店铺购物车
     function emptyCart() {
         let ary = vm.cart;
@@ -203,11 +240,12 @@
                 let ary1 = localCart;
                 ary1.splice(i, 1);
                 localCart = ary1;
-                localStorage.setItem('localCart',localCart);
+                localStorage.setItem('localCart', localCart);
                 return false;
             }
         });
     }
+
     vm.$watch('cart', function () {
         let price = 0;
         $.each(vm.cart, function (i, item) {
@@ -223,7 +261,12 @@
                 timestamp: result.timestamp,
                 nonceStr: result.noncestr,
                 signature: result.signature,
-                jsApiList: ['editAddress', 'getLatestAddress', 'openAddress', 'chooseWXPay']
+                jsApiList: ['editAddress', 'getLatestAddress', 'openAddress', 'chooseWXPay', 'hideMenuItems']
+            });
+            wx.ready(function () {
+                wx.hideMenuItems({
+                    menuList: ['menuItem:share:timeline', 'menuItem:share:appMessage', 'menuItem:copyUrl', 'menuItem:share:qq', 'menuItem:share:QZone', 'menuItem:openWithQQBrowser', 'menuItem:openWithSafari', 'menuItem:share:email', 'menuItem:readMode']
+                });
             });
         });
 
@@ -240,5 +283,14 @@
             }
         });
     });
+
+    function converterAddress(contactInfo, cbOk) {
+        let geocoder = new qq.maps.Geocoder({
+            complete: function (results) {
+                cbOk && cbOk(results);
+            },
+        });
+        geocoder.getLocation(contactInfo.join(','));
+    }
 </script>
 </html>
