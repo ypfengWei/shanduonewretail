@@ -182,4 +182,19 @@ public class SellerServiceImpl implements SellerService {
 		return userSellerMapper.selectSalesmanSubordinate(id);
 	}
 
+	@Override
+	public int checkLocation(String sellerId, String lat, String lon) {
+		UserSeller seller = userSellerMapper.selectByPrimaryKey(sellerId);
+		if(null == seller) {
+			return 1;
+		}
+		double lats = Double.parseDouble(lat);
+		double lons = Double.parseDouble(lon);
+		double location = LocationUtils.getDistance(lons, lats, seller.getLon().doubleValue(), seller.getLat().doubleValue());
+		if(location <= 0.7) {
+			return 0;
+		}
+		return 1;
+	}
+
 }
