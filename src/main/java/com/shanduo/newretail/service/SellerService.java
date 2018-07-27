@@ -31,4 +31,17 @@ public interface SellerService {
 	List<Map<String,Object>> selectSellerType();
 	
 	List<Map<String,Object>> selectSalesmanSubordinate(String id);
+	
+	/**
+	 * 检查收货地点是否超出配送范围
+	 * @Title: checkLocation
+	 * @Description: TODO
+	 * @param @param sellerId
+	 * @param @param lat
+	 * @param @param lon
+	 * @param @return
+	 * @return int
+	 * @throws
+	 */
+	int checkLocation(String sellerId, String lat, String lon);
 }

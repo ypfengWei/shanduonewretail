@@ -22,12 +22,14 @@ import com.shanduo.newretail.consts.ErrorConsts;
 import com.shanduo.newretail.consts.WxPayConsts;
 import com.shanduo.newretail.entity.ToOrder;
 import com.shanduo.newretail.entity.ToOrderDetails;
+import com.shanduo.newretail.entity.common.ErrorBean;
 import com.shanduo.newretail.service.BaseService;
 import com.shanduo.newretail.service.OrderService;
 import com.shanduo.newretail.service.SellerService;
 import com.shanduo.newretail.util.ClientCustomSSL;
 import com.shanduo.newretail.util.IpUtils;
 import com.shanduo.newretail.util.JsonStringUtils;
+import com.shanduo.newretail.util.PatternUtils;
 import com.shanduo.newretail.util.ResultUtils;
 import com.shanduo.newretail.util.StringUtils;
 import com.shanduo.newretail.util.UUIDGenerator;
@@ -66,10 +68,18 @@ public class OrderController {
 	 */
 	@RequestMapping(value = "payorder",method={RequestMethod.POST,RequestMethod.GET})
 	@ResponseBody
-	public JSONObject payOrder(HttpServletRequest request, String data) {
+	public JSONObject payOrder(HttpServletRequest request, String data, String lat, String lon) {
 		if(StringUtils.isNull(data)) {
 			return ResultUtils.error(ErrorConsts.CODE_10002, "参数为空");
 		}
+		if(StringUtils.isNull(lon) || PatternUtils.patternLatitude(lon)) {
+			log.warn("经度格式错误");
+            return ResultUtils.error(ErrorConsts.CODE_10002, "经度格式错误");
+        }
+        if(StringUtils.isNull(lat) || PatternUtils.patternLatitude(lat)) {
+        	log.warn("纬度格式错误");
+            return ResultUtils.error(ErrorConsts.CODE_10002, "纬度格式错误");
+        }
 		Map<String, Object> parameter = new HashMap<>();
 		try {
 			parameter = JsonStringUtils.getMap(data);
@@ -78,6 +88,9 @@ public class OrderController {
 		}
 		if(parameter.isEmpty()) {
 			return ResultUtils.error(ErrorConsts.CODE_10002, "参数错误");
+		}
+		if(sellerService.checkLocation(parameter.get("sellerId").toString(), lat, lon) == 1) {
+			return ResultUtils.error(ErrorConsts.CODE_10003, "超过配送范围");
 		}
 		//检查店铺是否休息或不在营业时间段内
 		if(!sellerService.selectBusinessSign(parameter.get("sellerId").toString())) {
