@@ -263,11 +263,11 @@ public class SellerController {
             Log.warn("token为空");
             return new ErrorBean(ErrorConsts.CODE_10002, "token为空");
         }
-        OrderController orderController = new OrderController();
+       /* OrderController orderController = new OrderController();
         JSONObject json = orderController.isDate(startDate, endDate);
 		if(json != null) {
 			return new ErrorBean();
-		}
+		}*/
         String id = baseService.checkUserToken(token);
         if (null == id) {
             Log.warn("token失效");
