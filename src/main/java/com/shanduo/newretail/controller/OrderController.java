@@ -372,7 +372,7 @@ public class OrderController {
 	}
 	
 	@SuppressWarnings("unused")
-	private JSONObject isDate(String startDate, String endDate) {
+	public JSONObject isDate(String startDate, String endDate) {
 		if(!StringUtils.isNull(startDate)) {
 			if(!startDate.matches("^\\d{4}-\\d{1,2}-\\d{1,2}$")) {
 				log.warn("startDate is error waith startDate:{}", startDate);
