@@ -1,7 +1,5 @@
 //获取指定参数的值
 var openid = localStorage.getItem('openid');
-var imagePath = '/yapingzh/picture/';
-
 /**
  * @return {null}
  */

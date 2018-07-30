@@ -166,7 +166,7 @@
             }, function (res) {
                 if (res.success) {
                     vm.commodity = res.result;
-                    vm.storeImg = imagePath + vm.commodity.picture;
+                    vm.storeImg = '/yapingzh/picture/' + vm.commodity.picture;
                     getCommodityAllType(localStore.token, function (res) {
                         vm.classify = res.result;
                         $.each(vm.classify, function (i, item) {

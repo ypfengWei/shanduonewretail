@@ -232,7 +232,7 @@
                         vm.storeInfo.endDate = getMyDate(vm.storeInfo.endDate);
                         vm.storeInfo.startDate = getMyDate(vm.storeInfo.startDate);
                         if (vm.storeInfo.sellerPicture) {
-                            vm.storeImg = imagePath + vm.storeInfo.sellerPicture;
+                            vm.storeImg = '/yapingzh/picture/' + vm.storeInfo.sellerPicture;
                             localStorage.storeImg = vm.storeImg;
                         }
                         $.getJSON('/shanduonewretail/jseller/selectselleralltype', function (res) {
