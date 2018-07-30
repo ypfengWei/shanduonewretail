@@ -18,7 +18,9 @@ import com.shanduo.newretail.util.SHA1;
 import com.shanduo.newretail.util.StringUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpStatus;
+import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
@@ -33,7 +35,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
-
+import org.apache.http.message.BasicNameValuePair;
 import javax.servlet.http.HttpServletRequest;
 import java.io.*;
 import java.math.BigInteger;
@@ -456,7 +458,6 @@ public class WechatController {
     /**
      * 远程请求微信服务器获取用户openid
      */
-    @SuppressWarnings("null")
 	public static Map<String, Object> getWXJsAccess_token(String appid, String secret, String code) {
     	Map<String, Object> accessToken = null;
         CloseableHttpClient httpClient = HttpClients.createDefault();
@@ -509,8 +510,127 @@ public class WechatController {
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
-           
+        	try {
+                if (response != null) {
+                    response.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
         return null;
     }
+    @RequestMapping(value = "gzhpushdynamic", method = {RequestMethod.POST, RequestMethod.GET})
+    @ResponseBody
+    public ResultBean pushDynamic(HttpServletRequest request) {
+    	String dynamic = request.getParameter("dynamic");
+        if (dynamic != null) {
+        	AccessToken token = accessTokenService.selectAccessToken(WxPayConsts.APPID);
+            JSONObject jsonObject = JSON.parseObject(dynamic);
+            Map<String, String> map = new HashMap<>();
+            JSONArray jsonArray = jsonObject.getJSONArray("picture");
+            if (jsonArray != null && !jsonArray.isEmpty()) {
+                StringBuilder builder = new StringBuilder();
+                for (Object aJsonArray : jsonArray) {
+                    builder.append(aJsonArray).append(",");
+                }
+                builder.deleteCharAt(builder.length() - 1);
+                map.put("picture", builder.toString());
+            }
+            map.put("accessToken", token.getAccessToken());
+            map.put("token", jsonObject.getString("token"));
+            map.put("content", jsonObject.getString("content"));
+            map.put("lat", jsonObject.getString("lat"));
+            map.put("lon", jsonObject.getString("lon"));
+            map.put("location", jsonObject.getString("location"));
+            jsonObject.clear();
+            jsonObject =saveDynamic(map);
+            if (jsonObject != null) {
+                return new SuccessBean(jsonObject);
+            }
+        }
+        return new ErrorBean();
+    }
+  //发布闪多动态
+    public static JSONObject saveDynamic(Map<String, String> params) {
+        CloseableHttpClient client = HttpClients.createDefault();
+        CloseableHttpResponse response = null;
+        HttpPost method = new HttpPost("https://yapinkeji.com/shanduoparty/jdynamic/savedynamic");
+        List<NameValuePair> paramspairs = new ArrayList<>();
+        for (Map.Entry<String, String> entry : params.entrySet()) {
+            paramspairs.add(new BasicNameValuePair(entry.getKey(), entry.getValue()));
+        }
+        try {
+            UrlEncodedFormEntity entity = new UrlEncodedFormEntity(paramspairs, "UTF-8");
+            method.setEntity(entity);
+            response = client.execute(method);
+            if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
+                return JSON.parseObject(EntityUtils.toString(response.getEntity()));
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+        	try {
+                if (response != null) {
+                    response.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
+    }
+    
+  //修改用户信息
+    @RequestMapping(value = "gzhedituserinformation", method = {RequestMethod.POST, RequestMethod.GET})
+    @ResponseBody
+	public ResultBean editUserInformation(HttpServletRequest request) {
+		String userInformation = request.getParameter("userInformation");
+		if (userInformation != null) {
+			AccessToken token = accessTokenService.selectAccessToken(WxPayConsts.APPID);
+			JSONObject jsonObject = JSON.parseObject(userInformation);
+			Map<String, String> map = new HashMap<>();
+			for (Map.Entry<String, Object> entry : jsonObject.entrySet()) {
+				map.put(entry.getKey(), entry.getValue().toString());
+			}
+			map.put("accessToken", token.getAccessToken());
+			jsonObject.clear();
+			jsonObject = editUserInformation(map);
+			if (jsonObject != null) {
+				  return new SuccessBean(jsonObject);
+				}
+		}
+		return new ErrorBean();
+	}
+	//修改用户资料
+    public static JSONObject editUserInformation(Map<String, String> params) {
+        CloseableHttpClient client = HttpClients.createDefault();
+        CloseableHttpResponse response = null;
+        HttpPost method = new HttpPost("https://yapinkeji.com/shanduoparty/juser/updateuser");
+        List<NameValuePair> paramspairs = new ArrayList<>();
+        for (Map.Entry<String, String> entry : params.entrySet()) {
+            paramspairs.add(new BasicNameValuePair(entry.getKey(), entry.getValue()));
+        }
+        try {
+            UrlEncodedFormEntity entity = new UrlEncodedFormEntity(paramspairs, "UTF-8");
+            method.setEntity(entity);
+            response = client.execute(method);
+            if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
+                return JSON.parseObject(EntityUtils.toString(response.getEntity()));
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+        	try {
+                if (response != null) {
+                    response.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
+    }
+	
+    	
 }

@@ -1,5 +1,6 @@
 package com.shanduo.newretail.controller;
 
+import com.alibaba.fastjson.JSONObject;
 import com.shanduo.newretail.consts.ErrorConsts;
 import com.shanduo.newretail.consts.WxPayConsts;
 import com.shanduo.newretail.entity.common.ErrorBean;
@@ -257,11 +258,16 @@ public class SellerController {
     @RequestMapping(value = "selectsalesmansubordinate", method = {RequestMethod.POST, RequestMethod.GET})
     @ResponseBody
     //http://localhost:8081/shanduonewretail/jseller/selectsalesmansubordinate?token=1
-    public ResultBean selectSalesmanSubordinate(HttpServletRequest request, String token) {
+    public ResultBean selectSalesmanSubordinate(HttpServletRequest request, String token,String startDate, String endDate) {
         if (StringUtils.isNull(token)) {
             Log.warn("token为空");
             return new ErrorBean(ErrorConsts.CODE_10002, "token为空");
         }
+       /* OrderController orderController = new OrderController();
+        JSONObject json = orderController.isDate(startDate, endDate);
+		if(json != null) {
+			return new ErrorBean();
+		}*/
         String id = baseService.checkUserToken(token);
         if (null == id) {
             Log.warn("token失效");
