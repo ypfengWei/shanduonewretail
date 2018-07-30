@@ -1,28 +1,21 @@
 package com.shanduo.newretail.controller;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
-import java.math.BigInteger;
-import java.net.URL;
-import java.net.URLConnection;
-import java.net.URLEncoder;
-import java.security.SecureRandom;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-
+import com.shanduo.newretail.consts.ErrorConsts;
+import com.shanduo.newretail.consts.WxPayConsts;
+import com.shanduo.newretail.entity.AccessToken;
+import com.shanduo.newretail.entity.JsApiTicket;
+import com.shanduo.newretail.entity.common.ErrorBean;
+import com.shanduo.newretail.entity.common.ResultBean;
+import com.shanduo.newretail.entity.common.SuccessBean;
+import com.shanduo.newretail.service.AccessTokenService;
+import com.shanduo.newretail.service.BaseService;
+import com.shanduo.newretail.service.JsApiTicketService;
+import com.shanduo.newretail.util.HttpRequest;
+import com.shanduo.newretail.util.SHA1;
+import com.shanduo.newretail.util.StringUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.ClientProtocolException;
@@ -41,19 +34,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.shanduo.newretail.consts.ErrorConsts;
-import com.shanduo.newretail.consts.WxPayConsts;
-import com.shanduo.newretail.entity.AccessToken;
-import com.shanduo.newretail.entity.JsApiTicket;
-import com.shanduo.newretail.entity.common.ErrorBean;
-import com.shanduo.newretail.entity.common.ResultBean;
-import com.shanduo.newretail.entity.common.SuccessBean;
-import com.shanduo.newretail.service.AccessTokenService;
-import com.shanduo.newretail.service.BaseService;
-import com.shanduo.newretail.service.JsApiTicketService;
-import com.shanduo.newretail.util.HttpRequest;
-import com.shanduo.newretail.util.SHA1;
-import com.shanduo.newretail.util.StringUtils;
+import javax.servlet.http.HttpServletRequest;
+import java.io.*;
+import java.math.BigInteger;
+import java.net.URL;
+import java.net.URLConnection;
+import java.net.URLEncoder;
+import java.security.SecureRandom;
+import java.util.*;
 
 @Controller
 @RequestMapping(value = "jwechat")
@@ -447,7 +435,7 @@ public class WechatController {
              Log.warn("code为空");
              return new ErrorBean(ErrorConsts.CODE_10002, "code为空");
          }
-    	Map<String, Object> accessToken  = getWXJsAccess_token(WxPayConsts.APPID, null, null);
+    	Map<String, Object> accessToken  = getWXJsAccess_token(WxPayConsts.APPID, WxPayConsts.APPSECRET, code);
     	Map<String, Object> respJSON = new HashMap<>();
         if (accessToken != null) {
             if (accessToken.get("unionid") != null) {
@@ -477,8 +465,9 @@ public class WechatController {
         try {
             response = httpClient.execute(method);
             if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
-                JSONObject jsonObject = JSON.parseObject(EntityUtils.toString((HttpEntity) response.getEntity().getContent()));
+                JSONObject jsonObject = JSON.parseObject(EntityUtils.toString(response.getEntity()));
                 if (jsonObject.containsKey("access_token")) {
+                    accessToken=new HashMap<>();
                     accessToken.put("access_token",jsonObject.getString("access_token"));
                     accessToken.put("expires_in",jsonObject.getInteger("expires_in"));
                     accessToken.put("openid",jsonObject.getString("openid"));
