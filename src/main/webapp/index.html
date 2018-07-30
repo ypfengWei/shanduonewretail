@@ -117,9 +117,10 @@
         if (!openid) {
             if (code) {
                 getOpenid(code);
-            } else {
-                location.href = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxe0870cb2d63b008d&redirect_uri=https://yapinkeji.com/shanduonewretail/index.html&response_type=code&scope=snsapi_userinfo#wechat_redirect';
             }
+            /*else {
+                location.href = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxe0870cb2d63b008d&redirect_uri=https://yapinkeji.com/shanduonewretail/index.html&response_type=code&scope=snsapi_userinfo#wechat_redirect';
+            }*/
         }
         init_wx_js_sdk(href, function (result) {
             //初始化接口环境
@@ -139,21 +140,11 @@
                             converterAddress(lat, lon, function (res) {
                                 vm.address = res.detail.addressComponents.district;
                             });
-                            getClassify(lat, lon, function (res) {
-                                vm.category = vm.category.concat(res.result);
-                                getClassifyBySellerType(lat, lon, vm.category[0].seller_type, function (res) {
-                                    vm.stores = vm.stores.concat(res.result);
-                                });
-                            });
+                            init();
                         }
                     });
                 } else {
-                    getClassify(lat, lon, function (res) {
-                        vm.category = vm.category.concat(res.result);
-                        getClassifyBySellerType(lat, lon, vm.category[0].seller_type, function (res) {
-                            vm.stores = vm.stores.concat(res.result);
-                        });
-                    });
+                    init();
                 }
                 wx.hideMenuItems({
                     menuList: ['menuItem:copyUrl', 'menuItem:share:qq', 'menuItem:share:QZone', 'menuItem:openWithQQBrowser', 'menuItem:openWithSafari', 'menuItem:share:email', 'menuItem:readMode']
@@ -161,6 +152,15 @@
             });
         });
     });
+
+    function init() {
+        getClassify(lat, lon, function (res) {
+            vm.category = vm.category.concat(res.result);
+            getClassifyBySellerType(lat, lon, vm.category[0].seller_type, function (res) {
+                vm.stores = vm.stores.concat(res.result);
+            });
+        });
+    }
 
     function converterAddress(lat, lng, cbOk) {
         let geocoder = new qq.maps.Geocoder({
