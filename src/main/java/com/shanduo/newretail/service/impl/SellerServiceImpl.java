@@ -178,8 +178,8 @@ public class SellerServiceImpl implements SellerService {
 
 	@Override
 	public List<Map<String, Object>> selectSalesmanSubordinate(String id) {
-		
-		return userSellerMapper.selectSalesmanSubordinate(id);
+		List<Map<String, Object>> sellerList = userSellerMapper.selectSalesmanSubordinate(id);
+		return sellerList;
 	}
 
 	@Override

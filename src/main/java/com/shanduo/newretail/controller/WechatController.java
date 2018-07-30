@@ -41,6 +41,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.shanduo.newretail.consts.ErrorConsts;
 import com.shanduo.newretail.consts.WxPayConsts;
 import com.shanduo.newretail.entity.AccessToken;
 import com.shanduo.newretail.entity.JsApiTicket;
@@ -435,6 +436,91 @@ public class WechatController {
             }
         } catch (IOException e) {
             e.printStackTrace();
+        }
+        return null;
+    }
+    /*公众号登陆*/
+    @RequestMapping(value = "gzhlonin", method = {RequestMethod.POST, RequestMethod.GET})
+    @ResponseBody
+    public ResultBean gzhLonin(HttpServletRequest request, String code) {
+    	 if (StringUtils.isNull(code)) {
+             Log.warn("code为空");
+             return new ErrorBean(ErrorConsts.CODE_10002, "code为空");
+         }
+    	Map<String, Object> accessToken  = getWXJsAccess_token(WxPayConsts.APPID, null, null);
+    	Map<String, Object> respJSON = new HashMap<>();
+        if (accessToken != null) {
+            if (accessToken.get("unionid") != null) {
+                JSONObject result = gzhLongin(accessToken.get("unionid").toString());
+                if (result != null && result.getBoolean("success")) {
+                    respJSON.put("userInfo", result.getJSONObject("result"));
+                    respJSON.put("onbind", true);
+                } else {
+                    respJSON.put("unionid", accessToken.get("unionid"));
+                    respJSON.put("onbind", false);
+                }
+                respJSON.put("openid", accessToken.get("openid"));
+                return new SuccessBean(respJSON);
+            }//TODO如果没有获取unionid的操作
+        }
+        return new ErrorBean();
+    }
+    /**
+     * 远程请求微信服务器获取用户openid
+     */
+    @SuppressWarnings("null")
+	public static Map<String, Object> getWXJsAccess_token(String appid, String secret, String code) {
+    	Map<String, Object> accessToken = null;
+        CloseableHttpClient httpClient = HttpClients.createDefault();
+        HttpGet method = new HttpGet("https://api.weixin.qq.com/sns/oauth2/access_token?appid=APPID&secret=SECRET&code=CODE&grant_type=authorization_code".replace("APPID", appid).replace("SECRET", secret).replace("CODE", code));
+        CloseableHttpResponse response = null;
+        try {
+            response = httpClient.execute(method);
+            if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
+                JSONObject jsonObject = JSON.parseObject(EntityUtils.toString((HttpEntity) response.getEntity().getContent()));
+                if (jsonObject.containsKey("access_token")) {
+                    accessToken.put("access_token",jsonObject.getString("access_token"));
+                    accessToken.put("expires_in",jsonObject.getInteger("expires_in"));
+                    accessToken.put("openid",jsonObject.getString("openid"));
+                    if (jsonObject.containsKey("unionid")) {
+                        accessToken.put("unionid",jsonObject.getString("unionid"));
+                    }
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+        	  if (response != null) {
+                  try {
+					response.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+              }
+              if (httpClient != null) {
+                  try {
+					httpClient.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+              }
+        }
+        return accessToken;
+    }
+  //公众号登陆
+    public static JSONObject gzhLongin(String unionid) {
+        CloseableHttpClient client = HttpClients.createDefault();
+        CloseableHttpResponse response = null;
+        HttpGet method = new HttpGet("https://yapinkeji.com/shanduoparty/wx/bindingUser?unionId=UNIONID&type=2".replace("UNIONID", unionid));
+        try {
+            response = client.execute(method);
+            if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
+                return JSON.parseObject(EntityUtils.toString(response.getEntity()));
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+           
         }
         return null;
     }
