@@ -14,6 +14,7 @@ import com.shanduo.newretail.service.AccessTokenService;
 import com.shanduo.newretail.service.BaseService;
 import com.shanduo.newretail.service.JsApiTicketService;
 import com.shanduo.newretail.util.HttpRequest;
+import com.shanduo.newretail.util.ResultUtils;
 import com.shanduo.newretail.util.SHA1;
 import com.shanduo.newretail.util.StringUtils;
 import org.apache.http.HttpEntity;
@@ -27,6 +28,7 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
+import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,7 +37,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.apache.http.message.BasicNameValuePair;
+
 import javax.servlet.http.HttpServletRequest;
 import java.io.*;
 import java.math.BigInteger;
@@ -522,7 +524,7 @@ public class WechatController {
     }
     @RequestMapping(value = "gzhpushdynamic", method = {RequestMethod.POST, RequestMethod.GET})
     @ResponseBody
-    public ResultBean pushDynamic(HttpServletRequest request) {
+    public JSONObject pushDynamic(HttpServletRequest request) {
     	String dynamic = request.getParameter("dynamic");
         if (dynamic != null) {
         	AccessToken token = accessTokenService.selectAccessToken(WxPayConsts.APPID);
@@ -546,10 +548,10 @@ public class WechatController {
             jsonObject.clear();
             jsonObject =saveDynamic(map);
             if (jsonObject != null) {
-                return new SuccessBean(jsonObject);
+                return jsonObject;
             }
         }
-        return new ErrorBean();
+        return ResultUtils.error(100,"");
     }
   //发布闪多动态
     public static JSONObject saveDynamic(Map<String, String> params) {

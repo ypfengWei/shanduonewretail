@@ -293,7 +293,7 @@
 <script src="js/mescroll.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 <script type="text/javascript">
-    let localStore = JSON.parse(localStorage.localStore), currentPage = 1, totalPage = 0, pageSize = 20;
+    let localStore = localStorage.localStore, currentPage = 1, totalPage = 0, pageSize = 20;
     let vm = new Vue({
         el: '#vueData',
         data: {
@@ -387,6 +387,11 @@
         }
     });
     $(function () {
+        if (!localUser) {
+            location.href = 'login.html';
+            return;
+        }
+        localUser = JSON.parse(localUser);
         loadData();
     });
 
