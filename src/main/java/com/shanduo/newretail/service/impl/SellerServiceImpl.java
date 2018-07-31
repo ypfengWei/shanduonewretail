@@ -177,8 +177,9 @@ public class SellerServiceImpl implements SellerService {
 
 
 	@Override
-	public List<Map<String, Object>> selectSalesmanSubordinate(String id) {
-		List<Map<String, Object>> sellerList = userSellerMapper.selectSalesmanSubordinate(id);
+	public List<Map<String, Object>> selectSalesmanSubordinate(String id,Integer pageNum, Integer pageSize) {
+		pageNum = (pageNum-1)*pageSize;
+		List<Map<String, Object>> sellerList = userSellerMapper.selectSalesmanSubordinate(id,pageNum,pageSize);
 		return sellerList;
 	}
 
@@ -195,6 +196,20 @@ public class SellerServiceImpl implements SellerService {
 			return 0;
 		}
 		return 1;
+	}
+
+
+	@Override
+	public Integer selectSubordinateCount(String id) {
+		
+		return userSellerMapper.selectSubordinateCount(id);
+	}
+
+
+	@Override
+	public Double selectSalesmanAchievement(String id, String startDate, String endDate) {
+	
+		return userSellerMapper.selectSalesmanAchievement(id, startDate, endDate);
 	}
 
 }
