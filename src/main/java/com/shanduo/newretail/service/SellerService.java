@@ -4,6 +4,8 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.ibatis.annotations.Param;
+
 import com.shanduo.newretail.entity.service.SellerDetails;
 import com.shanduo.newretail.entity.service.SellerInfo;
 
@@ -30,8 +32,11 @@ public interface SellerService {
 	
 	List<Map<String,Object>> selectSellerType();
 	
-	List<Map<String,Object>> selectSalesmanSubordinate(String id);
+	List<Map<String,Object>> selectSalesmanSubordinate(String id,Integer pageNum, Integer pageSize);
 	
+	Integer selectSubordinateCount(String id);
+	
+	Double selectSalesmanAchievement(String id,String startDate,String endDate);
 	/**
 	 * 检查收货地点是否超出配送范围
 	 * @Title: checkLocation
