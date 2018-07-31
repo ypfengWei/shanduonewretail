@@ -279,43 +279,7 @@ public class UserController {
 		return ResultUtils.success("修改成功");
 	}
 	
-	/**
-	 * 查询下级
-	 * @Title: listParent
-	 * @Description: TODO
-	 * @param @param request
-	 * @param @param token
-	 * @param @param page
-	 * @param @param pageSize
-	 * @param @return
-	 * @return JSONObject
-	 * @throws
-	 */
-	@RequestMapping(value = "listParent",method={RequestMethod.POST,RequestMethod.GET})
-	@ResponseBody
-	public JSONObject listParent(HttpServletRequest request, String token, String page, String pageSize) {
-		String userId = baseService.checkUserToken(token);
-		if(userId == null) {
-			return ResultUtils.error(ErrorConsts.CODE_10001, "请重新登录");
-		}
-		if(StringUtils.isNull(page) || !page.matches("^\\d*$")) {
-			log.warn("page is error waith page:{}", page);
-			return ResultUtils.error(ErrorConsts.CODE_10002, "页码错误");
-		}
-		if(StringUtils.isNull(pageSize) || !pageSize.matches("^\\d*$")) {
-			log.warn("pageSize is error waith pageSize:{}", pageSize);
-			return ResultUtils.error(ErrorConsts.CODE_10002, "记录错误");
-		}
-		Integer pages = Integer.valueOf(page);
-		Integer pageSizes = Integer.valueOf(pageSize);
-		Map<String, Object> resultMap = new HashMap<>(3);
-		try {
-			resultMap = userService.listParent(userId, pages, pageSizes);
-		} catch (Exception e) {
-			return ResultUtils.error(ErrorConsts.CODE_10004, "查询错误");
-		}
-		return ResultUtils.success(resultMap);
-	}
+	
 	@RequestMapping(value = "updateopenid",method={RequestMethod.POST,RequestMethod.GET})
     @ResponseBody
     public JSONObject updateOpenId(HttpServletRequest request, String code,String id) {

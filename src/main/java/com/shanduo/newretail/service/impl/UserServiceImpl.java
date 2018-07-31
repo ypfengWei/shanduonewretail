@@ -15,6 +15,7 @@ import com.shanduo.newretail.entity.ToUser;
 import com.shanduo.newretail.entity.service.TokenInfo;
 import com.shanduo.newretail.entity.service.UserInfo;
 import com.shanduo.newretail.mapper.ToUserMapper;
+import com.shanduo.newretail.mapper.UserSellerMapper;
 import com.shanduo.newretail.mapper.UserTokenMapper;
 import com.shanduo.newretail.service.SellerService;
 import com.shanduo.newretail.service.UserService;
@@ -42,6 +43,8 @@ public class UserServiceImpl implements UserService {
 	private UserTokenMapper tokenMapper;
 	@Autowired
 	private SellerService sellerService;
+	@Autowired
+	private UserSellerMapper userSellerMapper;
 	
 	@Override
 	@Transactional(rollbackFor = Exception.class)
@@ -157,14 +160,22 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public Map<String, Object> listParent(String parentId, Integer pageNum, Integer pageSize) {
+	public Map<String, Object> listParent(String parentId, Integer pageNum, Integer pageSize,String startDate, String endDate) {
 		int totalRecord = userMapper.countParent(parentId);
 		Page page = new Page(totalRecord, pageSize, pageNum);
 		pageNum = (page.getPageNum() - 1) * page.getPageSize();
 		List<UserInfo> list = userMapper.listParent(parentId, pageNum, page.getPageSize());
+		UserInfo userInfo = new UserInfo();
+		for(int i=0;i<list.size();i++){
+			userInfo = list.get(i);
+			Double achievement = userSellerMapper.selectSalesmanAchievement(userInfo.getId(), startDate, endDate);
+			userInfo.setAchievement(achievement);
+			Integer sellerNum = userSellerMapper.selectSubordinateCount(userInfo.getId());
+			userInfo.setSellerNum(sellerNum);
+		}
 		Map<String, Object> resultMap = new HashMap<String, Object>(3);
-		resultMap.put("page", page.getPageNum());
 		resultMap.put("totalPage", page.getTotalPage());
+		resultMap.put("subordinateNum", totalRecord);
 		resultMap.put("data", list);
 		return resultMap;
 	}
@@ -174,4 +185,5 @@ public class UserServiceImpl implements UserService {
 		
 		return userMapper.updateopenId(openId, phone);
 	}
+
 }
