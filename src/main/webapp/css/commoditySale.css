@@ -77,17 +77,9 @@ div.title_header>div:last-child>img{
     height: 24px;
 
 }
-
-.btn-primary,.btn-primary.active.focus, .btn-primary.active:focus, .btn-primary.active:hover, .btn-primary:active.focus, .btn-primary:active:focus, .btn-primary:active:hover, .open>.dropdown-toggle.btn-primary.focus, .open>.dropdown-toggle.btn-primary:focus, .open>.dropdown-toggle.btn-primary:hover,.btn-primary.active, .btn-primary:active, .open>.dropdown-toggle.btn-primary,.btn-primary:hover,.btn-primary.focus, .btn-primary:focus{
-    background: linear-gradient(to right, #FF9254 , #FF5B2B);
-    border: none;
-    text-align: left;
-}
 .btn-group{
-
-}
-.btn-primary{
-    border-radius: 20px;
+    display: flex;
+    align-items: center;
 }
 .Choice_list{
     justify-content: space-between;
@@ -114,7 +106,11 @@ div.title_header>div:last-child>img{
     left: 0;
     width: 100%;
     border-bottom: 1px solid #F4F4F4;
-    padding: 10px;
+    padding: 10px 0;
+    background-color: #ffffff;
+}
+.body>div>div{
+    padding: 0 10px;
 }
 .list_li{
     padding: 10px;

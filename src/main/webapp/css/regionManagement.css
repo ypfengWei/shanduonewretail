@@ -34,7 +34,7 @@ body{
     flex-shrink:0;
 }
 header{
-    height: 190px;
+    height: 279px;
 }
 header>div:first-child{
     position: fixed;
@@ -46,7 +46,7 @@ header>div:first-child{
 }
 header>div:last-child{
     position: fixed;
-    top: 150px;
+    top: 239px;
     left: 0;
     height: 40px;
     width: 100%;
@@ -177,4 +177,42 @@ header>div>div:last-child>div:last-child{
 }
 .Salesman>div>div>div{
     flex-direction: column;
+}
+
+.data_cx{
+    border-top: 3px solid #F4F4F4;
+    border-bottom: 3px solid #F4F4F4;
+    justify-content: space-between;
+    align-items: center;
+    height: 40px;
+    font-size: 15px;
+    position: fixed;
+    top: 150px;
+    left: 0;
+    width: 100%;
+    background-color: #fff;
+}
+.data_cx:nth-child(3){
+    border-top: 0;
+    position: fixed;
+    top: 196px;
+    left: 0;
+    width: 100%;
+    background-color: #fff;
+}
+.data_cx>span:first-child{
+    margin-left: 10px;
+}
+.data_cx>div{
+    margin-right: 10px;
+    position: static!important;
+    color: #999999!important;
+    height: auto!important;
+    width: auto!important;
+}
+.data_cx>input:first-child{
+    margin-left: 10px;
+}
+.data_cx>button{
+    margin-right: 10px;
 }

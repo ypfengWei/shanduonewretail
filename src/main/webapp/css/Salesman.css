@@ -87,7 +87,6 @@ div.title_header>div:last-child>span{
 }
 .body>div{
     background-color: #fff;
-    padding: 0 10px;
 }
 .body>div:last-child{
     padding: 0;
@@ -95,10 +94,15 @@ div.title_header>div:last-child>span{
 .div_li{
     height: 80px;
     align-items: center;
+    position: relative;
 }
 .div_li>img{
     width: 60px;
     height: 60px;
+    margin-left: 10px;
+}
+.body>div:first-child>img{
+    margin-left: 10px;
 }
 .div_li>div{
     flex-direction: column;
@@ -106,17 +110,70 @@ div.title_header>div:last-child>span{
     padding-left: 10px;
     font-size: 12px;
 }
+.div_li>span{
+    position: absolute;
+    top: 25px;
+    right: 25px;
+    display: inline-block;
+    padding: 5px 15px;
+    color: #fff;
+    font-size: 14px;
+    text-align: center;
+    height: 20px;
+    line-height: 20px;
+    background: linear-gradient(to right, #FF9254 , #FF5B2B);
+    border-radius: 20px;
+}
 .body>div:first-child>div>span:first-child{
     font-size: 15px;
     margin-bottom: 5px;
 }
-.body>div:nth-child(2){
+.body>div:first-child{
+    position: fixed;
+    top: 50px;
+    left: 0;
+    width: 100%;
+    background-color: #fff;
+}
+.body>div:last-child{
+    position: fixed;
+    top: 222px;
+    left: 0;
+    width: 100%;
+    background-color: #fff;
+}
+.data_cx{
     border-top: 3px solid #F4F4F4;
     border-bottom: 3px solid #F4F4F4;
     justify-content: space-between;
     align-items: center;
     height: 40px;
     font-size: 15px;
+    position: fixed;
+    top: 130px;
+    left: 0;
+    width: 100%;
+    background-color: #fff;
+}
+.data_cx:nth-child(3){
+    border-top: 0;
+    position: fixed;
+    top: 176px;
+    left: 0;
+    width: 100%;
+    background-color: #fff;
+}
+.data_cx>span:first-child{
+    margin-left: 10px;
+}
+.data_cx>div{
+    margin-right: 10px;
+}
+.data_cx>input:first-child{
+    margin-left: 10px;
+}
+.data_cx>button{
+    margin-right: 10px;
 }
 .div_li.div_complex{
     border-bottom: 1px solid #F4F4F4;

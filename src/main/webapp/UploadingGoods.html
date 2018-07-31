@@ -12,12 +12,10 @@
     <!--苹果手机：在web app应用下状态条（屏幕顶部条）的颜色,默认值为default（白色），可以定为black（黑色）和black-translucent（灰色半透明）。-->
     <meta name="apple-touch-fullscreen" content="yes"/>
     <!--苹果手机：如果把一个web app添加到了主屏幕中，那么从主屏幕中打开这个web app则全屏显示-->
-    <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="css/UploadingGoods.css">
     <script src="js/jquery-3.3.1.js"></script>
     <script src="js/layer.js"></script>
     <script src="js/utils.js"></script>
-    <script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <script src="https://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
     <script src="js/service.js"></script>
     <title>修改商品</title>
@@ -46,13 +44,11 @@
                 <span v-else>添加图片</span>
             </div>
             <div class="btn-group">
-                <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
-                    类别:{{commodity.categoryName}}
-                </button>
-                <ul class="dropdown-menu" role="menu">
-                    <li v-for="(item,index) in classify"><a href="#" @click="selCategory(item.id,item.category_name)">{{item.category_name}}</a>
-                    </li>
-                </ul>
+                <span>类别：</span>
+                <select name="category">
+                    <option value="">请选择</option>
+                    <option value="">饮料</option>
+                </select>
             </div>
             <div class="div_inp">
                 <label for="price">价格：</label>
@@ -63,7 +59,7 @@
                 <input type="text" id="stock" v-model="commodity.stock">
             </div>
             <div class="foot_inp">
-                <input type="button" v-model="submitName" @click="submitDone">
+                <input type="button" v-model="submitName" @click="submitDone" value="添加">
             </div>
         </form>
     </div>

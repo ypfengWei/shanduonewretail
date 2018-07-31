@@ -26,6 +26,7 @@ body *{
 }
 body{
     height: 100%;
+    font-size: 14px;
 }
 
 .dis_flex{
@@ -76,26 +77,20 @@ div.title_header>div:last-child>img{
     width: 24px;
     height: 24px;
 }
-.btn-primary,.btn-primary.active.focus, .btn-primary.active:focus, .btn-primary.active:hover, .btn-primary:active.focus, .btn-primary:active:focus, .btn-primary:active:hover, .open>.dropdown-toggle.btn-primary.focus, .open>.dropdown-toggle.btn-primary:focus, .open>.dropdown-toggle.btn-primary:hover,.btn-primary.active, .btn-primary:active, .open>.dropdown-toggle.btn-primary,.btn-primary:hover,.btn-primary.focus, .btn-primary:focus{
-    background: linear-gradient(to right, #FF9254 , #FF5B2B);
-    border: none;
-    text-align: left;
-}
 .btn-group{
     margin-left: 10px;
     margin-bottom: 10px;
 }
-.btn-primary{
-    border-radius: 20px;
-}
 .div_inp{
+    display: flex;
+    align-items: center;
     height: 50px;
-    line-height: 50px;
     padding-left: 10px;
     font-size: 16px;
 }
 .div_inp>label{
     font-weight: normal;
+    margin-bottom: 0;
 }
 .div_inp:not(:first-child){
     border-top: 1px solid #F4F4F4;
@@ -119,6 +114,12 @@ div.title_header>div:last-child>img{
     line-height: 120px;
     text-align: center;
     border: 1px dashed #999999;
+    vertical-align: middle;
+}
+.pic_div>img{
+    width: 120px;
+    height: 120px;
+    vertical-align: middle;
 }
 .foot_inp{
     position: fixed;
@@ -131,6 +132,8 @@ div.title_header>div:last-child>img{
 }
 .foot_inp>input{
     width: 80%;
+    height: 40px;
+    font-size: 16px;
     border-radius: 20px;
     border: none;
     outline: 0;
