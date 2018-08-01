@@ -13,74 +13,108 @@
     <meta name="apple-touch-fullscreen" content="yes"/>
     <!--苹果手机：如果把一个web app添加到了主屏幕中，那么从主屏幕中打开这个web app则全屏显示-->
     <link rel="stylesheet" type="text/css" href="css/Salesman.css">
+    <link rel="stylesheet" type="text/css" href="css/mescroll.min.css">
     <title></title>
     <script src="js/jquery-3.3.1.js"></script>
     <script src="js/utils.js"></script>
 </head>
 <body>
-    <div id="vueData">
-        <header>
-            <div class="title_header dis_flex">
-                <div class="dis_flex" @click="goBack">
-                    <img src="img/return_2.png">
-                </div>
-                <div>
-                    <span>业务员管理</span>
-                </div>
-                <div></div>
-            </div>
-        </header>
-        <div class="body">
-            <div class="dis_flex div_li">
-                <img src="img/ewm.png">
-                <div class="dis_flex">
-                    <span>{{salesMan.name}}</span>
-                    <span class="col_hui ">电话：{{salesMan.mobilePhone}}</span>
-                </div>
-                <span @click="toRegisterView">注册商户</span>
-            </div>
-            <div class="dis_flex">
-                <span>我的业绩：</span>
-                <div class="col_hui">
-                    <span>店铺数：</span>
-                    <span>{{salesManChildStore.length}}</span>
-                </div>
+<div id="vueData" class="mescroll">
+    <header>
+        <div class="title_header dis_flex">
+            <div class="dis_flex" @click="goBack">
+                <img src="img/return_2.png">
             </div>
             <div>
-                <div v-if="salesManChildStore.length==0" class="dis_flex div_li div_complex">
-                    <span>你还没有店铺</span>
-                </div>
-                <div v-else class="dis_flex div_li div_complex" v-for="store in salesManChildStore">
-                    <img :src="store.sellerPicture?imagePath+store.sellerPicture:'img/rectangle_3.png'">
-                    <div class="dis_flex">
-                        <span>{{store.sellerName}}</span>
-                        <span class="col_hui ">公告：{{store.notice}}</span>
-                    </div>
+                <span>业务员管理</span>
+            </div>
+            <div></div>
+        </div>
+    </header>
+    <div class="body">
+        <div class="dis_flex div_li">
+            <img src="img/ewm.png">
+            <div class="dis_flex">
+                <span>{{salesMan.name}}</span>
+                <span class="col_hui ">电话：{{salesMan.mobilePhone}}</span>
+            </div>
+            <span @click="toRegisterView">注册商户</span>
+        </div>
+        <div class="dis_flex">
+            <span>我的业绩：{{salesmanAchievement}}</span>
+            <div class="col_hui">
+                <span>店铺数：</span>
+                <span>{{sellerNum}}</span>
+            </div>
+        </div>
+        <div>
+            <div v-if="salesManChildStore.length==0" class="dis_flex div_li div_complex">
+                <span>你还没有店铺</span>
+            </div>
+            <div v-else class="dis_flex div_li div_complex" v-for="store in salesManChildStore">
+                <img :src="store.seller_picture?imagePath+store.seller_picture:'img/rectangle_3.png'">
+                <div class="dis_flex">
+                    <span>{{store.sellerName}}</span>
+                    <span class="col_hui ">公告：{{store.notice}}</span>
                 </div>
             </div>
         </div>
     </div>
+</div>
 </body>
 <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script src="js/mescroll.min.js"></script>
 <script type="text/javascript">
     let localStore = JSON.parse(localStorage.localStore);
+    let pageIndex = 1, pageCount = 20, mescroll = null, totalPage = 0;
     let vm = new Vue({
         el: '#vueData',
         data: {
             //获取屏幕分辨率高度
-            imagePath:'/yapingzh/picture/',
+            imagePath: '/yapingzh/picture/',
             Width: null,
-            salesMan:{},
-            salesManChildStore:[]
+            salesMan: {},
+            salesManChildStore: [],
+            sellerNum: 0,
+            salesmanAchievement: 0
         },
         mounted: function () {
             //获取屏幕分辨率高度
             let that = this;
             that.Width = window.screen.width - 82;
-        },methods:{
-            goBack(){
+            mescroll = new MeScroll("vueData", { //请至少在vue的mounted生命周期初始化mescroll,以确保您配置的id能够被找到
+                up: {
+                    callback: that.upCallback, //
+                    auto: false,
+                    noMoreSize: 30
+                }, down: {
+                    callback: that.downCallback,
+                    auto: false
+                }
+            });
+
+        }, methods: {
+            upCallback() {
+                if (totalPage > pageIndex) {
+                    querySalesManHaveStore(function () {
+                        mescroll.endByPage(pageCount, totalPage);
+                    }, function () {
+                        mescroll.endErr();
+                    });
+                } else {
+                    mescroll.endErr();
+                }
+            }, downCallback() {
+                emptyData();
+                querySalesManHaveStore(function () {
+                    mescroll.endByPage(pageCount, totalPage);
+                }, function () {
+                    mescroll.endErr();
+                });
+            },
+            goBack() {
                 history.back();
-            },toRegisterView() {
+            }, toRegisterView() {
                 location.href = 'register.html?registerTypeId=3';
             }
         }
@@ -89,19 +123,41 @@
         loadSalesManDetial();
         querySalesManHaveStore();
     });
+
     function loadSalesManDetial() {
-        $.get('/shanduonewretail/juser/selectuser',{token:localStore.token},function (res) {
-            if(res.success){
-                vm.salesMan=res.result;
+        $.get('/shanduonewretail/juser/selectuser', {token: localStore.token}, function (res) {
+            if (res.success) {
+                vm.salesMan = res.result;
             }
         });
     }
-    function querySalesManHaveStore() {
-        $.get('/shanduonewretail/jseller/selectsalesmansubordinate',{token:localStore.token},function (res) {
-            if(res.success){
-                vm.salesManChildStore=salesManChildStore.concat(res.result);
+
+    function querySalesManHaveStore(cbOk, cbErr) {
+        $.ajax({
+            url: '/shanduonewretail/jseller/selectsalesmansubordinate', data: {
+                token: '217966981ddb4e54b1c4a082f7dfaf51',
+                page: pageIndex,
+                pageSize: pageCount
+            }, success: function (res) {
+                console.log(res)
+                if (res.success) {
+                    vm.salesManChildStore = vm.salesManChildStore.concat(res.result.sellerList);
+                    vm.sellerNum = res.result.sellerNum;
+                    vm.salesmanAchievement = res.result.salesmanAchievement;
+                }
+                cbOk && cbOk();
+            }, error: function () {
+                cbErr && cbErr();
             }
         });
+    }
+
+    function emptyData() {
+        let ary = vm.salesManChildStore;
+        ary.splice(0, ary.length);
+        vm.salesManChildStore = ary;
+        pageIndex = 1;
+        totalPage = 0;
     }
 </script>
 </html>

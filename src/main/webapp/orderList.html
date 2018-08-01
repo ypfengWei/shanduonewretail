@@ -387,11 +387,11 @@
         }
     });
     $(function () {
-        if (!localUser) {
+        if (!localStore) {
             location.href = 'login.html';
             return;
         }
-        localUser = JSON.parse(localUser);
+        localStore = JSON.parse(localStore);
         loadData();
     });
 
@@ -409,12 +409,16 @@
             },
             dataType: 'json',
             success: function (res) {
-                if (res.success && res.data.length > 0) {
-                    $.each(res.data, function (i, item) {
-                        res.data[i].gmtCreate = getLocalTime(item.gmtCreate);
-                    });
-                    vm.ds[vm.currentTab].arrayResult = vm.ds[vm.currentTab].arrayResult.concat(res.data);
-                    totalPage = res.totalPage;
+                if (res.success) {
+                    if (res.data.length > 0) {
+                        $.each(res.data, function (i, item) {
+                            res.data[i].gmtCreate = getLocalTime(item.gmtCreate);
+                        });
+                        vm.ds[vm.currentTab].arrayResult = vm.ds[vm.currentTab].arrayResult.concat(res.data);
+                        totalPage = res.totalPage;
+                    }
+                } else {
+                    toast(res.errCodeDes);
                 }
                 cbOk && cbOk();
             }, error: function () {

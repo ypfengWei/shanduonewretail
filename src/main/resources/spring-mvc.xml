@@ -28,7 +28,7 @@
     </bean>
     
     <!-- 静态资源 -->
-    <mvc:resources location="/shanduoWeb/" mapping="/resources/**"/>
+    <mvc:resources location="/shanduoWeb/" mapping="/shanduoWeb/**"/>
     <mvc:resources location="/" mapping="/**"/>
 
     <!--避免IE执行AJAX时,返回JSON出现下载文件 -->
