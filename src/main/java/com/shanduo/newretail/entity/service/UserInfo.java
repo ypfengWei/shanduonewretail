@@ -4,6 +4,8 @@ public class UserInfo {
 	private String id;
     private String name;
     private String phone;
+    private Integer sellerNum;
+    private Double achievement;
 	public String getId() {
 		return id;
 	}
@@ -22,4 +24,17 @@ public class UserInfo {
 	public void setPhone(String phone) {
 		this.phone = phone;
 	}
+	public Integer getSellerNum() {
+		return sellerNum;
+	}
+	public void setSellerNum(Integer sellerNum) {
+		this.sellerNum = sellerNum;
+	}
+	public Double getAchievement() {
+		return achievement;
+	}
+	public void setAchievement(Double achievement) {
+		this.achievement = achievement;
+	}
+	
 }

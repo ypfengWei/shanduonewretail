@@ -1,5 +1,6 @@
 package com.shanduo.newretail.service;
 
+import java.util.List;
 import java.util.Map;
 
 import com.shanduo.newretail.entity.ToUser;
@@ -123,5 +124,7 @@ public interface UserService {
 	 * @return Map<String, Object>
 	 * @throws
 	 */
-	Map<String, Object> listParent(String parentId, Integer pageNum, Integer pageSize);
+	Map<String, Object> listParent(String parentId, Integer pageNum, Integer pageSize,String startDate, String endDate);
+	
+	 
 }

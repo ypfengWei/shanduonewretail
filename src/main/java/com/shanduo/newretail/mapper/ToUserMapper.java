@@ -1,6 +1,7 @@
 package com.shanduo.newretail.mapper;
 
 import java.util.List;
+import java.util.Map;
 
 import com.shanduo.newretail.entity.ToUser;
 import com.shanduo.newretail.entity.service.UserInfo;
@@ -31,4 +32,5 @@ public interface ToUserMapper {
     List<UserInfo> listParent(String parentId, Integer pageNum, Integer pageSize);
     
     int updateopenId(String openId, String phone);
+   
 }
