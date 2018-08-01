@@ -39,12 +39,18 @@
                 </div>
                 <span @click="toRegisterView">注册商户</span>
             </div>
-            <div class="dis_flex">
+            <div class="dis_flex data_cx">
                 <span>我的业绩：</span>
                 <div class="col_hui">
                     <span>店铺数：</span>
                     <span>{{salesManChildStore.length}}</span>
                 </div>
+            </div>
+            <div class="dis_flex data_cx">
+                <input type="date">
+                至
+                <input type="date">
+                <button>查询</button>
             </div>
             <div>
                 <div v-if="salesManChildStore.length==0" class="dis_flex div_li div_complex">

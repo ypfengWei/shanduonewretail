@@ -223,7 +223,6 @@
             $('.gwcTog').hide();
             //图片放大
             $('#outerdiv').hide();
-
             setInterval(function () {
                 vm.currentTime = new Date().getTime();
             }, 1000);
@@ -241,7 +240,6 @@
                 vm.startDate = new Date();
                 vm.startDate.setHours(startStr);
                 vm.startDate.setMinutes(startStr1);
-
             },
             'storeInfo.endDate': function (res) {
                 let end = vm.storeInfo.endDate.split(':');
@@ -253,7 +251,6 @@
                 if (endStr1.startsWith('0')) {
                     endStr1 = endStr1.substring(0, 1);
                 }
-
                 vm.endDate = new Date();
                 vm.endDate.setHours(endStr);
                 vm.endDate.setMinutes(endStr1);
@@ -367,10 +364,8 @@
                     toast('客官选一件吧!');
                 }
             }
-
         }
     });
-
     vm.$watch('currentTime', function () {
         if (vm.startDate && vm.endDate) {
             if (vm.currentTime < vm.startDate.getTime() || vm.currentTime > vm.endDate.getTime()) {
@@ -390,7 +385,6 @@
         if ($(".gwcTog").css("display") === 'block' && vm.totalCount === 0) {
             $('.gwcTog').toggle();
         }
-
         let onat = false;
         $.each(vm.localCart, function (i, item) {
             if (storeId === item.storeId) {
@@ -407,7 +401,6 @@
     }, {
         deep: true
     });
-
     function notifyDataSetChanged() {
         if (vm.cart.length > 0) {
             for (let i = 0; i < vm.cart.length; i++) {
@@ -427,7 +420,6 @@
             }
         }
     }
-
     $(function () {
         if (!storeId) {
             location.href = 'index.html';
@@ -499,7 +491,6 @@
             });
         });
     });
-
     function adapter(categoryId, cbOK, cbErr) {
         getGoods(storeId, categoryId, 1, pageIndex, pageCount, function (res) {
             let newData = res.commodityInfoList;
@@ -517,7 +508,6 @@
             cbErr && cbErr();
         });
     }
-
     function emptyData() {
         let ary = vm.commodityArray;
         ary.splice(0, ary.length);
@@ -525,7 +515,6 @@
         totalPage = 0;
         pageIndex = 1;
     }
-
     // 获取本地购物车所有商品数据
     function queryCartAll() {
         if (vm.localCart.length > 0) {
@@ -537,7 +526,6 @@
             });
         }
     }
-
     function delCommodity(commodityId) {
         $.each(vm.cart, function (i, item) {
             if (commodityId === item.commodityId) {
@@ -548,14 +536,12 @@
             }
         });
     }
-
     // 清空店铺购物车
     function emptyCart() {
         let ary = vm.cart;
         ary.splice(0, ary.length);
         vm.cart = ary;
     }
-
     function cartAction(actionMode, obj) {
         let commodity = null;
         let index = null;
