@@ -20,6 +20,7 @@
     <script src="js/utils.js"></script>
     <script src="https://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
     <script charset="utf-8" src="https://map.qq.com/api/js?v=2.exp"></script>
+    <script charset="utf-8" src="https://3gimg.qq.com/lightmap/components/geolocation/geolocation.min.js"></script>
 </head>
 <body>
 <div id="vueData">
@@ -72,7 +73,7 @@
     let addr = GetQueryString('addr');
     let latng = GetQueryString('latng');
     let href = location.href.split('#')[0],
-        lat = null, lon = null, mescroll = null, currentIndex = 0,
+        lat = null, lon = null, currentIndex = 0,
         vm = new Vue({
             el: '#vueData',
             data: {
@@ -114,6 +115,7 @@
         lon = latng.split(',')[1];
     }
     $(function () {
+        init();
         if (!openid) {
             if (code) {
                 getOpenid(code);
@@ -128,23 +130,9 @@
                 timestamp: result.timestamp,
                 nonceStr: result.noncestr,
                 signature: result.signature,
-                jsApiList: ['getLocation', 'hideMenuItems']
+                jsApiList: ['hideMenuItems']
             });
             wx.ready(function () {
-                if (!lat) {
-                    wx.getLocation({
-                        success: function (res) {
-                            lat = res.latitude; // 纬度，浮点数，范围为90 ~ -90
-                            lon = res.longitude; // 经度，浮点数，范围为180 ~ -180。
-                            converterAddress(lat, lon, function (res) {
-                                vm.address = res.detail.addressComponents.district;
-                            });
-                            init();
-                        }
-                    });
-                } else {
-                    init();
-                }
                 wx.hideMenuItems({
                     menuList: ['menuItem:copyUrl', 'menuItem:share:qq', 'menuItem:share:QZone', 'menuItem:openWithQQBrowser', 'menuItem:openWithSafari', 'menuItem:share:email', 'menuItem:readMode']
                 });
@@ -153,12 +141,24 @@
     });
 
     function init() {
-        getClassify(lat, lon, function (res) {
-            vm.category = vm.category.concat(res.result);
-            getClassifyBySellerType(lat, lon, vm.category[0].seller_type, function (res) {
-                vm.stores = vm.stores.concat(res.result);
-            });
-        });
+        if (!lat) {
+            let geolocation = new qq.maps.Geolocation('Q74BZ-4AT34-QCUU5-XADLJ-XTGQZ-65FQM', 'near-store');
+            geolocation.getLocation(function (res) {
+                lat = res.lat;
+                lon = res.lng;
+                converterAddress(lat, lon, function (res) {
+                    vm.address = res.detail.addressComponents.district;
+                });
+                getClassify(lat, lon, function (res) {
+                    vm.category = vm.category.concat(res.result);
+                    getClassifyBySellerType(lat, lon, vm.category[0].seller_type, function (res) {
+                        vm.stores = vm.stores.concat(res.result);
+                    });
+                });
+            }, function () {
+
+            }, [{timeout: 9000}]);
+        }
     }
 
     function converterAddress(lat, lng, cbOk) {

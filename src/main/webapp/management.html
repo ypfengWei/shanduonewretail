@@ -41,7 +41,20 @@
                 </div>
             </div>
         </div>
-        <div>我的业务员</div>
+        <div class="dis_flex data_cx">
+            <input type="date">
+            至
+            <input type="date">
+            <button>查询</button>
+        </div>
+        <div class="dis_flex data_cx">
+            <span>我的业绩：{{regionAchievement}}</span>
+            <div class="col_hui">
+                <span>业务员数：</span>
+                <span>{{subordinateNum}}</span>
+            </div>
+        </div>
+        <div>业务员列表</div>
     </header>
     <div class="body">
         <div>
@@ -74,7 +87,8 @@
             imagePath: '/yapingzh/picture/',
             salesMans: [],
             subordinateNum: 0,
-            storeInfo:localStore
+            storeInfo: localStore,
+            regionAchievement:0
         },
         methods: {
             toRegisterView() {
@@ -91,13 +105,15 @@
     function loadSalesManArray() {
         $.ajax({
             url: '/shanduonewretail/jseller/selectregionsubordinate',
-            data: {token: "1333789872a6477a970d68593f46ce17", page: pageIndex, pageSize: pageCount},
+            data: {token: localStore.token, page: pageIndex, pageSize: pageCount},
             dataType: 'json',
             success: function (res) {
+                console.log(res);
                 if (res.success) {
                     vm.salesMans = vm.salesMans.concat(res.result.data);
                     totalPage = res.result.totalPage;
                     vm.subordinateNum = res.result.subordinateNum;
+                    vm.regionAchievement=res.result.regionAchievement;
                 }
             }, error: function () {
                 toast('网络请求失败')

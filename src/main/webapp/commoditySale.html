@@ -121,7 +121,6 @@
             }
         }
     });
-
     $(function () {
         getCommodityAllType(localStore.token, function (res) {
             if (res.success) {
@@ -130,7 +129,6 @@
         });
         loadCountmoney();
     });
-
     function loadCountmoney() {
         $.get('/shanduonewretail/jorder/countmoney', {
             token: localStore.token,
@@ -143,7 +141,6 @@
             }
         });
     }
-
     function querySaleAll(cbOk, cbErr) {
         $.ajax({
             url: '/shanduonewretail/jorder/commodityList', data: {
@@ -163,7 +160,6 @@
             }
         });
     }
-
     function emptyData() {
         let ary = vm.commodities;
         ary.splice(0, ary.length);

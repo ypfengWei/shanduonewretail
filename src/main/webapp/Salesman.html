@@ -40,12 +40,18 @@
             </div>
             <span @click="toRegisterView">注册商户</span>
         </div>
-        <div class="dis_flex">
+        <div class="dis_flex data_cx">
             <span>我的业绩：{{salesmanAchievement}}</span>
             <div class="col_hui">
                 <span>店铺数：</span>
                 <span>{{sellerNum}}</span>
             </div>
+        </div>
+        <div class="dis_flex data_cx">
+            <input type="date">
+            至
+            <input type="date">
+            <button>查询</button>
         </div>
         <div>
             <div v-if="salesManChildStore.length==0" class="dis_flex div_li div_complex">
@@ -54,7 +60,7 @@
             <div v-else class="dis_flex div_li div_complex" v-for="store in salesManChildStore">
                 <img :src="store.seller_picture?imagePath+store.seller_picture:'img/rectangle_3.png'">
                 <div class="dis_flex">
-                    <span>{{store.sellerName}}</span>
+                    <span>{{store.seller_name}}</span>
                     <span class="col_hui ">公告：{{store.notice}}</span>
                 </div>
             </div>
@@ -135,11 +141,10 @@
     function querySalesManHaveStore(cbOk, cbErr) {
         $.ajax({
             url: '/shanduonewretail/jseller/selectsalesmansubordinate', data: {
-                token: '217966981ddb4e54b1c4a082f7dfaf51',
+                token: localStore.token,
                 page: pageIndex,
                 pageSize: pageCount
             }, success: function (res) {
-                console.log(res)
                 if (res.success) {
                     vm.salesManChildStore = vm.salesManChildStore.concat(res.result.sellerList);
                     vm.sellerNum = res.result.sellerNum;
