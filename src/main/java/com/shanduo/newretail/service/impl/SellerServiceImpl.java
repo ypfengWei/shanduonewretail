@@ -219,4 +219,18 @@ public class SellerServiceImpl implements SellerService {
 		return userSellerMapper.selectRegionAchievement(id, startDate, endDate);
 	}
 
+
+	@Override
+	public Integer selectSellerCount() {
+		
+		return userSellerMapper.selectSellerCount();
+	}
+
+
+	@Override
+	public Double selectManageAchievement(String id, String startDate, String endDate) {
+		
+		return userSellerMapper.selectManageAchievement(id, startDate, endDate);
+	}
+
 }

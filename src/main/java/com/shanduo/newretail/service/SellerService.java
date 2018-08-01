@@ -39,6 +39,10 @@ public interface SellerService {
 	Double selectSalesmanAchievement(String id,String startDate,String endDate);
 	
 	Double selectRegionAchievement(String id,String startDate,String endDate);
+	
+	Integer selectSellerCount();
+	
+	Double selectManageAchievement(String id,String startDate,String endDate);
 	/**
 	 * 检查收货地点是否超出配送范围
 	 * @Title: checkLocation
