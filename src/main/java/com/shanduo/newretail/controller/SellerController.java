@@ -357,15 +357,63 @@ public class SellerController {
           List<UserInfo> salesmanList = new ArrayList<UserInfo>();
           Map<String, Object> regionMap = new HashMap<>();
           try {
+          	regionMap = userService.listParent(id,Integer.valueOf(page),Integer.valueOf(pageSize), startDate, endDate);
           	if("1".equals(page)){
               	Double regionAchievement = sellerService.selectRegionAchievement(id, startDate, endDate);
               	regionMap.put("regionAchievement", regionAchievement);
           	}
-          	regionMap = userService.listParent(id,Integer.valueOf(page),Integer.valueOf(pageSize), startDate, endDate);
-          	
           } catch (Exception e) {
               return new ErrorBean(ErrorConsts.CODE_10004, "查询失败");
           }
           return new SuccessBean(regionMap);
       }
+      /**
+       *  查询该区域管理业务员数、业绩
+       * @param request
+       * @param token
+       * @param startDate
+       * @param endDate
+       * @param page
+       * @param pageSize
+       * @return
+       */
+      /*  @RequestMapping(value = "selectregionsubordinate", method = {RequestMethod.POST, RequestMethod.GET})
+        @ResponseBody
+        //http://localhost:8081/shanduonewretail/jseller/selectregionsubordinate?token=1
+        public ResultBean selectRegionSubordinate(HttpServletRequest request, String token,String startDate, String endDate, String page, String pageSize) {
+            if (StringUtils.isNull(token)) {
+                Log.warn("token为空");
+                return new ErrorBean(ErrorConsts.CODE_10002, "token为空");
+            }
+            if(StringUtils.isNull(page) || !page.matches("^\\d*$")) {
+    			Log.warn("page is error waith page:{}", page);
+    			return new ErrorBean(ErrorConsts.CODE_10002, "页码错误");
+    		}
+    		if(StringUtils.isNull(pageSize) || !pageSize.matches("^\\d*$")) {
+    			Log.warn("pageSize is error waith pageSize:{}", pageSize);
+    			return new ErrorBean(ErrorConsts.CODE_10002, "记录错误");
+    		}
+            JSONObject json = orderController.isDate(startDate, endDate);
+    		if(json != null) {
+    			return new ErrorBean();
+    		}
+            String id = baseService.checkUserToken(token);
+            if (null == id) {
+                Log.warn("token失效");
+                return new ErrorBean(ErrorConsts.CODE_10001, "token失效");
+            }
+            List<UserInfo> salesmanList = new ArrayList<UserInfo>();
+            Map<String, Object> regionMap = new HashMap<>();
+            try {
+            	if("1".equals(page)){
+                	Double regionAchievement = sellerService.selectRegionAchievement(id, startDate, endDate);
+                	regionMap.put("regionAchievement", regionAchievement);
+            	}
+            	regionMap = userService.listParent(id,Integer.valueOf(page),Integer.valueOf(pageSize), startDate, endDate);
+            	
+            } catch (Exception e) {
+                return new ErrorBean(ErrorConsts.CODE_10004, "查询失败");
+            }
+            return new SuccessBean(regionMap);
+        }*/
 }
