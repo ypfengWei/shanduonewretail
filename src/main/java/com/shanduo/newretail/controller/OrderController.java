@@ -22,12 +22,14 @@ import com.shanduo.newretail.consts.ErrorConsts;
 import com.shanduo.newretail.consts.WxPayConsts;
 import com.shanduo.newretail.entity.ToOrder;
 import com.shanduo.newretail.entity.ToOrderDetails;
+import com.shanduo.newretail.entity.common.ErrorBean;
 import com.shanduo.newretail.service.BaseService;
 import com.shanduo.newretail.service.OrderService;
 import com.shanduo.newretail.service.SellerService;
 import com.shanduo.newretail.util.ClientCustomSSL;
 import com.shanduo.newretail.util.IpUtils;
 import com.shanduo.newretail.util.JsonStringUtils;
+import com.shanduo.newretail.util.PatternUtils;
 import com.shanduo.newretail.util.ResultUtils;
 import com.shanduo.newretail.util.StringUtils;
 import com.shanduo.newretail.util.UUIDGenerator;
@@ -66,10 +68,18 @@ public class OrderController {
 	 */
 	@RequestMapping(value = "payorder",method={RequestMethod.POST,RequestMethod.GET})
 	@ResponseBody
-	public JSONObject payOrder(HttpServletRequest request, String data) {
+	public JSONObject payOrder(HttpServletRequest request, String data, String lat, String lon) {
 		if(StringUtils.isNull(data)) {
 			return ResultUtils.error(ErrorConsts.CODE_10002, "参数为空");
 		}
+		if(StringUtils.isNull(lon) || PatternUtils.patternLatitude(lon)) {
+			log.warn("经度格式错误");
+            return ResultUtils.error(ErrorConsts.CODE_10002, "经度格式错误");
+        }
+        if(StringUtils.isNull(lat) || PatternUtils.patternLatitude(lat)) {
+        	log.warn("纬度格式错误");
+            return ResultUtils.error(ErrorConsts.CODE_10002, "纬度格式错误");
+        }
 		Map<String, Object> parameter = new HashMap<>();
 		try {
 			parameter = JsonStringUtils.getMap(data);
@@ -78,6 +88,9 @@ public class OrderController {
 		}
 		if(parameter.isEmpty()) {
 			return ResultUtils.error(ErrorConsts.CODE_10002, "参数错误");
+		}
+		if(sellerService.checkLocation(parameter.get("sellerId").toString(), lat, lon) == 1) {
+			return ResultUtils.error(ErrorConsts.CODE_10003, "超过配送范围");
 		}
 		//检查店铺是否休息或不在营业时间段内
 		if(!sellerService.selectBusinessSign(parameter.get("sellerId").toString())) {
@@ -359,7 +372,7 @@ public class OrderController {
 	}
 	
 	@SuppressWarnings("unused")
-	private JSONObject isDate(String startDate, String endDate) {
+	public JSONObject isDate(String startDate, String endDate) {
 		if(!StringUtils.isNull(startDate)) {
 			if(!startDate.matches("^\\d{4}-\\d{1,2}-\\d{1,2}$")) {
 				log.warn("startDate is error waith startDate:{}", startDate);
@@ -460,9 +473,9 @@ public class OrderController {
 		}
 		String prepayId = resultMap.get("prepay_id").toString();
 		Map<String, String> responseMap = new HashMap<String, String>(7);
-		responseMap.put("appid", WxPayConsts.APPID);
-		responseMap.put("prepayid", "prepay_id=" + prepayId);
-		responseMap.put("noncestr", UUIDGenerator.getUUID());
+		responseMap.put("appId", WxPayConsts.APPID);
+		responseMap.put("package", "prepay_id=" + prepayId);
+		responseMap.put("nonceStr", UUIDGenerator.getUUID());
 		Long timeStamp = System.currentTimeMillis() / 1000;
 		responseMap.put("timeStamp", timeStamp + "");
 		responseMap.put("signType", "MD5");
@@ -470,7 +483,7 @@ public class OrderController {
 		String responseString = WxPayUtils.createLinkString(responseMap);
 		//MD5运算生成签名
 		String responseSign = WxPayUtils.sign(responseString, WxPayConsts.KEY, "utf-8").toUpperCase();
-		responseMap.put("sign", responseSign);
+		responseMap.put("paySign", responseSign);
 		return ResultUtils.success(responseMap);
 	}
 }

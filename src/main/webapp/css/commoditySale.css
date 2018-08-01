@@ -77,6 +77,7 @@ div.title_header>div:last-child>img{
     height: 24px;
 
 }
+
 .btn-group{
     display: flex;
     align-items: center;
@@ -95,6 +96,7 @@ div.title_header>div:last-child>img{
     color: #fff;
     padding: 5px 20px;
     border-radius: 20px;
+    text-decoration: none;
 }
 .body{
     position: relative;
@@ -107,7 +109,7 @@ div.title_header>div:last-child>img{
     width: 100%;
     border-bottom: 1px solid #F4F4F4;
     padding: 10px 0;
-    background-color: #ffffff;
+    background-color: #fff;
 }
 .body>div>div{
     padding: 0 10px;

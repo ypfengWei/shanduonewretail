@@ -1,5 +1,8 @@
 package com.shanduo.newretail.controller;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.slf4j.Logger;
@@ -12,10 +15,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.shanduo.newretail.consts.DefaultConsts;
 import com.shanduo.newretail.consts.ErrorConsts;
+import com.shanduo.newretail.consts.WxPayConsts;
 import com.shanduo.newretail.entity.service.TokenInfo;
 import com.shanduo.newretail.service.BaseService;
 import com.shanduo.newretail.service.CodeService;
 import com.shanduo.newretail.service.UserService;
+import com.shanduo.newretail.util.HttpRequest;
 import com.shanduo.newretail.util.PatternUtils;
 import com.shanduo.newretail.util.ResultUtils;
 import com.shanduo.newretail.util.StringUtils;
@@ -89,6 +94,11 @@ public class UserController {
 //			log.warn("openId is null waith openId:{}", openId);
 //			return ResultUtils.error(ErrorConsts.CODE_10002, "openId为空");
 //		}
+		parentId = baseService.checkUserToken(parentId);
+		if (null == parentId){
+			log.warn("token");
+			return ResultUtils.error(ErrorConsts.CODE_10002, "token错误");
+		}
 		try {
 			userService.saveUser(openId, phone, password, parentId, typeId, name);
 		} catch (Exception e) {
@@ -114,7 +124,7 @@ public class UserController {
 	 */
 	@RequestMapping(value = "loginuser",method={RequestMethod.POST,RequestMethod.GET})
 	@ResponseBody
-	public JSONObject loginUser(HttpServletRequest request, String phone, String password) {
+	public JSONObject loginUser(HttpServletRequest request, String phone, String password,String code) {
 		if(StringUtils.isNull(phone) || PatternUtils.patternPhone(phone)) {
 			log.warn("phone is error waith phone:{}", phone);
 			return ResultUtils.error(ErrorConsts.CODE_10002, "手机号输入错误");
@@ -127,8 +137,43 @@ public class UserController {
 		if(token == null) {
 			return ResultUtils.error(ErrorConsts.CODE_10003, "账号或密码错误");
 		}
+		if("3".equals(token.getJurisdiction())){
+			if("".equals(token.getOpenId()) || null==token.getOpenId()) {
+				if (StringUtils.isNull(code)) {
+		            log.warn("code为空");
+		            return ResultUtils.error(ErrorConsts.CODE_10002, "code为空");
+		        }
+				 String requestUrl = "https://api.weixin.qq.com/sns/oauth2/access_token?appid=APPID&secret=SECRET&code=CODE&grant_type=authorization_code".replace("APPID", WxPayConsts.APPID).replace("SECRET", WxPayConsts.APPSECRET).replace("CODE", code);
+			        // 发起GET请求获取凭证
+			       net.sf.json.JSONObject jsonObject = HttpRequest.httpsRequest(requestUrl, "GET", null);
+			       String openId = jsonObject.getString("openid");
+			       try{
+			        	int count = userService.updateopenId(openId, phone);
+			        	if(count<1){
+			        		return ResultUtils.error(ErrorConsts.CODE_10004, "修改openId失败");
+			        	}
+			        }catch (Exception e) {
+			        	return ResultUtils.error(ErrorConsts.CODE_10004, "修改openId失败");
+				}
+			}
+			
+		}
 		return ResultUtils.success(token);
 	}
+    @RequestMapping(value = "selectuser",method={RequestMethod.POST,RequestMethod.GET})
+    @ResponseBody
+    public JSONObject selectUser(HttpServletRequest request, String token) {
+        if (StringUtils.isNull(token)) {
+            log.warn("token为空");
+            return ResultUtils.error(ErrorConsts.CODE_10002, "token为空");
+        }
+        String id = baseService.checkUserToken(token);
+        if (null == id) {
+            log.warn("token失效");
+            return ResultUtils.error(ErrorConsts.CODE_10001, "token失效");
+        }
+        return ResultUtils.success(userService.selectUser(id));
+    }
 	
 	/**
 	 * 修改手机号
@@ -233,4 +278,69 @@ public class UserController {
 		}
 		return ResultUtils.success("修改成功");
 	}
+	
+	/**
+	 * 查询下级
+	 * @Title: listParent
+	 * @Description: TODO
+	 * @param @param request
+	 * @param @param token
+	 * @param @param page
+	 * @param @param pageSize
+	 * @param @return
+	 * @return JSONObject
+	 * @throws
+	 */
+	@RequestMapping(value = "listParent",method={RequestMethod.POST,RequestMethod.GET})
+	@ResponseBody
+	public JSONObject listParent(HttpServletRequest request, String token, String page, String pageSize) {
+		String userId = baseService.checkUserToken(token);
+		if(userId == null) {
+			return ResultUtils.error(ErrorConsts.CODE_10001, "请重新登录");
+		}
+		if(StringUtils.isNull(page) || !page.matches("^\\d*$")) {
+			log.warn("page is error waith page:{}", page);
+			return ResultUtils.error(ErrorConsts.CODE_10002, "页码错误");
+		}
+		if(StringUtils.isNull(pageSize) || !pageSize.matches("^\\d*$")) {
+			log.warn("pageSize is error waith pageSize:{}", pageSize);
+			return ResultUtils.error(ErrorConsts.CODE_10002, "记录错误");
+		}
+		Integer pages = Integer.valueOf(page);
+		Integer pageSizes = Integer.valueOf(pageSize);
+		Map<String, Object> resultMap = new HashMap<>(3);
+		try {
+			resultMap = userService.listParent(userId, pages, pageSizes);
+		} catch (Exception e) {
+			return ResultUtils.error(ErrorConsts.CODE_10004, "查询错误");
+		}
+		return ResultUtils.success(resultMap);
+	}
+	@RequestMapping(value = "updateopenid",method={RequestMethod.POST,RequestMethod.GET})
+    @ResponseBody
+    public JSONObject updateOpenId(HttpServletRequest request, String code,String id) {
+        if (StringUtils.isNull(code)) {
+            log.warn("openId为空");
+            return ResultUtils.error(ErrorConsts.CODE_10002, "openId为空");
+        }
+        String requestUrl = "https://api.weixin.qq.com/sns/oauth2/access_token?appid=APPID&secret=SECRET&code=CODE&grant_type=authorization_code".replace("APPID", WxPayConsts.APPID).replace("SECRET", WxPayConsts.APPSECRET).replace("CODE", code);
+        // 发起GET请求获取凭证
+       net.sf.json.JSONObject jsonObject = HttpRequest.httpsRequest(requestUrl, "GET", null);
+       String openId = jsonObject.getString("openid");
+        if (StringUtils.isNull(id)) {
+            log.warn("id为空");
+            return ResultUtils.error(ErrorConsts.CODE_10002, "id为空");
+        }
+        try{
+        	int count = userService.updateopenId(openId, id);
+        	if(count<1){
+        		return ResultUtils.error(ErrorConsts.CODE_10004, "修改openId失败");
+        	}
+        }catch (Exception e) {
+        	return ResultUtils.error(ErrorConsts.CODE_10004, "修改openId失败");
+		}
+        
+        return ResultUtils.success("修改成功");
+    }
+	
 }

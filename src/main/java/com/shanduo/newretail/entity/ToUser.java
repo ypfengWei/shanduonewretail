@@ -13,6 +13,8 @@ public class ToUser {
 
     private String password;
 
+    private String parentId;
+
     private String jurisdiction;
 
     private Date gmtCreate;
@@ -68,7 +70,13 @@ public class ToUser {
     public void setJurisdiction(String jurisdiction) {
         this.jurisdiction = jurisdiction == null ? null : jurisdiction.trim();
     }
+    public String getParentId() {
+        return parentId;
+    }
 
+    public void setParentId(String parentId) {
+        this.parentId = parentId == null ? null : parentId.trim();
+    }
     public Date getGmtCreate() {
         return gmtCreate;
     }

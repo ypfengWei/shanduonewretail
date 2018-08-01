@@ -23,7 +23,7 @@ import com.shanduo.newretail.mapper.UserSellerMapper;
 import com.shanduo.newretail.service.SellerService;
 import com.shanduo.newretail.util.DateUtils;
 import com.shanduo.newretail.util.LocationUtils;
-import com.shanduo.newretail.util.WxFileUtils;
+
 @Service
 public class SellerServiceImpl implements SellerService {
 	private static final Logger Log = LoggerFactory.getLogger(SellerServiceImpl.class);
@@ -31,7 +31,6 @@ public class SellerServiceImpl implements SellerService {
 	private UserSellerMapper userSellerMapper;
 	@Autowired
 	private CategoryMapper categoryMapper;
-	
 	
 	/*
 	 * 查询单个店铺种类下的附近所有店铺
@@ -109,6 +108,7 @@ public class SellerServiceImpl implements SellerService {
 		userSeller.setLon(new BigDecimal(userSellerMap.get("lon").toString()));
 		userSeller.setStartDate(Timestamp.valueOf("1970-01-01 "+userSellerMap.get("startDate").toString()+":00"));
 		userSeller.setEndDate(Timestamp.valueOf("1970-01-01 "+userSellerMap.get("endDate").toString()+":00"));
+		userSeller.setAddress(userSellerMap.get("address").toString());
 		return userSellerMapper.updateByPrimaryKeySelective(userSeller);
 	}
 	@Override
@@ -177,9 +177,39 @@ public class SellerServiceImpl implements SellerService {
 
 
 	@Override
-	public List<Map<String, Object>> selectSalesmanSubordinate(String id) {
+	public List<Map<String, Object>> selectSalesmanSubordinate(String id,Integer pageNum, Integer pageSize) {
+		pageNum = (pageNum-1)*pageSize;
+		List<Map<String, Object>> sellerList = userSellerMapper.selectSalesmanSubordinate(id,pageNum,pageSize);
+		return sellerList;
+	}
+
+	@Override
+	public int checkLocation(String sellerId, String lat, String lon) {
+		UserSeller seller = userSellerMapper.selectByPrimaryKey(sellerId);
+		if(null == seller) {
+			return 1;
+		}
+		double lats = Double.parseDouble(lat);
+		double lons = Double.parseDouble(lon);
+		double location = LocationUtils.getDistance(lons, lats, seller.getLon().doubleValue(), seller.getLat().doubleValue());
+		if(location <= 0.7) {
+			return 0;
+		}
+		return 1;
+	}
+
+
+	@Override
+	public Integer selectSubordinateCount(String id) {
 		
-		return userSellerMapper.selectSalesmanSubordinate(id);
+		return userSellerMapper.selectSubordinateCount(id);
+	}
+
+
+	@Override
+	public Double selectSalesmanAchievement(String id, String startDate, String endDate) {
+	
+		return userSellerMapper.selectSalesmanAchievement(id, startDate, endDate);
 	}
 
 }

@@ -197,7 +197,7 @@
   
   <select id="getOrder" resultMap="BaseResultMap">
     select 
-    id, openid, total_price
+    id, openid, seller_id, total_price, user_name
     from to_order
     where is_deleted = '0'
     and id = #{0}

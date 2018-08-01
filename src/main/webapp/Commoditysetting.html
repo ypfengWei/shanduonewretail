@@ -64,11 +64,10 @@
                                                         <div class="title" @click="onclick2(index)">{{commodity.name}}
                                                         </div>
                                                         <div class="subtitle" @click="onclick2(index)">
-                                                            {{commodity.introduceDetails}}
+                                                            库存:{{commodity.stock}}
                                                         </div>
                                                         <div class="number dis_flex">
-                                                            <span class="price" @click="onclick3(index)
-                                                            "><span class="col_hui">单价：</span>￥{{commodity.price}}</span>
+                                                            <span class="price" @click="onclick3(index)"><span class="col_hui">单价：</span>￥{{commodity.price}}</span>
                                                         </div>
                                                     </div>
                                                     <div class="right_top_pot dis_flex">
@@ -266,7 +265,6 @@
 
     function adapter(categoryId, cbOK, cbErr) {
         getGoods(localStore.token, categoryId, 2, pageIndex, pageCount, function (res) {
-            console.log(res);
             let newData = res.commodityInfoList;
             for (let i in newData) {
                 newData[i].picture = {

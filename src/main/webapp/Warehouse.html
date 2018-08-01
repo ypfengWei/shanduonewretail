@@ -23,7 +23,7 @@
     <title>商品选择</title>
 </head>
 <body>
-<div id="vueData" class="mescroll">
+<div id="vueData">
     <div class="body">
         <article id="menu">
             <div class="swiper-container">
@@ -45,10 +45,11 @@
                         <!--类别1-->
                         <div class="swiper-slide tab-pane fade in active" id="One1">
                             <div class="content">
-                                <div class="right">
+                                <div id="mescroll" class="right mescroll">
                                     <ul>
                                         <!--类别商品-->
-                                        <li v-for="(commodity,index) in commodityArray">
+                                        <li v-if="commodityArray.length==0"><span>没有商品</span></li>
+                                        <li v-else v-for="(commodity,index) in commodityArray">
                                             <div>
                                                 <div class="item">
                                                     <div class="item-left" @click="onclick1(index)">
@@ -69,8 +70,8 @@
                                                         <div class="number dis_flex">
                                                             <span class="price"
                                                                   @click="onclick3(index)">￥{{commodity.price}}</span>
-                                                            <input type="checkbox" name="Drink" value="cola"
-                                                                   checked="checked"/>
+                                                            <input type="checkbox" :value="commodity.id" name="Drink"
+                                                                   v-model="commodityIdList"/>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -102,8 +103,8 @@
         </article>
     </div>
     <footer>
-        <div class="dis_flex">
-            <a href="javascript:">确认</a>
+        <div class="dis_flex" @click="addWarehouseCommodity">
+            <a href="javascript:">添加</a>
         </div>
     </footer>
 </div>
@@ -119,13 +120,12 @@
             classify: [],
             commodityArray: [],
             currentCommodity: null,
-            totalPrice: 0,
-            totalCount: 0,
-            mescroll: null
+            mescroll: null,
+            commodityIdList: []
         },
         mounted: function () {
             let that = this;
-            that.mescroll = new MeScroll("vueData", {
+            that.mescroll = new MeScroll("mescroll", {
                 up: {
                     callback: that.upCallback,
                     auto: false
@@ -161,17 +161,37 @@
                 } else {
                     that.mescroll.endErr();
                 }
+            }, addWarehouseCommodity() {
+                let ids = vm.commodityIdList.join(',').split(',');
+                let jsonIds = [];
+                $.each(ids, function (i, item) {
+                    jsonIds.push(item);
+                });
+                if (vm.commodityIdList.length === 0) {
+                    toast('请勾选商品!');
+                    return;
+                }
+                layer.open({type: 2});
+                $.ajax({
+                    url: '/shanduonewretail/jcommodity/insertwarehousecommodity',
+                    data: {token: localStore.token, commodityIdList: JSON.stringify(jsonIds)},
+                    success: function (res) {
+                        if (res.success) {
+                            toast('添加成功');
+                            location.reload();
+                        }
+                    }, complete: function () {
+                        setTimeout(function () {
+                            layer.closeAll();
+                        }, 1000);
+                    }
+                });
             },
             imgShow() {
                 $('#outerdiv').fadeIn("fast");
             },
             closeDiglog() {
                 $('#outerdiv').fadeOut("fast");
-            },
-            gwcToggle() {
-                if (this.totalPrice > 0) {
-                    $('.gwcTog').toggle();
-                }
             },
             changer(classifyId) {
                 let selectId = $(event.currentTarget).parent().index();
@@ -203,20 +223,23 @@
     $(function () {
         getCommodityAllType(localStore.token, function (res) {
             vm.classify = res.result;
-            adapter(vm.classify[0].id);
+            currentClassifyid = vm.classify[0].id;
+            adapter(currentClassifyid);
         });
     });
 
     function adapter(classifyId, cbOK, cbErr) {
         getGoodsAll(localStore.token, classifyId, pageIndex, pageCount, function (res) {
-            let newData = res.commodityInfoList;
-            for (let i in newData) {
-                newData[i].picture = {
-                    myStyle: {backgroundImage: "url('/yapingzh/picture/" + newData[i].introducePicture + "')"},
-                    imgPath: '/yapingzh/picture/' + newData[i].introducePicture
-                };
+            if (res.commodityInfoList.length > 0) {
+                let newData = res.commodityInfoList;
+                for (let i in newData) {
+                    newData[i].picture = {
+                        myStyle: {backgroundImage: "url('/yapingzh/picture/" + newData[i].picture + "')"},
+                        imgPath: '/yapingzh/picture/' + newData[i].picture
+                    };
+                }
+                vm.commodityArray = vm.commodityArray.concat(newData);
             }
-            vm.commodityArray = vm.commodityArray.concat(newData);
             totalPage = res.totalPage;
             cbOK && cbOK();
         }, function () {

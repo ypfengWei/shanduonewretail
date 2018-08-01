@@ -78,6 +78,8 @@ div.title_header>div:last-child>img{
     height: 24px;
 }
 .btn-group{
+    display: flex;
+    align-items: center;
     margin-left: 10px;
     margin-bottom: 10px;
 }
@@ -86,7 +88,6 @@ div.title_header>div:last-child>img{
     align-items: center;
     height: 50px;
     padding-left: 10px;
-    font-size: 16px;
 }
 .div_inp>label{
     font-weight: normal;

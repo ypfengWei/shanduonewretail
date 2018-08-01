@@ -16,7 +16,7 @@
     <link rel="stylesheet" href="css/payment.css">
     <script src="js/jquery-3.3.1.js"></script>
     <script src="https://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
-    <script src="js/store_service.js"></script>
+    <script charset="utf-8" src="https://map.qq.com/api/js?v=2.exp"></script>
     <script src="js/layer.js"></script>
     <script src="js/utils.js"></script>
     <title>支付</title>
@@ -79,7 +79,7 @@
                     <div class="col_hui">{{item.count}}</div>
                 </div>
                 <div>
-                    <span>￥</span>
+                    <span>小计:￥</span>
                     <span class="title">{{item.subtotal}}</span>
                 </div>
             </div>
@@ -92,15 +92,10 @@
         </div>
     </div>
     <footer>
-        <div v-if="in_operation" class="dis_flex" @click="submitOrder">
+        <div class="dis_flex" @click="submitOrder">
             <span>微信支付</span>
             <span>&nbsp;￥&nbsp;</span>
             <span>{{totalPrice}}</span>
-        </div>
-        <div class="dis_flex" v-else>
-            <span>店家休息中</span>
-            <span></span>
-            <span></span>
         </div>
     </footer>
 </div>
@@ -109,25 +104,18 @@
 <script type="text/javascript">
     let href = location.href.split('#')[0];
     let storeId = GetQueryString('storeId');
+    let lat = null, lng = null;
+    let localCart = localStorage.localCart;
+    if (localCart) {
+        localCart = JSON.parse(localCart);
+    }
     var vm = new Vue({
         el: '#vueData',
         data: {
-            cart: null,
+            cart: [],
             totalPrice: 0,
-            contactInfo: {
-            	cityName: '长沙',
-                countryName: '岳麓区',
-                recevername: '李新荣',
-                recevertel: '18680602795',
-                receveraddr: 'xx街道'
-            },
-            remarks: '',
-            in_operation: true,
-            currentTime: null
-        }, mounted: function () {
-            setInterval(function () {
-                vm.currentTime = new Date().getTime();
-            }, 1000);
+            contactInfo: null,
+            remarks: ''
         },
         methods: {
             goBack() {
@@ -139,90 +127,131 @@
                         vm.contactInfo = {
                             cityName: res.cityName,
                             countryName: res.countryName,
+                            receveraddr: res.detailInfo,
                             recevername: res.userName,
-                            recevertel: res.telNumber,
-                            receveraddr: res.detailInfo
+                            recevertel: res.telNumber
                         };
+                        converterAddress([res.cityName, res.countryName, res.detailInfo], function (res) {
+                            /*{
+                                "type": "GEO_INFO",
+                                "detail": {
+                                    "address": "湖南省长沙市长沙县金科·时代中心",
+                                    "location": {
+                                        "lat": 28.229271,
+                                        "lng": 113.072594
+                                    },
+                                    "similarity": "0.800000",
+                                    "pcd_conflict_flag": "0",
+                                    "gps_type": "10",
+                                    "addressComponents": {
+                                        "street": "金科·时代中心",
+                                        "district": "长沙县",
+                                        "city": "长沙市",
+                                        "province": "湖南省",
+                                        "country": "中国"
+                                    },
+                                    "similarResults": []
+                                }
+                            }*/
+                            lat = res.detail.location.lat;
+                            lng = res.detail.location.lng;
+                        });
                     }
                 });
             }, submitOrder() {
                 if (vm.contactInfo) {
                     let orderDetails = [];
                     let commodityOrder = {
-                    	sellerId:storeId,
-                    	openId: openid,
+                        sellerId: storeId,
+                        openId: openid,
                         remarks: vm.remarks,
-                        name:vm.contactInfo.recevername,
-                        phone:vm.contactInfo.recevertel,
-                        address:vm.contactInfo.cityName + vm.contactInfo.countryName + vm.contactInfo.receveraddr
+                        name: vm.contactInfo.recevername,
+                        phone: vm.contactInfo.recevertel,
+                        address: vm.contactInfo.cityName + vm.contactInfo.countryName + vm.contactInfo.receveraddr
                     };
                     $.each(vm.cart, function (i, commodity) {
                         if (commodity.count > 0) {
                             orderDetails.push({
-                            	commodityId: commodity.commodityId,
-                            	number: commodity.count
+                                commodityId: commodity.commodityId,
+                                number: commodity.count
                             });
                         }
                     });
-                    commodityOrder.list=orderDetails;
+                    commodityOrder.list = orderDetails;
                     $.ajax({
                         type: "POST",
                         url: "/shanduonewretail/jorder/payorder",
                         data: {
+                            "lat": lat,
+                            "lon": lng,
                             "data": JSON.stringify(commodityOrder),
                         },
                         header: {
-                            'content-type': 'application/x-www-form-urlencoded'
-                        },
+                            'content-type':
+                                'application/x-www-form-urlencoded'
+                        }
+                        ,
                         dataType: "JSON",
-                        success: function (res) {
-                            if (res.success) {
-                                //发起微信支付
-                                wx.chooseWXPay({
-                                    timestamp: res.data.timeStamp,
-                                    nonceStr: res.data.nonceStr,
-                                    package: res.data.package,
-                                    signType: res.data.signType,
-                                    paySign: res.data.paySign,
-                                    success: function (res) {
-                                        emptyDB();
-                                        location.href = 'pay_success.html';
-                                    }, fail: function (res) {
-                                        toast('支付失败');
-                                    }, cancel: function (res) {
-                                        toast('取消支付');
-                                    }
-                                });
-                            } else {
-                                toast('订单错误');
+                        success:
+
+                            function (res) {
+                                if (res.success) {
+                                    //发起微信支付
+                                    wx.chooseWXPay({
+                                        timestamp: res.timeStamp,
+                                        nonceStr: res.nonceStr,
+                                        package: res.package,
+                                        signType: res.signType,
+                                        paySign: res.paySign,
+                                        success: function (res) {
+                                            emptyCart();
+                                            location.href = 'pay_success.html';
+                                        }, fail: function (res) {
+                                            toast('支付失败');
+                                        }, cancel: function (res) {
+                                            toast('取消支付');
+                                        }
+                                    });
+                                } else {
+                                    toast(res.errCodeDes);
+                                }
                             }
-                        },
+
+                        ,
                         error: function () {
                             toast('请求错误');
                         }
-                    });
+                    })
+                    ;
                 } else {
                     toast('请选择收货地址');
                 }
             }
         }
     });
+
+    // 清空店铺购物车
+    function emptyCart() {
+        let ary = vm.cart;
+        ary.splice(0, ary.length);
+        vm.cart = ary;
+        $.each(localCart, function (i, item) {
+            if (storeId === item.storeId) {
+                let ary1 = localCart;
+                ary1.splice(i, 1);
+                localCart = ary1;
+                localStorage.setItem('localCart', localCart);
+                return false;
+            }
+        });
+    }
+
     vm.$watch('cart', function () {
         let price = 0;
         $.each(vm.cart, function (i, item) {
             price += parseFloat(item.subtotal);
         });
         vm.totalPrice = price.toFixed(2);
-    });
-    let startTime = new Date();
-    startTime.setHours(9);
-    let endTime = new Date();
-    endTime.setHours(19);
-    endTime.setMinutes(29);
-    vm.$watch('currentTime', function () {
-        if (startTime.getTime() > vm.currentTime || vm.currentTime > endTime.getTime()) {
-            vm.in_operation = false;
-        }
     });
     $(function () {
         init_wx_js_sdk(href, function (result) {
@@ -232,22 +261,36 @@
                 timestamp: result.timestamp,
                 nonceStr: result.noncestr,
                 signature: result.signature,
-                jsApiList: ['editAddress', 'getLatestAddress', 'openAddress', 'chooseWXPay']
+                jsApiList: ['editAddress', 'getLatestAddress', 'openAddress', 'chooseWXPay', 'hideMenuItems']
+            });
+            wx.ready(function () {
+                wx.hideMenuItems({
+                    menuList: ['menuItem:share:timeline', 'menuItem:share:appMessage', 'menuItem:copyUrl', 'menuItem:share:qq', 'menuItem:share:QZone', 'menuItem:openWithQQBrowser', 'menuItem:openWithSafari', 'menuItem:share:email', 'menuItem:readMode']
+                });
             });
         });
-        init(function () {
-            queryCartAll(function (res) {
-                if (res.length > 0) {
-                    for (let i = 0; i < res.length; i++) {
-                        res[i].subtotal = (res[i].count * res[i].commodityPrice).toFixed(2);
-                        res[i].picture = {
-                            myStyle: {backgroundImage: "url('" + res[i].commodityPicture + "')"},
-                        };
-                    }
-                    vm.cart = res;
-                }
-            });
+
+        $.each(localCart, function (i, item) {
+            if (storeId === item.storeId) {
+                $.each(item.cartItem, function (j, iitem) {
+                    item.cartItem[j].subtotal = (iitem.count * iitem.commodityPrice).toFixed(2);
+                    item.cartItem[j].picture = {
+                        myStyle: {backgroundImage: "url('" + iitem.commodityPicture + "')"},
+                    };
+                });
+                vm.cart = item.cartItem;
+                return false;
+            }
         });
     });
+
+    function converterAddress(contactInfo, cbOk) {
+        let geocoder = new qq.maps.Geocoder({
+            complete: function (results) {
+                cbOk && cbOk(results);
+            },
+        });
+        geocoder.getLocation(contactInfo.join(','));
+    }
 </script>
 </html>

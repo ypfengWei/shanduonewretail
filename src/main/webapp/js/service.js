@@ -39,6 +39,12 @@ function getStoreClassify(storeId, typeId, back) {
     });
 }
 
+function loadStoreDetail(parameter, cbOk) {
+    $.get('/shanduonewretail/jseller/selectsellerdetails', parameter, function (res) {
+        cbOk && cbOk(res);
+    });
+}
+
 // 根据类别id查询该商店某类别下的商品
 function getGoods(storeId, categoryId, typeId, pageIndex, pageCount, cbOk, cbErr) {
     $.ajax({
@@ -64,37 +70,13 @@ function getGoodsAll(token, categoryId, page, pageSize, cbOk, cbErr) {
         url: "/shanduonewretail/jcommodity/selectwarehousecommodity",
         dataType: "JSON",
         data: {token: token, categoryId: categoryId, page: page, pageSize: pageSize},
-        success: function (result) {
-            console.log(result)
-            if (result.success) {
-                cbOk && cbOk(result.result);
+        success: function (res) {
+            console.log(res);
+            if (res.success) {
+                cbOk && cbOk(res.result);
             }
-        }, error: () => {
+        }, error: function ()  {
             cbErr && cbErr();
-        }
-    });
-}
-
-function addClassify() {
-    var classifyName = $('#classifyName').val();
-    if ($.trim(classifyName) === '') {
-        toast('填写类别名');
-        return;
-    }
-    $.ajax({
-        url: "/yapingzh/addClassify.do",
-        data: {"commodityClassification.commodityType": "" + classifyName + ""},
-        type: "POST",
-        dataType: "json",
-        success: function (result) {
-            if (result.success) {
-                toast('添加成功');
-                history.go(-1);
-            } else {
-                toast('类别重复');
-            }
-        }, error: function () {
-            toast('未知错误');
         }
     });
 }

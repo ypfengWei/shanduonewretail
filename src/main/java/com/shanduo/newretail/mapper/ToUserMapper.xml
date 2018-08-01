@@ -7,13 +7,19 @@
     <result column="name" jdbcType="VARCHAR" property="name" />
     <result column="mobile_phone" jdbcType="VARCHAR" property="mobilePhone" />
     <result column="password" jdbcType="VARCHAR" property="password" />
+    <result column="parent_id" jdbcType="VARCHAR" property="parentId" />
     <result column="jurisdiction" jdbcType="CHAR" property="jurisdiction" />
     <result column="gmt_create" jdbcType="TIMESTAMP" property="gmtCreate" />
     <result column="gmt_modified" jdbcType="TIMESTAMP" property="gmtModified" />
     <result column="is_deleted" jdbcType="BIT" property="isDeleted" />
   </resultMap>
+  <resultMap id="UserInfo" type="com.shanduo.newretail.entity.service.UserInfo">
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="mobile_phone" jdbcType="VARCHAR" property="phone" />
+  </resultMap>
   <sql id="Base_Column_List">
-    id, open_id, name, mobile_phone, password, jurisdiction, gmt_create, gmt_modified, 
+    id, open_id, name, mobile_phone, password,parent_id, jurisdiction, gmt_create, gmt_modified,
     is_deleted
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
@@ -28,11 +34,11 @@
   </delete>
   <insert id="insert" parameterType="com.shanduo.newretail.entity.ToUser">
     insert into to_user (id, open_id, name, 
-      mobile_phone, password, jurisdiction, 
+      mobile_phone, password,parent_id, jurisdiction,
       gmt_create, gmt_modified, is_deleted
       )
     values (#{id,jdbcType=VARCHAR}, #{openId,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, 
-      #{mobilePhone,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, #{jurisdiction,jdbcType=CHAR}, 
+      #{mobilePhone,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, #{parentId,jdbcType=VARCHAR}, #{jurisdiction,jdbcType=CHAR},
       #{gmtCreate,jdbcType=TIMESTAMP}, #{gmtModified,jdbcType=TIMESTAMP}, #{isDeleted,jdbcType=BIT}
       )
   </insert>
@@ -53,6 +59,9 @@
       </if>
       <if test="password != null">
         password,
+      </if>
+      <if test="parentId != null">
+        parent_id,
       </if>
       <if test="jurisdiction != null">
         jurisdiction,
@@ -83,6 +92,9 @@
       <if test="password != null">
         #{password,jdbcType=VARCHAR},
       </if>
+      <if test="parentId != null">
+        #{parentId,jdbcType=VARCHAR},
+      </if>
       <if test="jurisdiction != null">
         #{jurisdiction,jdbcType=CHAR},
       </if>
@@ -112,6 +124,9 @@
       <if test="password != null">
         password = #{password,jdbcType=VARCHAR},
       </if>
+      <if test="parentId != null">
+        parent_id = #{parentId,jdbcType=VARCHAR},
+      </if>
       <if test="jurisdiction != null">
         jurisdiction = #{jurisdiction,jdbcType=CHAR},
       </if>
@@ -133,6 +148,7 @@
       name = #{name,jdbcType=VARCHAR},
       mobile_phone = #{mobilePhone,jdbcType=VARCHAR},
       password = #{password,jdbcType=VARCHAR},
+      parent_id = #{parentId,jdbcType=VARCHAR},
       jurisdiction = #{jurisdiction,jdbcType=CHAR},
       gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
       gmt_modified = #{gmtModified,jdbcType=TIMESTAMP},
@@ -148,7 +164,7 @@
   </select>
   <select id="getLogin" resultMap="BaseResultMap">
     select 
-    id, name, mobile_phone, password, jurisdiction
+    id, name,open_id, mobile_phone, password, jurisdiction
     from to_user
     where is_deleted = '0'
     and mobile_phone = #{0}
@@ -165,4 +181,23 @@
     from to_user
     where jurisdiction = '1'
   </select>
+  <select id="countParent" parameterType="java.lang.String" resultType="java.lang.Integer">
+    select 
+    count(id)
+    from to_user
+    where parent_id = #{parentId,jdbcType=VARCHAR}
+  </select>
+  <select id="listParent" resultMap="UserInfo">
+    select 
+    id, name, mobile_phone
+    from to_user
+    where parent_id = #{0}
+    limit #{1},#{2}
+  </select>
+  
+  <update id="updateopenId" >
+    update to_user
+    set open_id = #{0}
+    where mobile_phone = #{1}
+  </update>
 </mapper>

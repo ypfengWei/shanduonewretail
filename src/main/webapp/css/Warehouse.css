@@ -8,3 +8,6 @@ footer>div:first-child>a:first-child{
     padding-left: 0;
     font-size: 16px;
 }
+.swiper-container-ul{
+    padding-bottom: 60px;
+}

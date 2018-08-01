@@ -1,5 +1,9 @@
 package com.shanduo.newretail.service.impl;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,11 +13,13 @@ import org.springframework.transaction.annotation.Transactional;
 import com.shanduo.newretail.consts.DefaultConsts;
 import com.shanduo.newretail.entity.ToUser;
 import com.shanduo.newretail.entity.service.TokenInfo;
+import com.shanduo.newretail.entity.service.UserInfo;
 import com.shanduo.newretail.mapper.ToUserMapper;
 import com.shanduo.newretail.mapper.UserTokenMapper;
 import com.shanduo.newretail.service.SellerService;
 import com.shanduo.newretail.service.UserService;
 import com.shanduo.newretail.util.MD5Utils;
+import com.shanduo.newretail.util.Page;
 import com.shanduo.newretail.util.UUIDGenerator;
 
 /**
@@ -27,6 +33,7 @@ import com.shanduo.newretail.util.UUIDGenerator;
 @Service
 public class UserServiceImpl implements UserService {
 
+
 	private static final Logger log = LoggerFactory.getLogger(UserServiceImpl.class);
 	
 	@Autowired
@@ -38,7 +45,7 @@ public class UserServiceImpl implements UserService {
 	
 	@Override
 	@Transactional(rollbackFor = Exception.class)
-	public int saveUser(String openId, String phone, String password, String parentId, String typrId, String name) {
+	public int saveUser(String openId, String phone, String password, String parentId, String typeId, String name) {
 		String id = UUIDGenerator.getUUID();
 		password = MD5Utils.getInstance().getMD5(password);
 //		String name = phone.replaceAll("(\\d{3})\\d{4}(\\d{4})","$1****$2");
@@ -48,13 +55,14 @@ public class UserServiceImpl implements UserService {
 		user.setName(name);
 		user.setMobilePhone(phone);
 		user.setPassword(password);
-		user.setJurisdiction(typrId);
+		user.setJurisdiction(typeId);
+		user.setParentId(parentId);
 		int i = userMapper.insertSelective(user);
 		if(i < 1) {
 			log.warn("regin user is error waith phone:{} and password:{}", phone, password);
 			throw new RuntimeException();
 		}
-		if(!typrId.equals(DefaultConsts.ROLE_MERCHANT)) {
+		if(!typeId.equals(DefaultConsts.ROLE_MERCHANT)) {
 			return 1;
 		}
 		i = sellerService.insertSeller(id, name, phone, parentId);
@@ -143,4 +151,27 @@ public class UserServiceImpl implements UserService {
 		return userMapper.selectAdministratorsId();
 	}
 
+	@Override
+	public ToUser selectUser(String id) {
+		return userMapper.selectByPrimaryKey(id);
+	}
+
+	@Override
+	public Map<String, Object> listParent(String parentId, Integer pageNum, Integer pageSize) {
+		int totalRecord = userMapper.countParent(parentId);
+		Page page = new Page(totalRecord, pageSize, pageNum);
+		pageNum = (page.getPageNum() - 1) * page.getPageSize();
+		List<UserInfo> list = userMapper.listParent(parentId, pageNum, page.getPageSize());
+		Map<String, Object> resultMap = new HashMap<String, Object>(3);
+		resultMap.put("page", page.getPageNum());
+		resultMap.put("totalPage", page.getTotalPage());
+		resultMap.put("data", list);
+		return resultMap;
+	}
+
+	@Override
+	public int updateopenId(String openId, String phone) {
+		
+		return userMapper.updateopenId(openId, phone);
+	}
 }

@@ -45,9 +45,9 @@
             </div>
             <div class="btn-group">
                 <span>类别：</span>
-                <select name="category">
-                    <option value="">请选择</option>
-                    <option value="">饮料</option>
+                <select v-model="categoryIndex" @change="selCategory">
+                    <option value="-1">请选择</option>
+                    <option v-for="(item,index) in classify" :value="index">{{item.category_name}}</option>
                 </select>
             </div>
             <div class="div_inp">
@@ -59,7 +59,7 @@
                 <input type="text" id="stock" v-model="commodity.stock">
             </div>
             <div class="foot_inp">
-                <input type="button" v-model="submitName" @click="submitDone" value="添加">
+                <input type="button" v-model="submitName" @click="submitDone">
             </div>
         </form>
     </div>
@@ -74,16 +74,19 @@
         el: '#vueData',
         data: {
             storeImg: null,
-            avatarUrl:null,
+            avatarUrl: null,
             classify: [],
             commodity: {
-                categoryName:'请选择',
-                picture:''
+                picture: ''
             },
             titleName: '修改商品',
             submitName: '保存修改',
-            categoryName: ''
-        },watch:{
+            categoryIndex: 0
+        }, mounted: function () {
+            if (!commodityId) {
+                this.categoryIndex = -1;
+            }
+        }, watch: {
             'avatarUrl': function (res) {
                 wx.uploadImage({
                     localId: res, // 需要上传的图片的本地ID，由chooseImage接口获得
@@ -92,10 +95,12 @@
                     }
                 })
             }
-        } ,methods: {
-            selCategory(categoryId, categoryName) {
-                vm.commodity.categoryId=categoryId;
-                vm.commodity.categoryName=categoryName;
+        }, methods: {
+            selCategory(e) {
+                let index = e.target.value;
+                if (index > -1) {
+                    vm.commodity.categoryId = vm.classify[index].id;
+                }
             },
             goBack() {
                 history.back();
@@ -112,7 +117,7 @@
                     commodity.commodityId = commodityId;
                     excuteSubmit('/shanduonewretail/jcommodity/updatecommodity', commodity);
                 } else {
-                    excuteSubmit('/shanduonewretail/jcommodity/insertcommodity',commodity);
+                    excuteSubmit('/shanduonewretail/jcommodity/insertcommodity', commodity);
                 }
             }, onLoadImg() {
                 wx.chooseImage({
@@ -137,37 +142,48 @@
             }
         }
     });
-
     function excuteSubmit(url, obj) {
         $.ajax({
             url: url,
             data: obj,
             success: function (res) {
-                console.log(res);
+                if (res.success) {
+                    toast('操作成功');
+                    setTimeout(function () {
+                        location.href = 'Commoditysetting.html';
+                    }, 1000);
+                }
             }
         });
     }
-
     $(function () {
         if (commodityId) {
             $.getJSON('/shanduonewretail/jcommodity/selectonecommodity', {
                 token: localStore.token,
                 commodityId: commodityId
             }, function (res) {
-                console.log(res);
                 if (res.success) {
                     vm.commodity = res.result;
                     vm.storeImg = imagePath + vm.commodity.picture;
+                    getCommodityAllType(localStore.token, function (res) {
+                        vm.classify = res.result;
+                        $.each(vm.classify, function (i, item) {
+                            if (item.id === vm.commodity.categoryId) {
+                                vm.categoryIndex = i;
+                                return false;
+                            }
+                        })
+                    });
                 }
             });
         } else {
             document.title = '添加商品';
             vm.titleName = '添加商品';
             vm.submitName = '添加上传';
+            getCommodityAllType(localStore.token, function (res) {
+                vm.classify = res.result;
+            });
         }
-        getCommodityAllType(localStore.token,function (res) {
-            vm.classify = res.result;
-        });
         init_wx_js_sdk(href, function (result) {
             //初始化接口环境
             wx.config({

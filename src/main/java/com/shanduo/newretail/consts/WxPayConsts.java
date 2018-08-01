@@ -1,30 +1,30 @@
 package com.shanduo.newretail.consts;
 
+import java.util.Properties;
+
 public class WxPayConsts {
 
 	/**
 	 * APPID
 	 */
-  // public static final String APPID = "wxe0870cb2d63b008d";
-   public static final String APPID = "wxe9811ac767f05237";
+   public static final String APPID;
+  
     /**
      * APPSECRET
      */
-  // public static final String APPSECRET = "4cb593859693a7cfd3a04bc6df454d3c";
-   public static final String APPSECRET = "d7570adcda710f54cd542c8e47f258c7";
+   public static final String APPSECRET;
 
-   public static final String TOKEN="weixin";
-
+   public static final String TOKEN;
     
     /**
      * 商户id
      */
-    public static final String MCH_ID = "1495349042";
+    public static final String MCH_ID;
     
     /**
      * 商户密钥
      */
-    public static final String KEY = "shanduo123456TCL987654888fa00888";
+    public static final String KEY;
     
     /**
      * 证书保存目录
@@ -62,6 +62,26 @@ public class WxPayConsts {
     public static final String CANCEL_URL= ConfigConsts.API_URL+"/jpay/cancel";
     
     /**
+     * 企业付款到零钱接口
+     */
+    public static final String TRANSFERS_URL = "https://api.mch.weixin.qq.com/mmpaymkttransfers/promotion/transfers";
+    
+    /**
+     * 企业付款到零钱查询接口
+     */
+    public static final String GETTRANSFERINFO_URL = "https://api.mch.weixin.qq.com/mmpaymkttransfers/gettransferinfo";
+    
+    /**
+     * 企业付款到银行卡接口
+     */
+    public static final String PAY_BANK_URL = "https://api.mch.weixin.qq.com/mmpaysptrans/pay_bank";
+    
+    /**
+     * 企业付款到银行卡接口
+     */
+    public static final String QUERY_BANK_URL = "https://api.mch.weixin.qq.com/mmpaysptrans/query_bank";
+    
+    /**
      * 调用微信接口的返回值的false
      */
     public static final String FAIL = "FAIL";
@@ -70,4 +90,19 @@ public class WxPayConsts {
      * 调用微信接口的返回值的ture
      */
     public static final String SUCCESS = "SUCCESS";
+    
+    static Properties properties = new Properties();
+    
+    static {
+    	try {
+    		properties.load(WxPayConsts.class.getResourceAsStream("/wxpay.properties"));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+    	APPID = properties.getProperty("wx.appid");
+    	APPSECRET = properties.getProperty("wx.appsecret");
+    	TOKEN = properties.getProperty("wx.token");
+    	MCH_ID = properties.getProperty("wx.mch_id");
+    	KEY = properties.getProperty("wx.key");
+    }
 }

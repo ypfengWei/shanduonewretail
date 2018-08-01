@@ -99,7 +99,6 @@ div.title_header>div:last-child>span{
 .div_li>img{
     width: 60px;
     height: 60px;
-    margin-left: 10px;
 }
 .body>div:first-child>img{
     margin-left: 10px;
@@ -190,4 +189,5 @@ div.title_header>div:last-child>span{
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+    max-width: 275px;
 }

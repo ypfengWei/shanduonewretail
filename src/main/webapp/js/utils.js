@@ -17,7 +17,7 @@ function toast(msg) {
     layer.open({
         content: msg
         , skin: 'msg'
-        , time: 2 //2秒后自动关闭
+        , time: 3 //2秒后自动关闭
     });
 }
 
@@ -47,7 +47,20 @@ function getOpenid(code) {
         }
     });
 }
+function getMyDate(str) {
+    let oDate = new Date(str),
+        oHour = oDate.getHours(),
+        oMin = oDate.getMinutes();
+    return getzf(oHour) + ':' + getzf(oMin);
+}
 
+//补0操作
+function getzf(num) {
+    if (parseInt(num) < 10) {
+        num = '0' + num;
+    }
+    return num;
+}
 function init_wx_js_sdk(pageUrl, cbOK) {
     $.getJSON("/shanduonewretail/jwechat/selectinitjssdk", {
         "pageUrl": pageUrl
@@ -77,7 +90,7 @@ function checkPhone(str) {
 
 //时间戳转本地时间
 function getLocalTime(nS) {
-    let now = new Date(parseInt(nS) * 1000),
+    let now = new Date(parseInt(nS)),
         y = now.getFullYear(),
         m = now.getMonth() + 1,
         d = now.getDate();

@@ -93,6 +93,8 @@ public class CommodityServiceImpl implements CommodityService {
 		}
 		Map<String, Object> resultMap = new HashMap<String, Object>(3);
 		if(0==totalRecord){
+			resultMap.put("totalPage", pageNum-1);
+			resultMap.put("commodityInfoList", commodityInfo);
 			return resultMap;
 		}
 		Page page = new Page(totalRecord, pageSize, pageNum);
@@ -102,8 +104,6 @@ public class CommodityServiceImpl implements CommodityService {
 		}else{
 			commodityInfo = commodityMapper.selectCommodity(categoryId, id,pageNum, page.getPageSize());
 		}
-		
-		resultMap.put("page", page.getPageNum());
 		resultMap.put("totalPage", page.getTotalPage());
 		resultMap.put("commodityInfoList", commodityInfo);
 		return resultMap;
@@ -232,21 +232,25 @@ public class CommodityServiceImpl implements CommodityService {
 				list.remove(commodityInfo);
 			}
 		}
+		List<CommodityInfo> commodityInfoList = new ArrayList<CommodityInfo>();
+		Page page = new Page(list.size(), pageSize, pageNum);
 		if(list.size()<(pageNum-1)*pageSize){
-			return null;
+			resultMap.put("totalPage", page.getTotalPage());
+			resultMap.put("commodityInfoList", commodityInfoList);
+			return resultMap;
 		}else if(list.size()>pageNum*pageSize){
-			list=list.subList((pageNum-1)*pageSize,pageNum*pageSize);
+			commodityInfoList=list.subList((pageNum-1)*pageSize,pageNum*pageSize);
 		}else{
-			List<CommodityInfo> commodityInfoList = new ArrayList<CommodityInfo>();
+			
 			for(int i=(pageNum-1)*pageSize;i<list.size();i++){
 				commodityInfoList.add(list.get(i));
 			}
-			resultMap.put("totalPage", list.size());
+			resultMap.put("totalPage", page.getTotalPage());
 			resultMap.put("commodityInfoList", commodityInfoList);
 			return resultMap;
 		}
-		resultMap.put("totalPage", list.size());
-		resultMap.put("commodityInfoList", list);
+		resultMap.put("totalPage",page.getTotalPage());
+		resultMap.put("commodityInfoList", commodityInfoList);
 		return resultMap;
 	}
 

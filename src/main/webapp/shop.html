@@ -1,186 +1,190 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport"
-	content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
-<meta content="telephone=no,email=no" name="format-detection">
-<!--禁止自动识别电话号码和邮箱-->
-<meta content="yes" name="apple-mobile-web-app-capable">
-<!--苹果手机：会删除默认的工具栏和菜单栏，网站开启对web app程序的支持-->
-<meta name="apple-mobile-web-app-status-bar-style" content="black" />
-<!--苹果手机：在web app应用下状态条（屏幕顶部条）的颜色,默认值为default（白色），可以定为black（黑色）和black-translucent（灰色半透明）。-->
-<meta name="apple-touch-fullscreen" content="yes" />
-<!--苹果手机：如果把一个web app添加到了主屏幕中，那么从主屏幕中打开这个web app则全屏显示-->
-<link rel="stylesheet" href="css/bootstrap.css">
-<link rel="stylesheet" href="css/shop.css">
-<link rel="stylesheet" type="text/css" href="css/mescroll.min.css">
-<script src="js/jquery-3.3.1.js"></script>
-<script src="js/layer.js"></script>
-<script src="js/utils.js"></script>
-<script src="js/service.js"></script>
-<script src="js/store_service.js"></script>
-<title>店铺</title>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"/>
+    <meta content="telephone=no,email=no" name="format-detection">
+    <!--禁止自动识别电话号码和邮箱-->
+    <meta content="yes" name="apple-mobile-web-app-capable">
+    <!--苹果手机：会删除默认的工具栏和菜单栏，网站开启对web app程序的支持-->
+    <meta name="apple-mobile-web-app-status-bar-style" content="black"/>
+    <!--苹果手机：在web app应用下状态条（屏幕顶部条）的颜色,默认值为default（白色），可以定为black（黑色）和black-translucent（灰色半透明）。-->
+    <meta name="apple-touch-fullscreen" content="yes"/>
+    <!--苹果手机：如果把一个web app添加到了主屏幕中，那么从主屏幕中打开这个web app则全屏显示-->
+    <link rel="stylesheet" href="css/bootstrap.css">
+    <link rel="stylesheet" href="css/shop.css">
+    <link rel="stylesheet" type="text/css" href="css/mescroll.min.css">
+    <script src="js/jquery-3.3.1.js"></script>
+    <script src="https://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
+    <script src="js/layer.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/service.js"></script>
+    <title>店铺</title>
 </head>
 <body>
-	<div id="vueData" class="mescroll">
-		<header class="shop">
-			<div class="title_header dis_flex">
-				<div @click="goBack">
-					<img src="img/return_2.png" alt="">
-				</div>
-				<div>
-					<span>闪多便利超市</span>
-				</div>
-				<div></div>
-			</div>
-			<div class="dis_flex">
-				<div class="dynamic_pic title_pic">
-					<div style="background-image: url('img/rectangle_2.png')"></div>
-				</div>
-				<div class="dis_flex">
-					<div>
-						<span>公告:</span> <span>需要香烟的请在备注栏备注，谢谢!，谢谢!，谢谢!，谢谢!，谢谢!，谢谢!，谢谢!，谢谢!，谢谢!，谢谢!，谢谢!，谢谢!，谢谢!</span>
-					</div>
-					<div>
-						<span>客服:</span> <span>182****0000</span>
-					</div>
-				</div>
-			</div>
-		</header>
-		<div class="time">
-			<p>营业时间:9:00-19:30</p>
-		</div>
-		<div class="body">
-			<article id="menu">
-				<div class="swiper-container">
-					<div class="dis_flex">
-						<div>
-							<div class="swiper-container-div">
-								<!--类别名-->
-								<ul class="swiper-container-ul" id="OneTab">
-									<!--类别名1切换-->
-									<li v-for="(item,index) in classify"
-										:class="index==0?'swiper-container-ul-li active':'swiper-container-ul-li'">
-										<a href="#" data-toggle="tab"
-										@click.prevent="changer(item.id)">{{item.category_name}}</a>
-									</li>
-								</ul>
-							</div>
-						</div>
-						<div class="swiper-wrapper tab-content">
-							<!--类别1-->
-							<div class="swiper-slide tab-pane fade in active" id="One1">
-								<div class="content">
-									<div class="right">
-                                      	<span>没有数据</span>
-										<!--<ul>
-											&lt;!&ndash;类别商品&ndash;&gt;
-											<li v-for="(commodity,index) in commodityArray">
-												<div>
-													<div class="item">
-														<div class="item-left" @click="onclick1(index)">
-															<div class="item-img">
-																<div class="dynamic_pic">
-																	<div :style="commodity.picture.myStyle"></div>
-																	<img class="dynamic_pic_img dis_none"
-																		:src="commodity.picture.imgPath" alt="">
-																</div>
-															</div>
-														</div>
-														<div class="item-right dis_flex">
-															<div class="title" @click="onclick2(index)">{{commodity.name}}
-															</div>
-															<div class="subtitle" @click="onclick2(index)">
-																{{commodity.introduceDetails}}</div>
-															<div class="number dis_flex">
-																<span class="price" @click="onclick3(index)">￥{{commodity.price}}</span>
-																<p class="plan dis_flex">
-																	<a href="javascript:"
-																		@click.prevent="addoff(commodity.id)" class="add_left"
-																		v-if="commodity.count>0"></a> <span
-																		v-if="commodity.count>0">{{commodity.count}}</span> <a
-																		href="javascript:"
-																		@click.prevent="addon(commodity.id,commodity.name,commodity.price,commodity.introduceDetails,commodity.picture.imgPath)"
-																		class="add_right"></a>
-																</p>
-															</div>
-														</div>
-													</div>
-												</div>
-											</li>
-										</ul>-->
-									</div>
-									<div style="clear: both"></div>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-				<!--商品详情-->
-				<div id="outerdiv" class="dis_flex" v-if="currentCommodity">
-					<div class="dis_flex">
-						<img id="bigimg" :src="currentCommodity.picture.imgPath" />
-						<div class="title">{{currentCommodity.name}}</div>
-						<div class="subtitle">{{currentCommodity.introduceDetails}}</div>
-						<div class="number dis_flex">
-							<span class="price">￥{{currentCommodity.price}}</span>
-							<p class="plan dis_flex">
-								<a href="javascript:"
-									@click.prevent="addoff(currentCommodity.id)" class="add_left"
-									v-if="currentCommodity.count>0"></a> <span
-									v-if="currentCommodity.count>0">{{currentCommodity.count}}</span>
-								<a href="javascript:"
-									@click.prevent="addon(currentCommodity.id,currentCommodity.name,currentCommodity.price,currentCommodity.introduceDetails,currentCommodity.picture.imgPath)"
-									class="add_right"></a>
-							</p>
-						</div>
-					</div>
-					<img src="img/pic_off.png" alt="" @click="closeDiglog">
-				</div>
-			</article>
-		</div>
-		<footer>
-			<div class="dis_flex">
-				<a href="#" @click.prevent="gwcToggle()">购物车:&nbsp;&nbsp;&nbsp;&nbsp;￥{{totalPrice}}</a>
-				<a href="javascript:" @click="submitOrderView">去结算</a>
-			</div>
-			<div class="gwcTog">
-				<div class="dis_flex">
-					<div class="dis_flex" @click="emptyCart">
-						<img src="img/delete.png" alt=""> <span class="col_hui">清空购物车</span>
-					</div>
-					<!--购物车商品-->
-					<div class="dis_flex">
-						<!--购物车单个商品-->
-						<div v-for="item in cart" v-if="item.count>0" class="dis_flex">
-							<div class="dis_flex">
-								<div class="title">{{item.commodityName}}</div>
-								<div class="subtitle">{{item.commodityDesc}}</div>
-							</div>
-							<div class="dis_flex">
-								<div class="number dis_flex">
-									<span class="price">￥{{item.commodityPrice}}</span>
-									<p class="plan dis_flex">
-										<a href="javascript:" class="add_left"
-											@click="cartUpdate('del',item.commodityId)"></a> <span>{{item.count}}</span>
-										<a href="javascript:" class="add_right"
-											@click="cartUpdate('add',item.commodityId)"></a>
-									</p>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</footer>
-	</div>
+<div id="vueData" class="mescroll">
+    <header class="shop">
+        <div class="title_header dis_flex">
+            <div @click="goBack">
+                <img src="img/return_3.png" alt="">
+            </div>
+            <div>
+                <span>{{storeInfo.sellerName}}</span>
+            </div>
+            <div></div>
+        </div>
+        <div class="dis_flex">
+            <div class="dynamic_pic title_pic">
+                <div :style="storeInfo.sellerPicture"></div>
+            </div>
+            <div class="dis_flex">
+                <div>
+                    <span>公告:</span><span>{{storeInfo.notice}}</span>
+                </div>
+                <div>
+                    <span>客服:</span><span>{{storeInfo.phone}}</span>
+                </div>
+            </div>
+        </div>
+    </header>
+    <div class="time">
+        <p>营业时间:{{storeInfo.startDate}}-{{storeInfo.endDate}}</p>
+    </div>
+    <div class="body">
+        <article id="menu">
+            <div class="swiper-container">
+                <div class="dis_flex">
+                    <div>
+                        <div class="swiper-container-div">
+                            <!--类别名-->
+                            <ul class="swiper-container-ul" id="OneTab">
+                                <!--类别名1切换-->
+                                <li v-for="(item,index) in classify"
+                                    :class="index==0?'swiper-container-ul-li active':'swiper-container-ul-li'">
+                                    <a href="#" data-toggle="tab"
+                                       @click.prevent="changer(item.id)">{{item.category_name}}</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="swiper-wrapper tab-content">
+                        <!--类别1-->
+                        <div class="swiper-slide tab-pane fade in active" id="One1">
+                            <div class="content">
+                                <div class="right">
+                                    <ul>
+                                        <!--类别商品-->
+                                        <li v-for="(commodity,index) in commodityArray">
+                                            <div>
+                                                <div class="item">
+                                                    <div class="item-left" @click="onclick1(index)">
+                                                        <div class="item-img">
+                                                            <div class="dynamic_pic">
+                                                                <div :style="commodity.picture.myStyle"></div>
+                                                                <img class="dynamic_pic_img dis_none"
+                                                                     :src="commodity.picture.imgPath" alt="">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="item-right dis_flex">
+                                                        <div class="title" @click="onclick2(index)">{{commodity.name}}
+                                                        </div>
+                                                        <div class="subtitle" @click="onclick2(index)">
+                                                            库存:{{commodity.stock}}
+                                                        </div>
+                                                        <div class="number dis_flex">
+                                                            <span class="price" @click="onclick3(index)">￥{{commodity.price}}</span>
+                                                            <p class="plan dis_flex">
+                                                                <a href="javascript:"
+                                                                   @click.prevent="addoff(commodity.id)"
+                                                                   class="add_left"
+                                                                   v-if="commodity.count>0"></a> <span
+                                                                    v-if="commodity.count>0">{{commodity.count}}</span>
+                                                                <a href="javascript:"
+                                                                   @click.prevent="addon(commodity.id,commodity.name,commodity.price,commodity.introduceDetails,commodity.picture.imgPath)"
+                                                                   class="add_right"></a>
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div style="clear: both"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--商品详情-->
+            <div id="outerdiv" class="dis_flex" v-if="currentCommodity">
+                <div class="dis_flex">
+                    <img id="bigimg" :src="currentCommodity.picture.imgPath"/>
+                    <div class="title">{{currentCommodity.name}}</div>
+                    <div class="subtitle">{{currentCommodity.introduceDetails}}</div>
+                    <div class="number dis_flex">
+                        <span class="price">￥{{currentCommodity.price}}</span>
+                        <p class="plan dis_flex">
+                            <a href="javascript:"
+                               @click.prevent="addoff(currentCommodity.id)" class="add_left"
+                               v-if="currentCommodity.count>0"></a> <span
+                                v-if="currentCommodity.count>0">{{currentCommodity.count}}</span>
+                            <a href="javascript:"
+                               @click.prevent="addon(currentCommodity.id,currentCommodity.name,currentCommodity.price,currentCommodity.introduceDetails,currentCommodity.picture.imgPath)"
+                               class="add_right"></a>
+                        </p>
+                    </div>
+                </div>
+                <img src="img/pic_off.png" alt="" @click="closeDiglog">
+            </div>
+        </article>
+    </div>
+    <footer>
+        <div class="dis_flex">
+            <a href="#" @click.prevent="gwcToggle()">购物车:&nbsp;&nbsp;&nbsp;&nbsp;￥{{totalPrice}}</a>
+            <a v-if="in_operation" href="javascript:" @click="submitOrderView">去结算</a>
+            <a v-else href="javascript:">商家已打烊</a>
+        </div>
+        <div class="gwcTog">
+            <div class="dis_flex">
+                <div class="dis_flex" @click="emptyCart">
+                    <img src="img/delete.png" alt=""> <span class="col_hui">清空购物车</span>
+                </div>
+                <!--购物车商品-->
+                <div class="dis_flex">
+                    <!--购物车单个商品-->
+                    <div v-for="item in cart" v-if="item.count>0" class="dis_flex">
+                        <div class="dis_flex">
+                            <div class="title">{{item.commodityName}}</div>
+                            <div class="subtitle">{{item.commodityDesc}}</div>
+                        </div>
+                        <div class="dis_flex">
+                            <div class="number dis_flex">
+                                <span class="price">￥{{item.commodityPrice}}</span>
+                                <p class="plan dis_flex">
+                                    <a href="javascript:" class="add_left"
+                                       @click="cartUpdate('del',item.commodityId)"></a> <span>{{item.count}}</span>
+                                    <a href="javascript:" class="add_right"
+                                       @click="cartUpdate('add',item.commodityId)"></a>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+</div>
 </body>
 <script src="js/mescroll.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 <script type="text/javascript">
-let storeId = GetQueryString('storeId');
+    let storeId = GetQueryString('storeId');
+    let code = GetQueryString('code');
     let pageIndex = 1, pageCount = 20, totalPage = 0, itemIndex = 0, currentClassifyid;
+    let href = location.href.split('#')[0];
     var vm = new Vue({
         el: '#vueData',
         data: {
@@ -190,10 +194,21 @@ let storeId = GetQueryString('storeId');
             cart: [],
             totalPrice: 0,
             totalCount: 0,
-            mescroll: null
+            mescroll: null,
+            localCart: null,
+            storeInfo: {},
+            in_operation: true,
+            currentTime: null,
+            startDate: null,
+            endDate: null
         },
         mounted: function () {
             let that = this;
+            if (localStorage.localCart) {
+                that.localCart = JSON.parse(localStorage.localCart);
+            } else {
+                that.localCart = [];
+            }
             that.mescroll = new MeScroll("vueData", { //请至少在vue的mounted生命周期初始化mescroll,以确保您配置的id能够被找到
                 up: {
                     callback: that.upCallback, //
@@ -208,6 +223,38 @@ let storeId = GetQueryString('storeId');
             $('.gwcTog').hide();
             //图片放大
             $('#outerdiv').hide();
+            setInterval(function () {
+                vm.currentTime = new Date().getTime();
+            }, 1000);
+        }, watch: {
+            'storeInfo.startDate': function (res) {
+                let start = vm.storeInfo.startDate.split(':');
+                let startStr = start[0];
+                if (startStr.startsWith('0')) {
+                    startStr = startStr.substring(0, 1);
+                }
+                let startStr1 = start[1];
+                if (startStr1.startsWith('0')) {
+                    startStr1 = startStr1.substring(0, 1);
+                }
+                vm.startDate = new Date();
+                vm.startDate.setHours(startStr);
+                vm.startDate.setMinutes(startStr1);
+            },
+            'storeInfo.endDate': function (res) {
+                let end = vm.storeInfo.endDate.split(':');
+                let endStr = end[0];
+                if (endStr.startsWith('0')) {
+                    endStr = endStr.substring(0, 1);
+                }
+                let endStr1 = end[1];
+                if (endStr1.startsWith('0')) {
+                    endStr1 = endStr1.substring(0, 1);
+                }
+                vm.endDate = new Date();
+                vm.endDate.setHours(endStr);
+                vm.endDate.setMinutes(endStr1);
+            }
         },
         methods: {
             downCallback() {
@@ -215,6 +262,7 @@ let storeId = GetQueryString('storeId');
                 emptyData();
                 adapter(currentClassifyid, function () {
                     that.mescroll.endByPage(pageCount, totalPage);
+                    notifyDataSetChanged();
                 }, function () {
                     that.mescroll.endErr();
                 });
@@ -225,6 +273,7 @@ let storeId = GetQueryString('storeId');
                     pageIndex++;
                     adapter(currentClassifyid, function () {
                         that.mescroll.endByPage(pageCount, totalPage);
+                        notifyDataSetChanged();
                     }, function () {
                         that.mescroll.endErr();
                     });
@@ -232,8 +281,12 @@ let storeId = GetQueryString('storeId');
                     that.mescroll.endErr();
                 }
             },
-            goBack(){
-            	history.back();
+            goBack() {
+                if (document.referrer === '' || document.referrer.indexOf('shanduonewretail') === -1) {
+                    location.href = 'index.html';
+                } else {
+                    history.back();
+                }
             },
             imgShow() {
                 $('#outerdiv').fadeIn("fast");
@@ -247,33 +300,7 @@ let storeId = GetQueryString('storeId');
                 }
             },
             addoff(commodityId) {
-                cartAction('del', {commodityId: commodityId}, function () {
-                    queryCartAll(function (res) {
-                        vm.cart = res;
-                    });
-                }, function () {
-                    queryCartAll(function (res) {
-                        vm.cart = res;
-                    });
-
-                });
-            },
-            emptyCart() {
-                emptyDB();
-                let ary = vm.cart;
-                ary.splice(0, ary.length);
-                vm.cart = ary;
-            },
-            cartUpdate(action, commodityId) {
-                cartAction(action, {commodityId: commodityId}, function () {
-                    queryCartAll(function (res) {
-                        vm.cart = res;
-                    });
-                }, function () {
-                    queryCartAll(function (res) {
-                        vm.cart = res;
-                    });
-                });
+                cartAction('del', {commodityId: commodityId});
             },
             addon(commodityId, commodityName, commodityPrice, commodityDesc, commodityPicture) {
                 cartAction('add', {
@@ -283,16 +310,16 @@ let storeId = GetQueryString('storeId');
                     commodityDesc: commodityDesc,
                     commodityPicture: commodityPicture,
                     count: 1
-                }, function () {
-                    queryCartAll(function (res) {
-                        vm.cart = res;
-                    });
-                }, function () {
-                    queryCartAll(function (res) {
-                        vm.cart = res;
-                    });
                 });
-
+            },
+            emptyCart() {
+                emptyCart();
+                let ary = vm.cart;
+                ary.splice(0, ary.length);
+                vm.cart = ary;
+            },
+            cartUpdate(action, commodityId) {
+                cartAction(action, {commodityId: commodityId});
             },
             changer(classifyId) {
                 let that = this;
@@ -313,6 +340,7 @@ let storeId = GetQueryString('storeId');
                     } else {
                         that.mescroll.endSuccess(pageCount, false);
                     }
+                    notifyDataSetChanged();
                 }, function () {
                     that.mescroll.endErr();
                 });
@@ -331,12 +359,18 @@ let storeId = GetQueryString('storeId');
             },
             submitOrderView() {
                 if (vm.totalCount > 0) {
-                    location.href = 'payment.html?storeId='+storeId;
+                    location.href = 'payment.html?storeId=' + storeId;
                 } else {
                     toast('客官选一件吧!');
                 }
             }
-
+        }
+    });
+    vm.$watch('currentTime', function () {
+        if (vm.startDate && vm.endDate) {
+            if (vm.currentTime < vm.startDate.getTime() || vm.currentTime > vm.endDate.getTime()) {
+                vm.in_operation = false;
+            }
         }
     });
     vm.$watch('cart', function () {
@@ -351,9 +385,22 @@ let storeId = GetQueryString('storeId');
         if ($(".gwcTog").css("display") === 'block' && vm.totalCount === 0) {
             $('.gwcTog').toggle();
         }
+        let onat = false;
+        $.each(vm.localCart, function (i, item) {
+            if (storeId === item.storeId) {
+                onat = true;
+                vm.localCart[i].cartItem = vm.cart;
+                return false;
+            }
+        });
+        if (!onat) {
+            vm.localCart.push({storeId: storeId, cartItem: vm.cart});
+        }
+        localStorage.localCart = JSON.stringify(vm.localCart);
         notifyDataSetChanged();
+    }, {
+        deep: true
     });
-
     function notifyDataSetChanged() {
         if (vm.cart.length > 0) {
             for (let i = 0; i < vm.cart.length; i++) {
@@ -373,45 +420,155 @@ let storeId = GetQueryString('storeId');
             }
         }
     }
-
     $(function () {
-        init();
-        getStoreClassify(storeId,1,function (result) {
-           vm.classify = result;
+        if (!storeId) {
+            location.href = 'index.html';
+            return;
+        }
+        if (!openid) {
+            if (code) {
+                getOpenid(code);
+            } else {
+                location.href = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxe0870cb2d63b008d&redirect_uri=https://yapinkeji.com/shanduonewretail/shop.html?storeId=' + storeId + '&response_type=code&scope=snsapi_userinfo#wechat_redirect';
+            }
+        }
+        init_wx_js_sdk(href, function (result) {
+            //初始化接口环境
+            wx.config({
+                appId: result.appid,
+                timestamp: result.timestamp,
+                nonceStr: result.noncestr,
+                signature: result.signature,
+                jsApiList: ['onMenuShareTimeline', 'onMenuShareAppMessage', 'hideMenuItems']
+            });
+            wx.ready(function () {
+                wx.hideMenuItems({
+                    menuList: ['menuItem:copyUrl', 'menuItem:share:qq', 'menuItem:share:QZone', 'menuItem:openWithQQBrowser', 'menuItem:openWithSafari', 'menuItem:share:email', 'menuItem:readMode']
+                });
+                wx.onMenuShareTimeline({
+                    title: '发现好货！', // 分享标题
+                    desc: '身边的小商店！', // 分享描述
+                    link: 'https://yapinkeji.com/shanduonewretail/shop.html?storeId=' + storeId, // 分享链接
+                    imgUrl: 'https://yapinkeji.com/logo.png', // 分享图标
+                    success: function () {
+                        toast('分享成功')
+                    },
+                    cancel: function () {
+                        // 用户取消分享后执行的回调函数
+                    }
+                });
+                wx.onMenuShareAppMessage({
+                    title: '发现好货！', // 分享标题
+                    desc: '身边的小商店！', // 分享描述
+                    link: 'https://yapinkeji.com/shanduonewretail/shop.html?storeId=' + storeId, // 分享链接
+                    imgUrl: 'https://yapinkeji.com/logo.png', // 分享图标
+                    success: function () {
+                        toast('分享成功')
+                    },
+                    cancel: function () {
+                        // 用户取消分享后执行的回调函数
+                    }
+                });
+            });
+        });
+        loadStoreDetail({id: storeId, typeId: 0}, function (res) {
+            if (res.success) {
+                vm.storeInfo = res.result;
+                if (vm.storeInfo.sellerPicture) {
+                    vm.storeInfo.sellerPicture = {backgroundImage: "url('/yapingzh/picture/" + vm.storeInfo.sellerPicture + "')"}
+                } else {
+                    vm.storeInfo.sellerPicture = {backgroundImage: "url(''img/rectangle_2.png'')"}
+                }
+                vm.storeInfo.endDate = getMyDate(vm.storeInfo.endDate);
+                vm.storeInfo.startDate = getMyDate(vm.storeInfo.startDate);
+            }
+        });
+        getStoreClassify(storeId, 1, function (result) {
+            vm.classify = result;
             currentClassifyid = vm.classify[0].id;
-            adapter(currentClassifyid);
+            adapter(currentClassifyid, function () {
+                queryCartAll(storeId);
+            });
         });
     });
-
     function adapter(categoryId, cbOK, cbErr) {
-    	getGoods(storeId,categoryId,1, pageIndex, pageCount, function (res) {
+        getGoods(storeId, categoryId, 1, pageIndex, pageCount, function (res) {
             let newData = res.commodityInfoList;
             for (let i in newData) {
                 newData[i].picture = {
                     myStyle: {backgroundImage: "url('/yapingzh/picture/" + newData[i].picture + "')"},
                     imgPath: '/yapingzh/picture/' + newData[i].picture
                 };
-                newData[i].count=0;
+                newData[i].count = 0;
             }
             vm.commodityArray = vm.commodityArray.concat(newData);
             totalPage = res.totalPage;
-            queryCartAll(function (res) {
-                if (res.length > 0) {
-                    vm.cart = res;
-                }
-            });
             cbOK && cbOK();
         }, function () {
             cbErr && cbErr();
         });
     }
-
     function emptyData() {
         let ary = vm.commodityArray;
         ary.splice(0, ary.length);
         vm.commodityArray = ary;
         totalPage = 0;
         pageIndex = 1;
+    }
+    // 获取本地购物车所有商品数据
+    function queryCartAll() {
+        if (vm.localCart.length > 0) {
+            $.each(vm.localCart, function (i, item) {
+                if (storeId === item.storeId) {
+                    vm.cart = item.cartItem;
+                    return false;
+                }
+            });
+        }
+    }
+    function delCommodity(commodityId) {
+        $.each(vm.cart, function (i, item) {
+            if (commodityId === item.commodityId) {
+                let ary = vm.cart;
+                ary.splice(i, 1);
+                vm.cart = ary;
+                return false;
+            }
+        });
+    }
+    // 清空店铺购物车
+    function emptyCart() {
+        let ary = vm.cart;
+        ary.splice(0, ary.length);
+        vm.cart = ary;
+    }
+    function cartAction(actionMode, obj) {
+        let commodity = null;
+        let index = null;
+        $.each(vm.cart, function (i, item) {
+            if (obj.commodityId === item.commodityId) {
+                index = i;
+                commodity = item;
+                return false;
+            }
+        });
+        if ('del' === actionMode) {
+            if (commodity) {
+                let count = commodity.count;
+                if (count > 0) {
+                    count--;
+                    commodity.count = count;
+                    vm.cart[index] = commodity;
+                }
+            }
+        } else if ('add' === actionMode) {
+            if (!commodity) {
+                vm.cart.push(obj);
+            } else {
+                commodity.count += 1;
+                vm.cart[index] = commodity;
+            }
+        }
     }
 </script>
 </html>

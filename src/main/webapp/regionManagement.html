@@ -33,7 +33,7 @@
                     <span>张三</span>
                     <span>电话：158xxxx4293</span>
                 </div>
-                <div class="dis_flex">
+                <div class="dis_flex" @click="toRegisterView">
                     <span class="col_cheng">注册代理</span>
                 </div>
             </div>
@@ -71,4 +71,15 @@
     </div>
 </div>
 </body>
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script>
+    let vm = new Vue({
+        el: '#vueData',
+        methods: {
+            toRegisterView(){
+                location.href='register.html?registerTypeId=2';
+            }
+        }
+    });
+</script>
 </html>
