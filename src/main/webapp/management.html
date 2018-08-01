@@ -15,6 +15,8 @@
     <link rel="stylesheet" type="text/css" href="css/management.css">
     <title></title>
     <script src="js/jquery-3.3.1.js"></script>
+    <script src="js/layer.js"></script>
+    <script src="js/utils.js"></script>
 </head>
 <body>
 <div id="vueData">
@@ -31,8 +33,8 @@
             </div>
             <div class="dis_flex">
                 <div class="dis_flex">
-                    <span>张三</span>
-                    <span>电话：158xxxx4293</span>
+                    <span>{{storeInfo.name}}</span>
+                    <span>电话：{{storeInfo.phone}}</span>
                 </div>
                 <div class="dis_flex" @click="toRegisterView">
                     <span class="col_cheng">注册业务员</span>
@@ -43,19 +45,19 @@
     </header>
     <div class="body">
         <div>
-            <div class="Salesman">
+            <div class="Salesman" v-for="item in salesMans">
                 <div class="dis_flex">
                     <img src="img/ywyct.png">
                     <div class="dis_flex">
                         <div class="dis_flex col_hui">
-                            <span class="fon_18">业务员名称：张三</span>
-                            <span>电话：158xxxx5293</span>
+                            <span class="fon_18">业务员名称：{{item.name}}</span>
+                            <span>电话：{{item.phone}}</span>
                         </div>
-                        <span class="col_cheng">业绩：1300.0000</span>
+                        <span class="col_cheng">业绩：{{item.achievement}}</span>
                     </div>
                 </div>
                 <div class="dis_flex">
-                    <span class="col_cheng fon_32">3</span>
+                    <span class="col_cheng fon_32">{{item.sellerNum}}</span>
                     <span class="col_hui fon_18">店铺数</span>
                 </div>
             </div>
@@ -65,8 +67,15 @@
 </body>
 <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 <script>
+    let localStore = JSON.parse(localStorage.localStore), pageIndex = 1, pageCount = 20, totalPage = 0;
     let vm = new Vue({
         el: '#vueData',
+        data: {
+            imagePath: '/yapingzh/picture/',
+            salesMans: [],
+            subordinateNum: 0,
+            storeInfo:localStore
+        },
         methods: {
             toRegisterView() {
                 location.href = 'register.html?registerTypeId=4';
@@ -75,5 +84,25 @@
             }
         }
     });
+    $(function () {
+        loadSalesManArray();
+    });
+
+    function loadSalesManArray() {
+        $.ajax({
+            url: '/shanduonewretail/jseller/selectregionsubordinate',
+            data: {token: "1333789872a6477a970d68593f46ce17", page: pageIndex, pageSize: pageCount},
+            dataType: 'json',
+            success: function (res) {
+                if (res.success) {
+                    vm.salesMans = vm.salesMans.concat(res.result.data);
+                    totalPage = res.result.totalPage;
+                    vm.subordinateNum = res.result.subordinateNum;
+                }
+            }, error: function () {
+                toast('网络请求失败')
+            }
+        });
+    }
 </script>
 </html>
