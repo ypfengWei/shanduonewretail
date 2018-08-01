@@ -200,4 +200,6 @@
     set open_id = #{0}
     where mobile_phone = #{1}
   </update>
+   
+  
 </mapper>
