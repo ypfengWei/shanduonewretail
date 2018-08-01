@@ -124,7 +124,7 @@ public interface UserService {
 	 * @return Map<String, Object>
 	 * @throws
 	 */
-	Map<String, Object> listParent(String parentId, Integer pageNum, Integer pageSize,String startDate, String endDate);
+	Map<String, Object> listParent(String parentId, Integer pageNum, Integer pageSize,String startDate, String endDate,int type);
 	
 	 
 }

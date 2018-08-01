@@ -354,10 +354,9 @@ public class SellerController {
               Log.warn("token失效");
               return new ErrorBean(ErrorConsts.CODE_10001, "token失效");
           }
-          List<UserInfo> salesmanList = new ArrayList<UserInfo>();
           Map<String, Object> regionMap = new HashMap<>();
           try {
-          	regionMap = userService.listParent(id,Integer.valueOf(page),Integer.valueOf(pageSize), startDate, endDate);
+          	regionMap = userService.listParent(id,Integer.valueOf(page),Integer.valueOf(pageSize), startDate, endDate,1);
           	if("1".equals(page)){
               	Double regionAchievement = sellerService.selectRegionAchievement(id, startDate, endDate);
               	regionMap.put("regionAchievement", regionAchievement);
@@ -368,7 +367,7 @@ public class SellerController {
           return new SuccessBean(regionMap);
       }
       /**
-       *  查询该区域管理业务员数、业绩
+       *  查询区域管理数、业绩
        * @param request
        * @param token
        * @param startDate
@@ -377,10 +376,10 @@ public class SellerController {
        * @param pageSize
        * @return
        */
-      /*  @RequestMapping(value = "selectregionsubordinate", method = {RequestMethod.POST, RequestMethod.GET})
+        @RequestMapping(value = "selectmanagesubordinate", method = {RequestMethod.POST, RequestMethod.GET})
         @ResponseBody
-        //http://localhost:8081/shanduonewretail/jseller/selectregionsubordinate?token=1
-        public ResultBean selectRegionSubordinate(HttpServletRequest request, String token,String startDate, String endDate, String page, String pageSize) {
+        //http://localhost:8081/shanduonewretail/jseller/selectmanagesubordinate?token=1
+        public ResultBean selectManageSubordinate(HttpServletRequest request, String token,String startDate, String endDate, String page, String pageSize) {
             if (StringUtils.isNull(token)) {
                 Log.warn("token为空");
                 return new ErrorBean(ErrorConsts.CODE_10002, "token为空");
@@ -403,17 +402,19 @@ public class SellerController {
                 return new ErrorBean(ErrorConsts.CODE_10001, "token失效");
             }
             List<UserInfo> salesmanList = new ArrayList<UserInfo>();
-            Map<String, Object> regionMap = new HashMap<>();
+            Map<String, Object> manageMap = new HashMap<>();
             try {
+            	manageMap = userService.listParent(id,Integer.valueOf(page),Integer.valueOf(pageSize), startDate, endDate,2);
             	if("1".equals(page)){
-                	Double regionAchievement = sellerService.selectRegionAchievement(id, startDate, endDate);
-                	regionMap.put("regionAchievement", regionAchievement);
+            		Integer sellerNum = sellerService.selectSellerCount();//店铺总数
+            		manageMap.put("sellerNum", sellerNum);
+                	Double totalAchievement = sellerService.selectManageAchievement(id, startDate, endDate);
+                	manageMap.put("totalAchievement", totalAchievement);
             	}
-            	regionMap = userService.listParent(id,Integer.valueOf(page),Integer.valueOf(pageSize), startDate, endDate);
             	
             } catch (Exception e) {
                 return new ErrorBean(ErrorConsts.CODE_10004, "查询失败");
             }
-            return new SuccessBean(regionMap);
-        }*/
+            return new SuccessBean(manageMap);
+        }
 }

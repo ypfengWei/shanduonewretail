@@ -160,7 +160,7 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public Map<String, Object> listParent(String parentId, Integer pageNum, Integer pageSize,String startDate, String endDate) {
+	public Map<String, Object> listParent(String parentId, Integer pageNum, Integer pageSize,String startDate, String endDate,int type) {
 		int totalRecord = userMapper.countParent(parentId);
 		Page page = new Page(totalRecord, pageSize, pageNum);
 		pageNum = (page.getPageNum() - 1) * page.getPageSize();
@@ -168,10 +168,18 @@ public class UserServiceImpl implements UserService {
 		UserInfo userInfo = new UserInfo();
 		for(int i=0;i<list.size();i++){
 			userInfo = list.get(i);
-			Double achievement = userSellerMapper.selectSalesmanAchievement(userInfo.getId(), startDate, endDate);
-			userInfo.setAchievement(achievement);
-			Integer sellerNum = userSellerMapper.selectSubordinateCount(userInfo.getId());
-			userInfo.setSellerNum(sellerNum);
+			if(1==type){
+				Double achievement = userSellerMapper.selectSalesmanAchievement(userInfo.getId(), startDate, endDate);
+				userInfo.setAchievement(achievement);
+				Integer sellerNum = userSellerMapper.selectSubordinateCount(userInfo.getId());
+				userInfo.setSellerNum(sellerNum);
+			}else{
+				Double achievement = userSellerMapper.selectRegionAchievement(userInfo.getId(), startDate, endDate);
+				userInfo.setAchievement(achievement);
+				Integer sellerNum = userSellerMapper.selectSubordinateSellerCount(userInfo.getId());
+				userInfo.setSellerNum(sellerNum);
+			}
+			
 		}
 		Map<String, Object> resultMap = new HashMap<String, Object>(3);
 		resultMap.put("totalPage", page.getTotalPage());

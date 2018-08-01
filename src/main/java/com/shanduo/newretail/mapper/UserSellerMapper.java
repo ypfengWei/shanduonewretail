@@ -43,4 +43,10 @@ public interface UserSellerMapper {
     Double selectSalesmanAchievement(@Param("parentId")String id, @Param("startDate")String startDate, @Param("endDate")String endDate);
 
     Double selectRegionAchievement(@Param("parentId")String id, @Param("startDate")String startDate, @Param("endDate")String endDate);
+    
+    Integer selectSellerCount();
+    
+    Double selectManageAchievement(@Param("parentId")String id, @Param("startDate")String startDate, @Param("endDate")String endDate);
+    
+    Integer selectSubordinateSellerCount(String id);
 }
