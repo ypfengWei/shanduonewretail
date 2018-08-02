@@ -65,7 +65,7 @@
         </div>
         <div class="div_li dis_flex">
             <span>店铺类型：</span>
-            <select v-if="storeInfo.sellerType==10" v-model="storeTypeIndex" name="cars" @change="seleStoreType">
+            <select v-if="storeInfo.sellerType==10" v-model="storeTypeIndex" name="cars" @change="selStoreType">
                 <option value="-1">请选择</option>
                 <option v-for="(item,index) in storeType" :value="index">{{item.category_name}}</option>
             </select>
@@ -73,7 +73,12 @@
                 <option v-for="(item,index) in storeType" :value="index">{{item.category_name}}</option>
             </select>
         </div>
-
+        <div class="div_li dis_flex">
+            <span>几元起送：</span>
+            <select v-model="upSendIndex" name="cars" @change="selUpSend">
+                <option v-for="(item,index) in upSend" :value="index">{{item}}</option>
+            </select>
+        </div>
         <div class="div_li dis_flex">
             <span>地址:</span>
             <span class="col_hui" v-if="storeInfo.address">{{storeInfo.address}}</span>
@@ -100,11 +105,13 @@
     let vm = new Vue({
         el: '#vueData',
         data: {
-            storeInfo: {category_name:'ddd'},
+            storeInfo: {category_name: 'ddd'},
             storeType: [],
             storeTypeIndex: 0,
             avatarUrl: null,
-            storeImg: null
+            storeImg: null,
+            upSend: ['请选择','8', '12', '15', '20'],
+            upSendIndex: 0
         }, watch: {
             storeInfo: {
                 handler(val, oldVal) {
@@ -127,6 +134,13 @@
                 })
             }
         }, methods: {
+            selUpSend(e) {
+                let index = e.target.value;
+                if (index > -1) {
+                    // vm.upSendIndex = index;
+                    // vm.storeInfo.sellerType = vm.upSend[index];
+                }
+            },
             goBack() {
                 localStorage.removeItem('localStoreInfo');
                 localStorage.removeItem('localStoreTypeIndex');
@@ -135,9 +149,9 @@
                 location.href = 'Administration.html';
             }, chooseAddress() {
                 location.href = 'https://3gimg.qq.com/lightmap/components/locationPicker2/index.html?type=0&backurl=https://yapinkeji.com/shanduonewretail/shopinformation.html&key=Q74BZ-4AT34-QCUU5-XADLJ-XTGQZ-65FQM&referer=near-store';
-            }, seleStoreType(e) {
+            }, selStoreType(e) {
                 let index = e.target.value;
-                if (index>-1) {
+                if (index > -1) {
                     vm.storeTypeIndex = index;
                     vm.storeInfo.sellerType = vm.storeType[index].id;
                 }
@@ -212,6 +226,7 @@
         vm.storeInfo.lon = latng.split(',')[1];
         vm.storeInfo.lat = latng.split(',')[0];
     }
+
     function initData() {
         if (localStorage.storeImg) {
             vm.storeImg = localStorage.storeImg;

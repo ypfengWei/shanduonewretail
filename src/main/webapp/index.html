@@ -158,6 +158,13 @@
             }, function () {
 
             }, [{timeout: 9000}]);
+        }else{
+            getClassify(lat, lon, function (res) {
+                vm.category = vm.category.concat(res.result);
+                getClassifyBySellerType(lat, lon, vm.category[0].seller_type, function (res) {
+                    vm.stores = vm.stores.concat(res.result);
+                });
+            });
         }
     }
 

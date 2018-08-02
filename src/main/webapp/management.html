@@ -42,10 +42,10 @@
             </div>
         </div>
         <div class="dis_flex data_cx">
-            <input type="date">
+            <input type="date" v-model="startDate">
             至
-            <input type="date">
-            <button>查询</button>
+            <input type="date" v-model="endDate">
+            <button @click="launchQuery">查询</button>
         </div>
         <div class="dis_flex data_cx">
             <span>我的业绩：{{regionAchievement}}</span>
@@ -88,13 +88,18 @@
             salesMans: [],
             subordinateNum: 0,
             storeInfo: localStore,
-            regionAchievement:0
+            regionAchievement: 0,
+            startDate: '',
+            endDate: '',
         },
         methods: {
             toRegisterView() {
                 location.href = 'register.html?registerTypeId=4';
             }, goBack() {
                 history.back();
+            }, launchQuery() {
+                emptyData();
+                loadSalesManArray();
             }
         }
     });
@@ -102,10 +107,22 @@
         loadSalesManArray();
     });
 
+    function emptyData() {
+        let ary = vm.salesMans;
+        ary.splice(0, ary.length);
+        vm.salesMans = ary;
+    }
+
     function loadSalesManArray() {
         $.ajax({
             url: '/shanduonewretail/jseller/selectregionsubordinate',
-            data: {token: localStore.token, page: pageIndex, pageSize: pageCount},
+            data: {
+                token: localStore.token,
+                page: pageIndex,
+                pageSize: pageCount,
+                startDate: vm.startDate === '' ? '' : vm.startDate,
+                endDate: vm.endDate === '' ? '' : vm.endDate
+            },
             dataType: 'json',
             success: function (res) {
                 console.log(res);
@@ -113,7 +130,7 @@
                     vm.salesMans = vm.salesMans.concat(res.result.data);
                     totalPage = res.result.totalPage;
                     vm.subordinateNum = res.result.subordinateNum;
-                    vm.regionAchievement=res.result.regionAchievement;
+                    vm.regionAchievement = res.result.regionAchievement;
                 }
             }, error: function () {
                 toast('网络请求失败')
