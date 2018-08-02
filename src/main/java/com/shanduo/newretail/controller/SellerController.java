@@ -116,10 +116,8 @@ public class SellerController {
         }
         return new SuccessBean(sellerInfoMap);
     }
-    /**查询附近店铺类型
+    /**查询起配送类型
      * @param request
-     * @param lat
-     * @param lon
      * @return
      */
     @RequestMapping(value = "selectdistributiontype", method = {RequestMethod.POST, RequestMethod.GET})

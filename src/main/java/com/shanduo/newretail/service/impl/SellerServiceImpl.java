@@ -92,6 +92,17 @@ public class SellerServiceImpl implements SellerService {
 	@Override
 	public SellerDetails selectSellerDetails(String id) {
 		SellerDetails userSeller = userSellerMapper.selectSellerDetails(id);
+		Integer distribution = userSeller.getDistribution();
+		List<Map<String, Object>> distributionTypeList =categoryMapper.selectDistributionType();
+		Map<String, Object> distributionType = new HashMap<>();
+		for(int i=0;i<distributionTypeList.size();i++){
+			distributionType = distributionTypeList.get(i);
+			if(distribution.equals(Integer.valueOf(distributionType.get("id").toString()))){
+				distribution=Integer.valueOf(distributionType.get("category_name").toString());
+				userSeller.setDistribution(distribution);
+				return userSeller;
+			}
+		}
 		return userSeller;
 	}
 	@Override
