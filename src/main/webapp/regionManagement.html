@@ -40,10 +40,10 @@
             </div>
         </div>
         <div class="dis_flex data_cx">
-            <input type="date">
+            <input type="date" v-model="startDate">
             至
-            <input type="date">
-            <button>查询</button>
+            <input type="date" v-model="endDate">
+            <button @click="launchQuery">查询</button>
         </div>
         <div class="dis_flex data_cx">
             <span>我的业绩：{{totalAchievement}}</span>
@@ -85,14 +85,19 @@
             proxys: [],
             sellerNum: 0,
             totalAchievement: 0,
-            storeInfo:localStore
+            storeInfo: localStore,
+            startDate: '',
+            endDate: '',
         },
         methods: {
-            goBack(){
-              history.back();
+            goBack() {
+                history.back();
             },
             toRegisterView() {
                 location.href = 'register.html?registerTypeId=2';
+            }, launchQuery() {
+                emptyData();
+                loadProxys();
             }
         }
     }), pageIndex = 1, pageCount = 20, totalPage = 0;
@@ -105,8 +110,8 @@
             url: '/shanduonewretail/jseller/selectmanagesubordinate',
             data: {
                 token: localStore.token,
-                startDate: '',
-                endDate: '',
+                startDate: vm.startDate === '' ? '' : vm.startDate,
+                endDate: vm.endDate === '' ? '' : vm.endDate,
                 page: pageIndex,
                 pageSize: pageCount
             },
@@ -124,6 +129,14 @@
                 cbErr && cbErr();
             }
         });
+    }
+
+    function emptyData() {
+        let ary = vm.proxys;
+        ary.splice(0, ary.length);
+        vm.proxys = ary;
+        pageIndex = 1;
+        totalPage = 0;
     }
 </script>
 </html>

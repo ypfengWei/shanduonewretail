@@ -76,7 +76,7 @@
         <div class="div_li dis_flex">
             <span>几元起送：</span>
             <select v-model="upSendIndex" name="cars" @change="selUpSend">
-                <option v-for="(item,index) in upSend" :value="index">{{item}}</option>
+                <option v-for="(item,index) in upSend" :value="index">{{item.category_name}}元起送</option>
             </select>
         </div>
         <div class="div_li dis_flex">
@@ -110,7 +110,7 @@
             storeTypeIndex: 0,
             avatarUrl: null,
             storeImg: null,
-            upSend: ['请选择','8', '12', '15', '20'],
+            upSend: [],
             upSendIndex: 0
         }, watch: {
             storeInfo: {
@@ -242,6 +242,7 @@
                     token: localStore.token,
                     typeId: 1
                 }, success: function (res) {
+                    //distribution
                     if (res.success) {
                         vm.storeInfo = res.result;
                         vm.storeInfo.endDate = getMyDate(vm.storeInfo.endDate);
@@ -260,6 +261,17 @@
                                     }
                                 });
 
+                            }
+                        });
+                        $.getJSON('/shanduonewretail/jseller/selectdistributiontype', function (res) {
+                            if (res.success) {
+                                vm.upSend = res.result;
+                                $.each(vm.upSend, function (i, item) {
+                                    if (vm.storeInfo.distribution === item.id) {
+                                        vm.upSendIndex = i;
+                                        return false;
+                                    }
+                                })
                             }
                         });
                     } else {

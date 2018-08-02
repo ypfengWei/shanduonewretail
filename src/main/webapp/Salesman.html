@@ -48,10 +48,10 @@
             </div>
         </div>
         <div class="dis_flex data_cx">
-            <input type="date">
+            <input type="date" v-model="startDate">
             至
-            <input type="date">
-            <button>查询</button>
+            <input type="date" v-model="endDate">
+            <button @click="launchQuery">查询</button>
         </div>
         <div>
             <div v-if="salesManChildStore.length==0" class="dis_flex div_li div_complex">
@@ -82,7 +82,9 @@
             salesMan: {},
             salesManChildStore: [],
             sellerNum: 0,
-            salesmanAchievement: 0
+            salesmanAchievement: 0,
+            startDate: '',
+            endDate: '',
         },
         mounted: function () {
             //获取屏幕分辨率高度
@@ -100,6 +102,10 @@
             });
 
         }, methods: {
+            launchQuery(){
+                emptyData();
+                querySalesManHaveStore();
+            },
             upCallback() {
                 if (totalPage > pageIndex) {
                     querySalesManHaveStore(function () {
@@ -143,7 +149,9 @@
             url: '/shanduonewretail/jseller/selectsalesmansubordinate', data: {
                 token: localStore.token,
                 page: pageIndex,
-                pageSize: pageCount
+                pageSize: pageCount,
+                startDate: vm.startDate === '' ? '' : vm.startDate,
+                endDate: vm.endDate === '' ? '' : vm.endDate
             }, success: function (res) {
                 if (res.success) {
                     vm.salesManChildStore = vm.salesManChildStore.concat(res.result.sellerList);
