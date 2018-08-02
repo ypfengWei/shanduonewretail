@@ -15,6 +15,8 @@ public class UserSeller {
     private String phone;
 
     private Integer sellerType;
+    
+    private Integer distribution;
 
     private Date startDate;
 
@@ -148,6 +150,14 @@ public class UserSeller {
 
 	public void setAddress(String address) {
 		this.address = address;
+	}
+
+	public Integer getDistribution() {
+		return distribution;
+	}
+
+	public void setDistribution(Integer distribution) {
+		this.distribution = distribution;
 	}
 
 	public Date getGmtCreate() {

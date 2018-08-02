@@ -21,4 +21,6 @@ public interface CategoryMapper {
     List<Map<String,Object>> selectSellerType();
     
     List<Map<String,Object>> selectCommodityType(Integer start,Integer end);
+    
+    List<Map<String,Object>> selectDistributionType();
 }

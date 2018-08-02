@@ -104,6 +104,7 @@ public class SellerServiceImpl implements SellerService {
 		userSeller.setNotice(userSellerMap.get("notice").toString());
 		userSeller.setPhone(userSellerMap.get("phone").toString());
 		userSeller.setSellerType(Integer.valueOf(userSellerMap.get("sellerType").toString()));
+		userSeller.setDistribution(Integer.valueOf(userSellerMap.get("distribution").toString()));
 		userSeller.setLat(new BigDecimal(userSellerMap.get("lat").toString()));
 		userSeller.setLon(new BigDecimal(userSellerMap.get("lon").toString()));
 		userSeller.setStartDate(Timestamp.valueOf("1970-01-01 "+userSellerMap.get("startDate").toString()+":00"));
@@ -231,6 +232,13 @@ public class SellerServiceImpl implements SellerService {
 	public Double selectManageAchievement(String id, String startDate, String endDate) {
 		
 		return userSellerMapper.selectManageAchievement(id, startDate, endDate);
+	}
+
+
+	@Override
+	public List<Map<String, Object>> selectDistributionType() {
+		
+		return categoryMapper.selectDistributionType();
 	}
 
 }

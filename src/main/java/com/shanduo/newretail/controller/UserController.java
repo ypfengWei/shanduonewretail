@@ -160,6 +160,35 @@ public class UserController {
 		}
 		return ResultUtils.success(token);
 	}
+	
+	/**
+	 * 用户登录
+	 * @Title: loginUsers
+	 * @Description: TODO
+	 * @param @param request
+	 * @param @param phone 手机号
+	 * @param @param password 密码
+	 * @param @return
+	 * @return JSONObject
+	 * @throws
+	 */
+	@RequestMapping(value = "loginusers",method={RequestMethod.POST,RequestMethod.GET})
+	@ResponseBody
+	public JSONObject loginUsers(HttpServletRequest request, String phone, String password) {
+		if(StringUtils.isNull(phone) || PatternUtils.patternPhone(phone)) {
+			log.warn("phone is error waith phone:{}", phone);
+			return ResultUtils.error(ErrorConsts.CODE_10002, "手机号输入错误");
+		}
+		if(StringUtils.isNull(password) || PatternUtils.patternPassword(password)) {
+			log.warn("password is error waith password:{}", password);
+			return ResultUtils.error(ErrorConsts.CODE_10002, "密码输入错误");
+		}
+		TokenInfo token = userService.loginUser(phone, password);
+		if(token == null) {
+			return ResultUtils.error(ErrorConsts.CODE_10003, "账号或密码错误");
+		}
+		return ResultUtils.success(token);
+	}
     @RequestMapping(value = "selectuser",method={RequestMethod.POST,RequestMethod.GET})
     @ResponseBody
     public JSONObject selectUser(HttpServletRequest request, String token) {

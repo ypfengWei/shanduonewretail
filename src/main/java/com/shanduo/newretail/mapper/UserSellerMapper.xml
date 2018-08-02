@@ -8,6 +8,7 @@
     <result column="notice" jdbcType="VARCHAR" property="notice" />
     <result column="phone" jdbcType="VARCHAR" property="phone" />
     <result column="seller_type" jdbcType="INTEGER" property="sellerType" />
+    <result column="distribution" jdbcType="INTEGER" property="distribution" />
     <result column="start_date" jdbcType="TIME" property="startDate" />
     <result column="end_date" jdbcType="TIME" property="endDate" />
     <result column="business_sign" jdbcType="CHAR" property="businessSign" />
@@ -20,7 +21,7 @@
     <result column="gmt_modified" jdbcType="TIMESTAMP" property="gmtModified" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, seller_name, seller_picture, notice, phone, seller_type, start_date, end_date, 
+    id, seller_name, seller_picture, notice, phone, seller_type,distribution, start_date, end_date, 
     business_sign, money, parent_id, lat, lon,address, gmt_create, gmt_modified
   </sql>
   
@@ -31,6 +32,7 @@
     <result column="notice" jdbcType="VARCHAR" property="notice" />
     <result column="phone" jdbcType="VARCHAR" property="phone" />
     <result column="seller_type" jdbcType="INTEGER" property="sellerType" />
+    <result column="distribution" jdbcType="INTEGER" property="distribution" />
     <result column="start_date" jdbcType="TIME" property="startDate" />
     <result column="end_date" jdbcType="TIME" property="endDate" />
     <result column="lat" jdbcType="DECIMAL" property="lat" />
@@ -41,9 +43,9 @@
  	<result column="name" jdbcType="VARCHAR" property="name" />
   </resultMap>
   <sql id="Bole_Column_List">
-   se.id id, seller_name, seller_picture, notice, phone, seller_type, start_date, end_date, 
+   se.id id, seller_name, seller_picture, notice, phone, seller_type,distribution,start_date, end_date, 
  	 business_sign, money,lat, lon,address, name
-  </sql>
+  </sql> 
   <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
@@ -63,13 +65,13 @@
   </delete>
   <insert id="insert" parameterType="com.shanduo.newretail.entity.UserSeller">
     insert into user_seller (id, seller_name, seller_picture, 
-      notice, phone, seller_type, 
+      notice, phone, seller_type,distribution,
       start_date, end_date, business_sign, 
       money, parent_id, lat, 
       lon,address, gmt_create, gmt_modified
       )
     values (#{id,jdbcType=VARCHAR}, #{sellerName,jdbcType=VARCHAR}, #{sellerPicture,jdbcType=VARCHAR}, 
-      #{notice,jdbcType=VARCHAR}, #{phone,jdbcType=VARCHAR}, #{sellerType,jdbcType=INTEGER}, 
+      #{notice,jdbcType=VARCHAR}, #{phone,jdbcType=VARCHAR}, #{sellerType,jdbcType=INTEGER}, #{distribution,jdbcType=INTEGER},
       #{startDate,jdbcType=TIME}, #{endDate,jdbcType=TIME}, #{businessSign,jdbcType=CHAR}, 
       #{money,jdbcType=DECIMAL}, #{parentId,jdbcType=VARCHAR}, #{lat,jdbcType=DECIMAL}, 
       #{lon,jdbcType=DECIMAL},#{address,jdbcType=VARCHAR}, #{gmtCreate,jdbcType=TIMESTAMP}, #{gmtModified,jdbcType=TIMESTAMP}
@@ -95,6 +97,9 @@
       </if>
       <if test="sellerType != null">
         seller_type,
+      </if>
+      <if test="distribution != null">
+        distribution,
       </if>
       <if test="startDate != null">
         start_date,
@@ -146,6 +151,9 @@
       <if test="sellerType != null">
         #{sellerType,jdbcType=INTEGER},
       </if>
+      <if test="distribution != null">
+        #{distribution,jdbcType=INTEGER},
+      </if>
       <if test="startDate != null">
         #{startDate,jdbcType=TIME},
       </if>
@@ -196,6 +204,9 @@
       <if test="sellerType != null">
         seller_type = #{sellerType,jdbcType=INTEGER},
       </if>
+      <if test="distribution != null">
+        distribution = #{distribution,jdbcType=INTEGER},
+      </if>
       <if test="startDate != null">
         start_date = #{startDate,jdbcType=TIME},
       </if>
@@ -236,6 +247,7 @@
       notice = #{notice,jdbcType=VARCHAR},
       phone = #{phone,jdbcType=VARCHAR},
       seller_type = #{sellerType,jdbcType=INTEGER},
+      distribution = #{distribution,jdbcType=INTEGER},
       start_date = #{startDate,jdbcType=TIME},
       end_date = #{endDate,jdbcType=TIME},
       business_sign = #{businessSign,jdbcType=CHAR},
@@ -256,7 +268,7 @@
   <select id="selectNearbySellerType" resultType="map">
     select 
     seller_type,category_name
-    from user_seller join category on user_seller.seller_type=(category.id+"")
+    from user_seller join category on user_seller.seller_type=category.id
     where (((#{0}-lon)*100)*((#{0}-lon)*100)+((#{1}-lat)*100)*((#{1}-lat)*100)) &lt; 0.49         
    group by seller_type
 
