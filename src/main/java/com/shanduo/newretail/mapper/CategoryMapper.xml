@@ -91,4 +91,10 @@
     from category
     where id between #{0} and #{1}
   </select>
+  <select id="selectDistributionType"  parameterType="java.lang.Integer"  resultType="map">
+    select 
+     id, category_name
+    from category
+    where id &gt; 100000
+  </select>
 </mapper>

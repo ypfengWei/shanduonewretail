@@ -43,6 +43,8 @@ public interface SellerService {
 	Integer selectSellerCount();
 	
 	Double selectManageAchievement(String id,String startDate,String endDate);
+	
+	List<Map<String,Object>> selectDistributionType();
 	/**
 	 * 检查收货地点是否超出配送范围
 	 * @Title: checkLocation
