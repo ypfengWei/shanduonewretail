@@ -413,6 +413,11 @@ public class PresentController {
 		}else {
 			String errCodeDes = resultMap.get("err_code_des").toString();
 			log.error(resultMap.toString());
+			try {
+				presentService.updateReject(presentId);
+			} catch (Exception e) {
+				return ResultUtils.error(ErrorConsts.CODE_10004, "拒绝失败");
+			}
 			return ResultUtils.error(ErrorConsts.CODE_10003, errCodeDes);
 		}
 	}

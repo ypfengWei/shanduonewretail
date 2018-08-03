@@ -524,15 +524,15 @@ public class StringUtils {
      * @param data a String to encode.
      * @return a base64 encoded String.
      */
-    public static String encodeBase64(String data) {
-        byte[] bytes = null;
-        try {
-            bytes = data.getBytes("UTF-8");
-        } catch (UnsupportedEncodingException uee) {
-            Log.error(uee.getMessage(), uee);
-        }
-        return encodeBase64(bytes);
-    }
+//    public static String encodeBase64(String data) {
+//        byte[] bytes = null;
+//        try {
+//            bytes = data.getBytes("UTF-8");
+//        } catch (UnsupportedEncodingException uee) {
+//            Log.error(uee.getMessage(), uee);
+//        }
+//        return encodeBase64(bytes);
+//    }
 
     /**
      * Encodes a byte array into a base64 String.
@@ -540,13 +540,13 @@ public class StringUtils {
      * @param data a byte array to encode.
      * @return a base64 encode String.
      */
-    public static String encodeBase64(byte[] data) {
-        // Encode the String. We pass in a flag to specify that line
-        // breaks not be added. This is consistent with our previous base64
-        // implementation. Section 2.1 of 3548 (base64 spec) also specifies
-        // no line breaks by default.
-        return Base64.encodeBytes(data, Base64.DONT_BREAK_LINES);
-    }
+//    public static String encodeBase64(byte[] data) {
+//        // Encode the String. We pass in a flag to specify that line
+//        // breaks not be added. This is consistent with our previous base64
+//        // implementation. Section 2.1 of 3548 (base64 spec) also specifies
+//        // no line breaks by default.
+//        return Base64.encodeBytes(data, Base64.DONT_BREAK_LINES);
+//    }
 
     /**
      * Decodes a base64 String.

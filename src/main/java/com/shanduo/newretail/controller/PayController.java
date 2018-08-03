@@ -3,6 +3,7 @@ package com.shanduo.newretail.controller;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -14,10 +15,14 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.alibaba.fastjson.JSONObject;
 import com.shanduo.newretail.consts.WxPayConsts;
 import com.shanduo.newretail.entity.ToOrder;
 import com.shanduo.newretail.service.OrderService;
 import com.shanduo.newretail.util.AESUtil;
+import com.shanduo.newretail.util.ClientCustomSSL;
+import com.shanduo.newretail.util.ResultUtils;
+import com.shanduo.newretail.util.UUIDGenerator;
 import com.shanduo.newretail.util.WxPayUtils;
 
 
@@ -189,4 +194,32 @@ public class PayController {
                 + "]]></return_code><return_msg><![CDATA[OK]]></return_msg></xml>";
 	}
 	
+	/**
+	 * 获取RSA公钥API获取RSA公钥
+	 * @Title: getPublicKey
+	 * @Description: TODO
+	 * @param @param request
+	 * @param @return
+	 * @param @throws Exception
+	 * @return JSONObject
+	 * @throws
+	 */
+	@RequestMapping(value = "getpublickey")
+	@ResponseBody
+	public JSONObject getPublicKey(HttpServletRequest request) throws Exception {
+		Map<String, String> paramsMap = new HashMap<>(10);
+		paramsMap.put("mch_id", WxPayConsts.MCH_ID);
+		paramsMap.put("nonce_str", UUIDGenerator.getUUID());
+		paramsMap.put("sign_type", WxPayConsts.SIGNTYPE);
+		//把数组所有元素，按照“参数=参数值”的模式用“&”字符拼接成字符串
+		String paramsString = WxPayUtils.createLinkString(paramsMap);
+		//MD5运算生成签名
+		String sign = WxPayUtils.sign(paramsString, WxPayConsts.KEY, "utf-8").toUpperCase();
+		//签名
+		paramsMap.put("sign", sign);
+		String paramsXml = WxPayUtils.map2Xmlstring(paramsMap);
+		String result = ClientCustomSSL.doRefund(" 	https://fraud.mch.weixin.qq.com/risk/getpublickey", paramsXml);
+		Map<String, Object> resultMap = WxPayUtils.Str2Map(result);
+		return ResultUtils.success(resultMap);
+	}
 }
