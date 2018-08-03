@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport"
           content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"/>
-    <meta content="telephone=no,email=no" name="format-detection">
+    <!--<meta content="telephone=yes,email=no" name="format-detection">-->
     <!--禁止自动识别电话号码和邮箱-->
     <meta content="yes" name="apple-mobile-web-app-capable">
     <!--苹果手机：会删除默认的工具栏和菜单栏，网站开启对web app程序的支持-->
@@ -43,10 +43,10 @@
                     <span>公告:</span><span>{{storeInfo.notice}}</span>
                 </div>
                 <div>
-                    <span>客服:</span><span>{{storeInfo.phone}}</span>
+                    <span>客服:</span><a :href="'tel:'+storeInfo.phone">{{storeInfo.phone}}</a>
                 </div>
                 <div>
-                    <span>五元起送</span>
+                    <span>{{storeInfo.distribution}}元起送</span>
                 </div>
             </div>
         </div>
@@ -147,8 +147,9 @@
     <footer>
         <div class="dis_flex">
             <a href="#" @click.prevent="gwcToggle()">购物车:&nbsp;&nbsp;&nbsp;&nbsp;￥{{totalPrice}}</a>
-            <a v-if="in_operation" href="javascript:" @click="submitOrderView">去结算</a>
-            <a v-else href="javascript:">商家已打烊</a>
+            <a v-if="storeInfo.businessSign=='1'||!in_operation" href="javascript:">商家已打烊</a>
+            <a v-else-if="!meet" href="javascript:">{{hint}}</a>
+            <a v-else href="javascript:" @click="submitOrderView">{{hint}}</a>
         </div>
         <div class="gwcTog">
             <div class="dis_flex">
@@ -201,9 +202,11 @@
             localCart: null,
             storeInfo: {},
             in_operation: true,
+            meet: true,
             currentTime: null,
             startDate: null,
-            endDate: null
+            endDate: null,
+            hint: '去结算'
         },
         mounted: function () {
             let that = this;
@@ -384,6 +387,14 @@
             count += item.count;
         });
         vm.totalPrice = price.toFixed(2);
+        let poor = vm.storeInfo.distribution * 100 - parseInt(vm.totalPrice * 100);
+        if (poor > 0) {
+            vm.hint = '还需' + (poor / 100) + '元配送';
+            vm.meet = false;
+        } else {
+            vm.meet = true;
+            vm.hint = '去结算';
+        }
         vm.totalCount = count;
         if ($(".gwcTog").css("display") === 'block' && vm.totalCount === 0) {
             $('.gwcTog').toggle();
@@ -404,6 +415,7 @@
     }, {
         deep: true
     });
+
     function notifyDataSetChanged() {
         if (vm.cart.length > 0) {
             for (let i = 0; i < vm.cart.length; i++) {
@@ -423,6 +435,7 @@
             }
         }
     }
+
     $(function () {
         if (!storeId) {
             location.href = 'index.html';
@@ -494,6 +507,7 @@
             });
         });
     });
+
     function adapter(categoryId, cbOK, cbErr) {
         getGoods(storeId, categoryId, 1, pageIndex, pageCount, function (res) {
             let newData = res.commodityInfoList;
@@ -511,6 +525,7 @@
             cbErr && cbErr();
         });
     }
+
     function emptyData() {
         let ary = vm.commodityArray;
         ary.splice(0, ary.length);
@@ -518,6 +533,7 @@
         totalPage = 0;
         pageIndex = 1;
     }
+
     // 获取本地购物车所有商品数据
     function queryCartAll() {
         if (vm.localCart.length > 0) {
@@ -529,6 +545,7 @@
             });
         }
     }
+
     function delCommodity(commodityId) {
         $.each(vm.cart, function (i, item) {
             if (commodityId === item.commodityId) {
@@ -539,12 +556,14 @@
             }
         });
     }
+
     // 清空店铺购物车
     function emptyCart() {
         let ary = vm.cart;
         ary.splice(0, ary.length);
         vm.cart = ary;
     }
+
     function cartAction(actionMode, obj) {
         let commodity = null;
         let index = null;

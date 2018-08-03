@@ -107,7 +107,7 @@
         data: {
             storeInfo: {category_name: 'ddd'},
             storeType: [],
-            storeTypeIndex: 0,
+            storeTypeIndex: -1,
             avatarUrl: null,
             storeImg: null,
             upSend: [],
@@ -143,10 +143,8 @@
         }, methods: {
             selUpSend(e) {
                 let index = e.target.value;
-                if (index > -1) {
-                    vm.upSendIndex = index;
-                    vm.storeInfo.distribution = vm.upSend[index].id;
-                }
+                vm.upSendIndex = index;
+                vm.storeInfo.distribution = vm.upSend[index].id;
             },
             goBack() {
                 localStorage.removeItem('localStoreInfo');
@@ -246,8 +244,8 @@
             vm.storeInfo = JSON.parse(localStorage.localStoreInfo);
             vm.storeType = JSON.parse(localStorage.localStoreType);
             vm.storeTypeIndex = localStorage.localStoreTypeIndex;
-            vm.upSend = localStorage.localUpSend;
-            vm.localStoreUpSendIndex = localStorage.localStoreUpSendIndex;
+            vm.upSend = JSON.parse(localStorage.localUpSend);
+            vm.upSendIndex = localStorage.localStoreUpSendIndex;
         } else {
             $.ajax({
                 url: '/shanduonewretail/jseller/selectsellerdetails',
@@ -280,7 +278,7 @@
                             if (res.success) {
                                 vm.upSend = res.result;
                                 $.each(vm.upSend, function (i, item) {
-                                    if (vm.storeInfo.distribution === item.id) {
+                                    if (vm.storeInfo.distribution == item.category_name) {
                                         vm.upSendIndex = i;
                                         return false;
                                     }
