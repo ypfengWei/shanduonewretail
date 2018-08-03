@@ -306,7 +306,7 @@ public class PresentController {
 		amount = amount.multiply(new BigDecimal("100"));
 		//订单总金额
 		Integer moneys = amount.intValue();
-		ToUser user = userService.selectUser(presentRecord.getId());
+		ToUser user = userService.selectUser(presentRecord.getUserId());
 		Map<String, String> paramsMap = new HashMap<>(11);
 		paramsMap.put("mch_appid", WxPayConsts.APPID);
 		paramsMap.put("mchid", WxPayConsts.MCH_ID);
