@@ -26,10 +26,10 @@ public interface PresentService {
 	 * @param @param bankName
 	 * @param @param cardNumber
 	 * @param @return
-	 * @return String
+	 * @return int
 	 * @throws
 	 */
-	String savePresent(String userId, String money, String typeId, String name, String openingBank, String bankName, String cardNumber);
+	int savePresent(String userId, String money, String typeId, String name, String openingBank, String bankName, String cardNumber);
 	
 	/**
 	 * 查询单条提现记录

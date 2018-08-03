@@ -1,10 +1,6 @@
 package com.shanduo.newretail.util;
 
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.Writer;
-
-import com.itextpdf.text.pdf.codec.Base64.OutputStream;
 
 public class Base64Util {
 	
