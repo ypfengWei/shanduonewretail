@@ -127,7 +127,6 @@
             },
             dataType: 'json',
             success: function (res) {
-                console.log(res);
                 if (res.success) {
                     vm.salesMans = vm.salesMans.concat(res.result.data);
                     totalPage = res.result.totalPage;

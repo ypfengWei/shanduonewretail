@@ -80,13 +80,25 @@ div.title_header>div:last-child>img{
     padding: 10px;
     text-align: center;
 }
-.body>div{
+.body_dt>ul{
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    background-color: #fff;
+    margin-bottom: 10px;
+    height: 40px;
+    font-size: 16px;
+}
+.body_dt>ul>li.actives{
+    color: #FF5B2B;
+}
+.body_dd>div{
     flex-direction: column;
     background-color: #fff;
     border-radius: 5px;
     margin-bottom: 20px;
 }
-.body>div>div{
+.body_dd>div>div{
     display: flex;
     align-items: center;
     height: 60px;
@@ -94,15 +106,15 @@ div.title_header>div:last-child>img{
     font-size: 14px;
     color: #999999;
 }
-.body>div>div>span:last-child{
+.body_dd>div>div>span:last-child{
     color: #333333;
 }
-.body>div>.putForward{
+.body_dd>div>.putForward{
     padding-left: 0;
     justify-content: center;
     align-items: center;
 }
-.body>div>.putForward>span{
+.body_dd>div>.putForward>span{
     width: 85%;
     height: 40px;
     line-height: 40px;

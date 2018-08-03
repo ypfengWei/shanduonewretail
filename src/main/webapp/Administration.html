@@ -68,7 +68,8 @@
                 <img src="img/return_5.png">
             </div>
         </div>
-        <div v-if="user.jurisdiction==1||user.jurisdiction==3" class="category dis_flex " @click="putForwardManagerView">
+        <div v-if="user.jurisdiction==1||user.jurisdiction==3" class="category dis_flex "
+             @click="putForwardManagerView">
             <div class="dis_flex">
                 <img src="img/Finance.png">
                 <span>财务管理</span>
@@ -114,38 +115,42 @@
 </body>
 <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 <script>//jurisdiction
-    let vm = new Vue({
-        el: '#vueData',
-        data:{
-            user:JSON.parse(localStorage.localStore)
-        },
-        methods: {
-            gotoStoreHomeView() {
-                location.href = "shopinformation.html";
-            }, commoditysettingView() {
-                location.href = "Commoditysetting.html";
-            }, commoditySaleView() {
-                location.href = "commoditySale.html";
-            }, orderManagerView() {
-                location.href = "orderList.html";
-            }, putForwardManagerView() {
+let vm = new Vue({
+    el: '#vueData',
+    data: {
+        user: JSON.parse(localStorage.localStore)
+    },
+    methods: {
+        gotoStoreHomeView() {
+            location.href = "shopinformation.html";
+        }, commoditysettingView() {
+            location.href = "Commoditysetting.html";
+        }, commoditySaleView() {
+            location.href = "commoditySale.html";
+        }, orderManagerView() {
+            location.href = "orderList.html";
+        }, putForwardManagerView() {
+            if (vm.user.jurisdiction == 1) {
+                location.href = "applicationCash.html";
+            } else {
                 location.href = "putForward.html";
-            }, logout() {
-                localStorage.removeItem("localStore");
-                location.href = 'login.html';
-            }, salesmanView() {
-                location.href = 'Salesman.html';
-            },areaManagerView(){
-                location.href = 'management.html';
-            },superAreaManagerView(){
-                location.href = 'regionManagement.html';
             }
+        }, logout() {
+            localStorage.removeItem("localStore");
+            location.href = 'login.html';
+        }, salesmanView() {
+            location.href = 'Salesman.html';
+        }, areaManagerView() {
+            location.href = 'management.html';
+        }, superAreaManagerView() {
+            location.href = 'regionManagement.html';
         }
-    });
-    $(function () {
-        if (!localStorage.localStore) {
-            location.href = 'login.html'
-        }
-    });
+    }
+});
+$(function () {
+    if (!localStorage.localStore) {
+        location.href = 'login.html'
+    }
+});
 </script>
 </html>

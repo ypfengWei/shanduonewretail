@@ -381,6 +381,12 @@ body {
     vertical-align: top;
     font-size: 13px;
 }
+.shop > div:last-child > div > div > a {
+    display: inline-block;
+    color: #fff;
+    vertical-align: top;
+    line-height: 18px;
+}
 .shop > div:last-child > div > div:nth-child(1) > span {
     max-height: 58px;
     overflow: hidden;
@@ -432,11 +438,16 @@ div.title_header {
 }
 
 div.title_header > div {
-    width: 33%;
+    width: 20%;
     text-align: center;
     height: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
-
+div.title_header > div:nth-child(2) {
+    width: 60%;
+}
 div.title_header > div > span {
     line-height: 40px;
     color: #ffffff;

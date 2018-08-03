@@ -78,7 +78,7 @@ div.title_header>div:last-child>img{
 
 }
 .pos_top{
-    height: 82px;
+    height: 30px;/*82px*/
 }
 .inp_div{
     background-color: #fff;
@@ -147,7 +147,7 @@ div.title_header>div:last-child>img{
     font-weight: bold;
 }
 .sort_ul>.sort_li>div:first-child>img{
-    width: 100px;
+    width: 50%;
     height: 80px;
     border-radius: 10px;
 }
