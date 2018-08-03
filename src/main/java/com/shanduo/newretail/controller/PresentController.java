@@ -91,7 +91,11 @@ public class PresentController {
 		if(StringUtils.isNull(name)) {
 			return ResultUtils.error(ErrorConsts.CODE_10002, "姓名为空");
 		}
-		if(sellerService.selectMoney(new BigDecimal(money), userId) == 0) {
+		BigDecimal moneys = new BigDecimal(money);
+		if(moneys.intValue() < 1) {
+			return ResultUtils.error(ErrorConsts.CODE_10003, "金额必须大于1");
+		}
+		if(sellerService.selectMoney(moneys, userId) == 0) {
 			return ResultUtils.error(ErrorConsts.CODE_10003, "余额不足");
 		}
 		ToUser user = userService.selectUser(userId);
@@ -289,7 +293,7 @@ public class PresentController {
 	 * @Title: transfers
 	 * @Description: TODO
 	 * @param @param request
-	 * @param @param presentId
+	 * @param @param presentRecord
 	 * @param @return
 	 * @param @throws Exception
 	 * @return JSONObject
