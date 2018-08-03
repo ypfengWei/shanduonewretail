@@ -13,6 +13,8 @@ public class SellerInfo {
 	    private Boolean businessSign;
 	    
 	    private String distance;
+	    
+	    private Integer distribution;
 
 		public String getId() {
 			return id;
@@ -61,6 +63,15 @@ public class SellerInfo {
 		public void setDistance(String distance) {
 			this.distance = distance;
 		}
+
+		public Integer getDistribution() {
+			return distribution;
+		}
+
+		public void setDistribution(Integer distribution) {
+			this.distribution = distribution;
+		}
+		
 	    
 
 }
