@@ -12,7 +12,8 @@
     <!--苹果手机：在web app应用下状态条（屏幕顶部条）的颜色,默认值为default（白色），可以定为black（黑色）和black-translucent（灰色半透明）。-->
     <meta name="apple-touch-fullscreen" content="yes"/>
     <!--苹果手机：如果把一个web app添加到了主屏幕中，那么从主屏幕中打开这个web app则全屏显示-->
-    <link rel="stylesheet" type="text/css" href="css/regionManagement.css">
+    <link rel="stylesheet" type="text/css" href="css/management.css">
+    <script src="js/jquery-3.3.1.js"></script>
     <title></title>
 </head>
 <body>
@@ -20,7 +21,7 @@
     <header>
         <div>
             <div class="title_header dis_flex">
-                <div class="dis_flex">
+                <div class="dis_flex" @click="goBack">
                     <img src="img/return_3.png">
                 </div>
                 <div>
@@ -30,8 +31,8 @@
             </div>
             <div class="dis_flex">
                 <div class="dis_flex">
-                    <span>张三</span>
-                    <span>电话：158xxxx4293</span>
+                    <span>{{storeInfo.name}}</span>
+                    <span>电话：{{storeInfo.phone}}</span>
                 </div>
                 <div class="dis_flex" @click="toRegisterView">
                     <span class="col_cheng">注册代理</span>
@@ -39,32 +40,36 @@
             </div>
         </div>
         <div class="dis_flex data_cx">
-            <input type="date">
+            <input type="date" v-model="startDate">
             至
-            <input type="date">
-            <button>查询</button>
+            <input type="date" v-model="endDate">
+            <button @click="launchQuery">查询</button>
         </div>
         <div class="dis_flex data_cx">
-            <span>我的业绩：</span>
+            <span>我的业绩：{{totalAchievement}}</span>
             <div class="col_hui">
                 <span>店铺数：</span>
-                <span>2</span>
+                <span>{{sellerNum}}</span>
             </div>
         </div>
         <div>我的代理</div>
     </header>
     <div class="body">
         <div>
-            <div class="Salesman">
+            <div class="Salesman" v-for="item in proxys">
                 <div class="dis_flex">
                     <img src="img/ywyct.png">
                     <div class="dis_flex">
                         <div class="dis_flex col_hui">
-                            <span class="fon_18">代理姓名：张三</span>
-                            <span>电话：158xxxx5293</span>
+                            <span class="fon_18">代理姓名：{{item.name}}</span>
+                            <span>电话：{{item.phone}}</span>
                         </div>
-                        <span class="col_cheng">业绩：1300.0000</span>
+                        <span class="col_cheng">业绩：{{item.achievement}}</span>
                     </div>
+                </div>
+                <div class="dis_flex">
+                    <span class="col_cheng fon_32">{{item.sellerNum}}</span>
+                    <span class="col_hui fon_18">店铺数</span>
                 </div>
             </div>
         </div>
@@ -73,13 +78,65 @@
 </body>
 <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 <script>
+    let localStore = JSON.parse(localStorage.localStore);
     let vm = new Vue({
         el: '#vueData',
+        data: {
+            proxys: [],
+            sellerNum: 0,
+            totalAchievement: 0,
+            storeInfo: localStore,
+            startDate: '',
+            endDate: '',
+        },
         methods: {
-            toRegisterView(){
-                location.href='register.html?registerTypeId=2';
+            goBack() {
+                history.back();
+            },
+            toRegisterView() {
+                location.href = 'register.html?registerTypeId=2';
+            }, launchQuery() {
+                emptyData();
+                loadProxys();
             }
         }
+    }), pageIndex = 1, pageCount = 20, totalPage = 0;
+    $(function () {
+        loadProxys();
     });
+
+    function loadProxys(cbOk, cbErr) {
+        $.ajax({
+            url: '/shanduonewretail/jseller/selectmanagesubordinate',
+            data: {
+                token: localStore.token,
+                startDate: vm.startDate === '' ? '' : vm.startDate,
+                endDate: vm.endDate === '' ? '' : vm.endDate,
+                page: pageIndex,
+                pageSize: pageCount
+            },
+            dataType: 'json',
+            success: function (res) {
+                console.log(res);
+                if (res.success) {
+                    vm.proxys = vm.proxys.concat(res.result.data);
+                    totalPage = res.result.totalPage;
+                    vm.sellerNum = res.result.sellerNum;
+                    vm.totalAchievement = res.result.totalAchievement;
+                }
+                cbOk && cbOk();
+            }, error: function () {
+                cbErr && cbErr();
+            }
+        });
+    }
+
+    function emptyData() {
+        let ary = vm.proxys;
+        ary.splice(0, ary.length);
+        vm.proxys = ary;
+        pageIndex = 1;
+        totalPage = 0;
+    }
 </script>
 </html>

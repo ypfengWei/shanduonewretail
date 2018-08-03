@@ -50,7 +50,7 @@ public class SellerController {
     @Autowired
     private UserService userService;
 
-    /**
+    /**查询附近店铺类型
      * @param request
      * @param lat
      * @param lon
@@ -81,7 +81,7 @@ public class SellerController {
         return new SuccessBean(sellerTypeList);
     }
 
-    /**
+    /**查询附近对应类型的店铺
      * @param request
      * @param lat
      * @param lon
@@ -112,9 +112,26 @@ public class SellerController {
                 return new ErrorBean();
             }
         } catch (Exception e) {
+        	e.printStackTrace();
             return new ErrorBean(ErrorConsts.CODE_10004, "查询失败");
         }
         return new SuccessBean(sellerInfoMap);
+    }
+    /**查询起配送类型
+     * @param request
+     * @return
+     */
+    @RequestMapping(value = "selectdistributiontype", method = {RequestMethod.POST, RequestMethod.GET})
+    @ResponseBody
+    //http://localhost:8081/shanduonewretail/jseller/selectdistributiontype
+    public ResultBean selectDistributionType(HttpServletRequest request) {
+        List<Map<String, Object>> distributionTypeList = new ArrayList<Map<String, Object>>();
+        try {
+        	distributionTypeList = sellerService.selectDistributionType(); 
+        } catch (Exception e) {
+            return new ErrorBean(ErrorConsts.CODE_10004, "查询失败");
+        }
+        return new SuccessBean(distributionTypeList);
     }
 
     /**
@@ -401,7 +418,6 @@ public class SellerController {
                 Log.warn("token失效");
                 return new ErrorBean(ErrorConsts.CODE_10001, "token失效");
             }
-            List<UserInfo> salesmanList = new ArrayList<UserInfo>();
             Map<String, Object> manageMap = new HashMap<>();
             try {
             	manageMap = userService.listParent(id,Integer.valueOf(page),Integer.valueOf(pageSize), startDate, endDate,2);

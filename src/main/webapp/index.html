@@ -20,6 +20,7 @@
     <script src="js/utils.js"></script>
     <script src="https://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
     <script charset="utf-8" src="https://map.qq.com/api/js?v=2.exp"></script>
+    <script charset="utf-8" src="https://3gimg.qq.com/lightmap/components/geolocation/geolocation.min.js"></script>
 </head>
 <body>
 <div id="vueData">
@@ -53,7 +54,10 @@
                  @click="storeDetail(store.businessSign,store.id)">
                 <div class="dis_flex">
                     <img :src="store.sellerPicture?imagePath+store.sellerPicture:'img/icon_16.png'">
-                    <span>{{store.sellerName}}</span>
+                    <div class="dis_flex">
+                        <span>{{store.sellerName}}</span>
+                        <span>5元起送</span>
+                    </div>
                 </div>
                 <div class="dis_flex">
                     <img v-if="!store.businessSign" src="img/Rest.png">
@@ -72,11 +76,11 @@
     let addr = GetQueryString('addr');
     let latng = GetQueryString('latng');
     let href = location.href.split('#')[0],
-        lat = null, lon = null, mescroll = null, currentIndex = 0,
+        lat = null, lon = null, currentIndex = 0,
         vm = new Vue({
             el: '#vueData',
             data: {
-                imagePath: imagePath,
+                imagePath: '/yapingzh/picture/',
                 category: [],
                 stores: [],
                 address: ''
@@ -114,13 +118,13 @@
         lon = latng.split(',')[1];
     }
     $(function () {
+        init();
         if (!openid) {
             if (code) {
                 getOpenid(code);
-            }
-            /*else {
+            } else {
                 location.href = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxe0870cb2d63b008d&redirect_uri=https://yapinkeji.com/shanduonewretail/index.html&response_type=code&scope=snsapi_userinfo#wechat_redirect';
-            }*/
+            }
         }
         init_wx_js_sdk(href, function (result) {
             //初始化接口环境
@@ -129,23 +133,9 @@
                 timestamp: result.timestamp,
                 nonceStr: result.noncestr,
                 signature: result.signature,
-                jsApiList: ['getLocation', 'hideMenuItems']
+                jsApiList: ['hideMenuItems']
             });
             wx.ready(function () {
-                if (!lat) {
-                    wx.getLocation({
-                        success: function (res) {
-                            lat = res.latitude; // 纬度，浮点数，范围为90 ~ -90
-                            lon = res.longitude; // 经度，浮点数，范围为180 ~ -180。
-                            converterAddress(lat, lon, function (res) {
-                                vm.address = res.detail.addressComponents.district;
-                            });
-                            init();
-                        }
-                    });
-                } else {
-                    init();
-                }
                 wx.hideMenuItems({
                     menuList: ['menuItem:copyUrl', 'menuItem:share:qq', 'menuItem:share:QZone', 'menuItem:openWithQQBrowser', 'menuItem:openWithSafari', 'menuItem:share:email', 'menuItem:readMode']
                 });
@@ -154,12 +144,33 @@
     });
 
     function init() {
-        getClassify(lat, lon, function (res) {
-            vm.category = vm.category.concat(res.result);
-            getClassifyBySellerType(lat, lon, vm.category[0].seller_type, function (res) {
-                vm.stores = vm.stores.concat(res.result);
+        if (!lat) {
+            let geolocation = new qq.maps.Geolocation('Q74BZ-4AT34-QCUU5-XADLJ-XTGQZ-65FQM', 'near-store');
+            geolocation.getLocation(function (res) {
+                lat = res.lat;
+                lon = res.lng;
+                converterAddress(lat, lon, function (res) {
+                    vm.address = res.detail.addressComponents.district;
+                });
+                getClassify(lat, lon, function (res) {
+                    vm.category = vm.category.concat(res.result);
+                    getClassifyBySellerType(lat, lon, vm.category[0].seller_type, function (res) {
+                        console.log(res);
+                        vm.stores = vm.stores.concat(res.result);
+                    });
+                });
+            }, function () {
+
+            }, [{timeout: 9000}]);
+        }else{
+            getClassify(lat, lon, function (res) {
+                vm.category = vm.category.concat(res.result);
+                getClassifyBySellerType(lat, lon, vm.category[0].seller_type, function (res) {
+                    console.log(res);
+                    vm.stores = vm.stores.concat(res.result);
+                });
             });
-        });
+        }
     }
 
     function converterAddress(lat, lng, cbOk) {

@@ -32,6 +32,8 @@ public class SellerDetails {
 
     private String address;
     
+    private Integer distribution;
+    
     public String getId() {
         return id;
     }
@@ -145,6 +147,14 @@ public class SellerDetails {
 
 	public void setAddress(String address) {
 		this.address = address;
+	}
+
+	public Integer getDistribution() {
+		return distribution;
+	}
+
+	public void setDistribution(Integer distribution) {
+		this.distribution = distribution;
 	}
 
     

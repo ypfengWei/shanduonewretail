@@ -52,6 +52,17 @@ public class SellerServiceImpl implements SellerService {
 				seller.setSellerName(userSeller.getSellerName());
 				seller.setSellerPicture(userSeller.getSellerPicture());
 				seller.setSellerType(userSeller.getSellerType());
+				Integer distribution = userSeller.getDistribution();
+				List<Map<String, Object>> distributionTypeList =categoryMapper.selectDistributionType();
+				Map<String, Object> distributionType = new HashMap<>();
+				for(int j=0;j<distributionTypeList.size();j++){
+					distributionType = distributionTypeList.get(j);
+					if(distribution.equals(Integer.valueOf(distributionType.get("id").toString()))){
+						distribution=Integer.valueOf(distributionType.get("category_name").toString());
+						seller.setDistribution(distribution);
+						break;
+					}
+				}
 				//计算店铺与顾客的距离
 				seller.setDistance(LocationUtils.getDistance(lon, lat, userSeller.getLon().doubleValue(), userSeller.getLat().doubleValue())+"");
 				//判断当前时间店铺是否营业
@@ -71,7 +82,6 @@ public class SellerServiceImpl implements SellerService {
 					seller.setBusinessSign(false);
 				}
 				sellerInfoList.add(seller);
-			
 		}
 		return sellerInfoList;
 	}
@@ -92,6 +102,17 @@ public class SellerServiceImpl implements SellerService {
 	@Override
 	public SellerDetails selectSellerDetails(String id) {
 		SellerDetails userSeller = userSellerMapper.selectSellerDetails(id);
+		Integer distribution = userSeller.getDistribution();
+		List<Map<String, Object>> distributionTypeList =categoryMapper.selectDistributionType();
+		Map<String, Object> distributionType = new HashMap<>();
+		for(int i=0;i<distributionTypeList.size();i++){
+			distributionType = distributionTypeList.get(i);
+			if(distribution.equals(Integer.valueOf(distributionType.get("id").toString()))){
+				distribution=Integer.valueOf(distributionType.get("category_name").toString());
+				userSeller.setDistribution(distribution);
+				return userSeller;
+			}
+		}
 		return userSeller;
 	}
 	@Override
@@ -104,6 +125,7 @@ public class SellerServiceImpl implements SellerService {
 		userSeller.setNotice(userSellerMap.get("notice").toString());
 		userSeller.setPhone(userSellerMap.get("phone").toString());
 		userSeller.setSellerType(Integer.valueOf(userSellerMap.get("sellerType").toString()));
+		userSeller.setDistribution(Integer.valueOf(userSellerMap.get("distribution").toString()));
 		userSeller.setLat(new BigDecimal(userSellerMap.get("lat").toString()));
 		userSeller.setLon(new BigDecimal(userSellerMap.get("lon").toString()));
 		userSeller.setStartDate(Timestamp.valueOf("1970-01-01 "+userSellerMap.get("startDate").toString()+":00"));
@@ -231,6 +253,13 @@ public class SellerServiceImpl implements SellerService {
 	public Double selectManageAchievement(String id, String startDate, String endDate) {
 		
 		return userSellerMapper.selectManageAchievement(id, startDate, endDate);
+	}
+
+
+	@Override
+	public List<Map<String, Object>> selectDistributionType() {
+		
+		return categoryMapper.selectDistributionType();
 	}
 
 }
