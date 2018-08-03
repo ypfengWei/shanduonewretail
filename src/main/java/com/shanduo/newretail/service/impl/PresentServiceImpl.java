@@ -32,7 +32,7 @@ public class PresentServiceImpl implements PresentService {
 	
 	@Override
 	@Transactional(rollbackFor = Exception.class)
-	public String savePresent(String userId, String money, String typeId, String name, String openingBank, String bankName,
+	public int savePresent(String userId, String money, String typeId, String name, String openingBank, String bankName,
 			String cardNumber) {
 		PresentRecord presentRecord = new PresentRecord();
 		presentRecord.setId(OrderIdUtils.getId());
@@ -40,7 +40,7 @@ public class PresentServiceImpl implements PresentService {
 		presentRecord.setAmountCash(new BigDecimal(money));
 		presentRecord.setTypeid(typeId);
 		presentRecord.setUserName(name);
-		if(typeId.equals(DefaultConsts.NUMBER_2)) {
+		if(DefaultConsts.NUMBER_2.equals(typeId)) {
 			presentRecord.setOpeningBank(openingBank);
 			presentRecord.setBankName(bankName);
 			presentRecord.setCardNumber(cardNumber);
@@ -51,7 +51,7 @@ public class PresentServiceImpl implements PresentService {
 			throw new RuntimeException();
 		}
 		sellerService.updateMoney(new BigDecimal(money), userId, "1");
-		return presentRecord.getId();
+		return 1;
 	}
 
 	@Override

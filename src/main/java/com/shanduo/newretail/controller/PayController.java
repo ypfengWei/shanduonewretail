@@ -195,7 +195,7 @@ public class PayController {
 	}
 	
 	/**
-	 * 获取RSA公钥API获取RSA公钥
+	 * 获取RSA公钥API获取RSA公钥(error)
 	 * @Title: getPublicKey
 	 * @Description: TODO
 	 * @param @param request
@@ -207,7 +207,7 @@ public class PayController {
 	@RequestMapping(value = "getpublickey")
 	@ResponseBody
 	public JSONObject getPublicKey(HttpServletRequest request) throws Exception {
-		Map<String, String> paramsMap = new HashMap<>(10);
+		Map<String, String> paramsMap = new HashMap<>(4);
 		paramsMap.put("mch_id", WxPayConsts.MCH_ID);
 		paramsMap.put("nonce_str", UUIDGenerator.getUUID());
 		paramsMap.put("sign_type", WxPayConsts.SIGNTYPE);
@@ -218,7 +218,8 @@ public class PayController {
 		//签名
 		paramsMap.put("sign", sign);
 		String paramsXml = WxPayUtils.map2Xmlstring(paramsMap);
-		String result = ClientCustomSSL.doRefund(" 	https://fraud.mch.weixin.qq.com/risk/getpublickey", paramsXml);
+		String result = ClientCustomSSL.doRefund("https://fraud.mch.weixin.qq.com/risk/getpublickey", paramsXml);
+		log.warn(result);
 		Map<String, Object> resultMap = WxPayUtils.Str2Map(result);
 		return ResultUtils.success(resultMap);
 	}

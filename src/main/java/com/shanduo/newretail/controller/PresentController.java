@@ -88,24 +88,27 @@ public class PresentController {
 			log.warn("提现金额错误");
 			return ResultUtils.error(ErrorConsts.CODE_10002, "提现金额错误");
 		}
-		if(typeId.equals("1")) {
-			return ResultUtils.error(ErrorConsts.CODE_10003, "微信提现维护中");
-		}else {
-			if(StringUtils.isNull(name)) {
-				return ResultUtils.error(ErrorConsts.CODE_10002, "姓名为空");
-			}
-			if(StringUtils.isNull(openingBank)) {
-				return ResultUtils.error(ErrorConsts.CODE_10002, "参数错误");
-			}
-			if(StringUtils.isNull(bankName)) {
-				return ResultUtils.error(ErrorConsts.CODE_10002, "参数错误");
-			}
-			if(StringUtils.isNull(cardNumber)) {
-				return ResultUtils.error(ErrorConsts.CODE_10002, "参数错误");
-			}
+		if(StringUtils.isNull(name)) {
+			return ResultUtils.error(ErrorConsts.CODE_10002, "姓名为空");
 		}
 		if(sellerService.selectMoney(new BigDecimal(money), userId) == 0) {
 			return ResultUtils.error(ErrorConsts.CODE_10003, "余额不足");
+		}
+		ToUser user = userService.selectUser(userId);
+		if(!user.getName().equals(name)) {
+			return ResultUtils.error(ErrorConsts.CODE_10003, "提现人与用户名不一致");
+		}
+		if("2".equals(typeId)) {
+//			if(StringUtils.isNull(openingBank)) {
+//				return ResultUtils.error(ErrorConsts.CODE_10002, "参数错误");
+//			}
+//			if(StringUtils.isNull(bankName)) {
+//				return ResultUtils.error(ErrorConsts.CODE_10002, "参数错误");
+//			}
+//			if(StringUtils.isNull(cardNumber)) {
+//				return ResultUtils.error(ErrorConsts.CODE_10002, "参数错误");
+//			}
+			return ResultUtils.error(ErrorConsts.CODE_10003, "银行卡提现维护中");
 		}
 		try {
 			presentService.savePresent(userId, money, typeId, name, openingBank, bankName, cardNumber);
@@ -121,14 +124,15 @@ public class PresentController {
 	 * @Description: TODO
 	 * @param @param request
 	 * @param @param token
-	 * @param @param presentId 提现订单ID
+	 * @param @param presentId
 	 * @param @return
+	 * @param @throws Exception
 	 * @return JSONObject
 	 * @throws
 	 */
 	@RequestMapping(value = "presentsucceed",method={RequestMethod.POST,RequestMethod.GET})
 	@ResponseBody
-	public JSONObject presentSucceed(HttpServletRequest request, String token, String presentId) {
+	public JSONObject presentSucceed(HttpServletRequest request, String token, String presentId) throws Exception {
 		String userId = baseService.checkUserToken(token);
 		if(userId == null) {
 			return ResultUtils.error(ErrorConsts.CODE_10001, "请重新登录");
@@ -143,11 +147,15 @@ public class PresentController {
 		if(presentRecord == null) {
 			return ResultUtils.error(ErrorConsts.CODE_10003, "已处理");
 		}
-		int i = presentService.updateSucceed(presentId);
-		if(i < 1) {
-			return ResultUtils.error(ErrorConsts.CODE_10004, "提现失败");
+		if("1".equals(presentRecord.getTypeid())) {
+			return transfers(request, presentRecord);
 		}
-		return ResultUtils.success("提现成功");
+//		int i = presentService.updateSucceed(presentId);
+//		if(i < 1) {
+//			return ResultUtils.error(ErrorConsts.CODE_10004, "提现失败");
+//		}
+//		return ResultUtils.success("提现成功");
+		return ResultUtils.error(ErrorConsts.CODE_10003, "银行卡提现维护中");
 	}
 	
 	/**
@@ -192,7 +200,7 @@ public class PresentController {
 	 * @Description: TODO
 	 * @param @param request
 	 * @param @param token
-	 * @param @param state 订单状态:1:申请提现2:同意t提现;3.拒绝提现;
+	 * @param @param state 订单状态:1:申请提现2:同意提现;3.拒绝提现;
 	 * @param @param page 页码
 	 * @param @param pageSize 记录数
 	 * @param @return
@@ -235,7 +243,7 @@ public class PresentController {
 	}
 	
 	/**
-	 * 提现记录
+	 * 卖家查询提现记录
 	 * @Title: presentRecord
 	 * @Description: TODO
 	 * @param @param request
@@ -277,64 +285,24 @@ public class PresentController {
 	}
 	
 	/**
-	 * 微信提现
-	 * @Title: wxPay
+	 * 企业付款到零钱
+	 * @Title: transfers
 	 * @Description: TODO
 	 * @param @param request
-	 * @param @param token
-	 * @param @param money
-	 * @param @param name
-	 * @param @param typeId
+	 * @param @param presentId
 	 * @param @return
 	 * @param @throws Exception
 	 * @return JSONObject
 	 * @throws
 	 */
-	@RequestMapping(value = "wxpay",method={RequestMethod.POST,RequestMethod.GET})
-	@ResponseBody
-	public JSONObject wxPay(HttpServletRequest request,String token,String money,String name,String typeId) throws Exception {
-		String userId = baseService.checkUserToken(token);
-		if(userId == null) {
-			return ResultUtils.error(ErrorConsts.CODE_10001, "请重新登录");
-		}
-		if(baseService.checkUserRole(userId, DefaultConsts.ROLE_MERCHANT)) {
-			return ResultUtils.error(ErrorConsts.CODE_10003, ErrorConsts.USER_LIMITED_AUTHORITY);
-		}
-		if(StringUtils.isNull(typeId) || !typeId.matches("^[12]$")) {
-			return ResultUtils.error(ErrorConsts.CODE_10002, "提现类型错误");
-		}
-		if(StringUtils.isNull(money) || !money.matches("^\\d+(\\.\\d{0,2})?$")) {
-			log.warn("提现金额错误");
-			return ResultUtils.error(ErrorConsts.CODE_10002, "提现金额错误");
-		}
-		if(StringUtils.isNull(name)) {
-			return ResultUtils.error(ErrorConsts.CODE_10002, "姓名为空");
-		}
-		if("1".equals(typeId)) {
-			if(sellerService.selectMoney(new BigDecimal(money), userId) == 0) {
-				return ResultUtils.error(ErrorConsts.CODE_10003, "余额不足");
-			}
-			String presentId = "";
-			try {
-				presentId = presentService.savePresent(userId, money, typeId, name, null, null, null);
-			} catch (Exception e) {
-				return ResultUtils.error(ErrorConsts.CODE_10004, "申请失败");
-			}
-			return transfers(request, userId, name, money, presentId);
-		}else {
-			return ResultUtils.error(ErrorConsts.CODE_10004, "银行卡提现维护中");
-		}
-//		return ResultUtils.error(ErrorConsts.CODE_10004, "操作错误");
-	}
-	
-	
-	private JSONObject transfers(HttpServletRequest request, String userId, String name, String money, String presentId) throws Exception {
+	private JSONObject transfers(HttpServletRequest request, PresentRecord presentRecord) throws Exception {
+		String presentId = presentRecord.getId();
 		//价格，单位为分
-		BigDecimal amount = new BigDecimal(money);
+		BigDecimal amount = presentRecord.getAmountCash();
 		amount = amount.multiply(new BigDecimal("100"));
 		//订单总金额
 		Integer moneys = amount.intValue();
-		ToUser user = userService.selectUser(userId);
+		ToUser user = userService.selectUser(presentRecord.getId());
 		Map<String, String> paramsMap = new HashMap<>(11);
 		paramsMap.put("mch_appid", WxPayConsts.APPID);
 		paramsMap.put("mchid", WxPayConsts.MCH_ID);
@@ -342,7 +310,7 @@ public class PresentController {
 		paramsMap.put("partner_trade_no", presentId);
 		paramsMap.put("openid", user.getOpenId());
 		paramsMap.put("check_name", "FORCE_CHECK");
-		paramsMap.put("re_user_name", name);
+		paramsMap.put("re_user_name", presentRecord.getUserName());
 		paramsMap.put("amount", moneys.toString());
 		paramsMap.put("desc", "用户提现");
 		paramsMap.put("spbill_create_ip", IpUtils.getIpAddress(request));
@@ -413,11 +381,6 @@ public class PresentController {
 		}else {
 			String errCodeDes = resultMap.get("err_code_des").toString();
 			log.error(resultMap.toString());
-			try {
-				presentService.updateReject(presentId);
-			} catch (Exception e) {
-				return ResultUtils.error(ErrorConsts.CODE_10004, "拒绝失败");
-			}
 			return ResultUtils.error(ErrorConsts.CODE_10003, errCodeDes);
 		}
 	}
