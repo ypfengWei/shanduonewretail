@@ -40,7 +40,8 @@
             </ul>
         </div>
         <div v-if="currentTab==0" class="body_dd">
-            <div class="dis_flex" v-for="(item,index) in ds">
+            <div class="dis_flex" v-if="ds.length==0">没有记录</div>
+            <div v-else class="dis_flex" v-for="(item,index) in ds">
                 <div class="input_information">
                     <span>申请人姓名：</span>
                     <span>{{item.userName}}</span>
@@ -70,7 +71,8 @@
             </div>
         </div>
         <div v-else-if="currentTab==1" class="body_dd">
-            <div class="dis_flex" v-for="item in ds">
+            <div class="dis_flex" v-if="ds.length==0">没有记录</div>
+            <div v-else class="dis_flex" v-for="item in ds">
                 <div class="input_information">
                     <span>申请人姓名：</span>
                     <span>{{item.userName}}</span>
@@ -124,8 +126,10 @@
                     url: '/shanduonewretail/jpresent/presentsucceed',
                     data: {token: localStore.token, presentId: id},
                     success: function (res) {
-                        if(res.success){
+                        if (res.success) {
                             toast(res.result);
+                        } else {
+                            toast(res.errCodeDes)
                         }
                     }
                 });
@@ -135,8 +139,10 @@
                     url: '/shanduonewretail/jpresent/rejectsucceed',
                     data: {token: localStore.token, presentId: id},
                     success: function (res) {
-                        if(res.success){
+                        if (res.success) {
                             toast(res.result);
+                        } else {
+                            toast(res.errCodeDes)
                         }
                     }
                 });
