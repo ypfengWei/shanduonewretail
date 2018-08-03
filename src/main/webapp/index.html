@@ -54,7 +54,10 @@
                  @click="storeDetail(store.businessSign,store.id)">
                 <div class="dis_flex">
                     <img :src="store.sellerPicture?imagePath+store.sellerPicture:'img/icon_16.png'">
-                    <span>{{store.sellerName}}</span>
+                    <div class="dis_flex">
+                        <span>{{store.sellerName}}</span>
+                        <span>5元起送</span>
+                    </div>
                 </div>
                 <div class="dis_flex">
                     <img v-if="!store.businessSign" src="img/Rest.png">
@@ -152,6 +155,7 @@
                 getClassify(lat, lon, function (res) {
                     vm.category = vm.category.concat(res.result);
                     getClassifyBySellerType(lat, lon, vm.category[0].seller_type, function (res) {
+                        console.log(res);
                         vm.stores = vm.stores.concat(res.result);
                     });
                 });
@@ -162,6 +166,7 @@
             getClassify(lat, lon, function (res) {
                 vm.category = vm.category.concat(res.result);
                 getClassifyBySellerType(lat, lon, vm.category[0].seller_type, function (res) {
+                    console.log(res);
                     vm.stores = vm.stores.concat(res.result);
                 });
             });

@@ -132,13 +132,20 @@
                         vm.storeInfo.sellerPicture = res.serverId; // 返回图片的服务器端ID
                     }
                 })
+            }, 'upSendIndex': function (res) {
+                localStorage.localStoreUpSendIndex = res;
+            }, upSend: {
+                handler(val, oldVal) {
+                    localStorage.localUpSend = JSON.stringify(val);
+                },
+                deep: true
             }
         }, methods: {
             selUpSend(e) {
                 let index = e.target.value;
                 if (index > -1) {
-                    // vm.upSendIndex = index;
-                    // vm.storeInfo.sellerType = vm.upSend[index];
+                    vm.upSendIndex = index;
+                    vm.storeInfo.distribution = vm.upSend[index].id;
                 }
             },
             goBack() {
@@ -146,6 +153,8 @@
                 localStorage.removeItem('localStoreTypeIndex');
                 localStorage.removeItem('localStoreType');
                 localStorage.removeItem('storeImg');
+                localStorage.removeItem('localStoreUpSendIndex');
+                localStorage.removeItem('localUpSend');
                 location.href = 'Administration.html';
             }, chooseAddress() {
                 location.href = 'https://3gimg.qq.com/lightmap/components/locationPicker2/index.html?type=0&backurl=https://yapinkeji.com/shanduonewretail/shopinformation.html&key=Q74BZ-4AT34-QCUU5-XADLJ-XTGQZ-65FQM&referer=near-store';
@@ -188,6 +197,8 @@
                             localStorage.removeItem('localStoreTypeIndex');
                             localStorage.removeItem('localStoreType');
                             localStorage.removeItem('storeImg');
+                            localStorage.removeItem('localStoreUpSendIndex');
+                            localStorage.removeItem('localUpSend');
                             toast('修改成功，正在跳转...');
                             setTimeout(function () {
                                 location.href = 'Administration.html';
@@ -235,6 +246,8 @@
             vm.storeInfo = JSON.parse(localStorage.localStoreInfo);
             vm.storeType = JSON.parse(localStorage.localStoreType);
             vm.storeTypeIndex = localStorage.localStoreTypeIndex;
+            vm.upSend = localStorage.localUpSend;
+            vm.localStoreUpSendIndex = localStorage.localStoreUpSendIndex;
         } else {
             $.ajax({
                 url: '/shanduonewretail/jseller/selectsellerdetails',
@@ -306,6 +319,8 @@
             localStorage.removeItem('localStoreTypeIndex');
             localStorage.removeItem('localStoreType');
             localStorage.removeItem('storeImg');
+            localStorage.removeItem('localStoreUpSendIndex');
+            localStorage.removeItem('localUpSend');
             location.href = 'Administration.html';
         }, false);
     });
