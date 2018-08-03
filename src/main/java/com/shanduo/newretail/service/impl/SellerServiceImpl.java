@@ -52,6 +52,17 @@ public class SellerServiceImpl implements SellerService {
 				seller.setSellerName(userSeller.getSellerName());
 				seller.setSellerPicture(userSeller.getSellerPicture());
 				seller.setSellerType(userSeller.getSellerType());
+				Integer distribution = userSeller.getDistribution();
+				List<Map<String, Object>> distributionTypeList =categoryMapper.selectDistributionType();
+				Map<String, Object> distributionType = new HashMap<>();
+				for(int j=0;j<distributionTypeList.size();j++){
+					distributionType = distributionTypeList.get(j);
+					if(distribution.equals(Integer.valueOf(distributionType.get("id").toString()))){
+						distribution=Integer.valueOf(distributionType.get("category_name").toString());
+						seller.setDistribution(distribution);
+						break;
+					}
+				}
 				//计算店铺与顾客的距离
 				seller.setDistance(LocationUtils.getDistance(lon, lat, userSeller.getLon().doubleValue(), userSeller.getLat().doubleValue())+"");
 				//判断当前时间店铺是否营业
@@ -71,7 +82,6 @@ public class SellerServiceImpl implements SellerService {
 					seller.setBusinessSign(false);
 				}
 				sellerInfoList.add(seller);
-			
 		}
 		return sellerInfoList;
 	}

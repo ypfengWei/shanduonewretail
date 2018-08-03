@@ -112,6 +112,7 @@ public class SellerController {
                 return new ErrorBean();
             }
         } catch (Exception e) {
+        	e.printStackTrace();
             return new ErrorBean(ErrorConsts.CODE_10004, "查询失败");
         }
         return new SuccessBean(sellerInfoMap);
