@@ -126,7 +126,11 @@
                     url: '/shanduonewretail/jpresent/presentsucceed',
                     data: {token: localStore.token, presentId: id},
                     success: function (res) {
+                        console.log(res);
                         if (res.success) {
+                            let ary = vm.ds;
+                            ary.splice(index, 1);
+                            vm.ds = ary;
                             toast(res.result);
                         } else {
                             toast(res.errCodeDes)
@@ -140,6 +144,9 @@
                     data: {token: localStore.token, presentId: id},
                     success: function (res) {
                         if (res.success) {
+                            let ary = vm.ds;
+                            ary.splice(index, 1);
+                            vm.ds = ary;
                             toast(res.result);
                         } else {
                             toast(res.errCodeDes)

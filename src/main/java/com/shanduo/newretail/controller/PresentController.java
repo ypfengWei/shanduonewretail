@@ -1,19 +1,5 @@
 package com.shanduo.newretail.controller;
 
-import java.math.BigDecimal;
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
-
 import com.alibaba.fastjson.JSONObject;
 import com.shanduo.newretail.consts.DefaultConsts;
 import com.shanduo.newretail.consts.ErrorConsts;
@@ -24,12 +10,19 @@ import com.shanduo.newretail.service.BaseService;
 import com.shanduo.newretail.service.PresentService;
 import com.shanduo.newretail.service.SellerService;
 import com.shanduo.newretail.service.UserService;
-import com.shanduo.newretail.util.ClientCustomSSL;
-import com.shanduo.newretail.util.IpUtils;
-import com.shanduo.newretail.util.ResultUtils;
-import com.shanduo.newretail.util.StringUtils;
-import com.shanduo.newretail.util.UUIDGenerator;
-import com.shanduo.newretail.util.WxPayUtils;
+import com.shanduo.newretail.util.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import javax.servlet.http.HttpServletRequest;
+import java.math.BigDecimal;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 提现接口层
@@ -306,7 +299,7 @@ public class PresentController {
 		amount = amount.multiply(new BigDecimal("100"));
 		//订单总金额
 		Integer moneys = amount.intValue();
-		ToUser user = userService.selectUser(presentRecord.getId());
+		ToUser user = userService.selectUser(presentRecord.getUserId());
 		Map<String, String> paramsMap = new HashMap<>(11);
 		paramsMap.put("mch_appid", WxPayConsts.APPID);
 		paramsMap.put("mchid", WxPayConsts.MCH_ID);

@@ -17,6 +17,7 @@
     <script src="js/jquery-3.3.1.js"></script>
     <script src="js/layer.js"></script>
     <script src="js/utils.js"></script>
+    <script src="js/service.js"></script>
     <script src="https://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
 </head>
 <body>
@@ -247,48 +248,46 @@
             vm.upSend = JSON.parse(localStorage.localUpSend);
             vm.upSendIndex = localStorage.localStoreUpSendIndex;
         } else {
-            $.ajax({
-                url: '/shanduonewretail/jseller/selectsellerdetails',
-                data: {
-                    token: localStore.token,
-                    typeId: 1
-                }, success: function (res) {
-                    //distribution
-                    if (res.success) {
-                        vm.storeInfo = res.result;
-                        vm.storeInfo.endDate = getMyDate(vm.storeInfo.endDate);
-                        vm.storeInfo.startDate = getMyDate(vm.storeInfo.startDate);
-                        if (vm.storeInfo.sellerPicture) {
-                            vm.storeImg = '/yapingzh/picture/' + vm.storeInfo.sellerPicture;
-                            localStorage.storeImg = vm.storeImg;
-                        }
-                        $.getJSON('/shanduonewretail/jseller/selectselleralltype', function (res) {
-                            if (res.success) {
-                                vm.storeType = res.result;
-                                $.each(vm.storeType, function (i, item) {
-                                    if (item.id === vm.storeInfo.sellerType) {
-                                        vm.storeTypeIndex = i;
-                                        return false;
-                                    }
-                                });
-
-                            }
-                        });
-                        $.getJSON('/shanduonewretail/jseller/selectdistributiontype', function (res) {
-                            if (res.success) {
-                                vm.upSend = res.result;
-                                $.each(vm.upSend, function (i, item) {
-                                    if (vm.storeInfo.distribution == item.category_name) {
-                                        vm.upSendIndex = i;
-                                        return false;
-                                    }
-                                })
-                            }
-                        });
-                    } else {
-                        toast('登录状态失效')
+            loadStoreDetail({
+                token: localStore.token,
+                typeId: 1
+            }, function (res) {
+                if (res.success) {
+                    vm.storeInfo = res.result;
+                    vm.storeInfo.endDate = getMyDate(vm.storeInfo.endDate);
+                    vm.storeInfo.startDate = getMyDate(vm.storeInfo.startDate);
+                    if (vm.storeInfo.sellerPicture) {
+                        vm.storeImg = '/yapingzh/picture/' + vm.storeInfo.sellerPicture;
+                        localStorage.storeImg = vm.storeImg;
                     }
+                    $.getJSON('/shanduonewretail/jseller/selectselleralltype', function (res) {
+                        if (res.success) {
+                            vm.storeType = res.result;
+                            $.each(vm.storeType, function (i, item) {
+                                if (item.id === vm.storeInfo.sellerType) {
+                                    vm.storeTypeIndex = i;
+                                    return false;
+                                }
+                            });
+
+                        }
+                    });
+                    $.getJSON('/shanduonewretail/jseller/selectdistributiontype', function (res) {
+                        if (res.success) {
+                            vm.upSend = res.result;
+                            $.each(vm.upSend, function (i, item) {
+                                if (vm.storeInfo.distribution == item.category_name) {
+                                    vm.upSendIndex = i;
+                                    return false;
+                                }
+                            })
+                        }
+                    });
+                } else {
+                    toast('登录状态失效')
                 }
+            }, function () {
+                toast('请求错误');
             });
         }
     }

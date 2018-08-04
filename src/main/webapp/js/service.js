@@ -39,9 +39,16 @@ function getStoreClassify(storeId, typeId, back) {
     });
 }
 
-function loadStoreDetail(parameter, cbOk) {
-    $.get('/shanduonewretail/jseller/selectsellerdetails', parameter, function (res) {
-        cbOk && cbOk(res);
+function loadStoreDetail(parameter, cbOk, cbErr) {
+    $.ajax({
+        url: '/shanduonewretail/jseller/selectsellerdetails',
+        data: parameter,
+        dataType: 'json',
+        success: function (res) {
+            cbOk && cbOk(res);
+        }, error: function () {
+            cbErr && cbErr();
+        }
     });
 }
 
@@ -73,7 +80,7 @@ function getGoodsAll(token, categoryId, page, pageSize, cbOk, cbErr) {
             if (res.success) {
                 cbOk && cbOk(res.result);
             }
-        }, error: function ()  {
+        }, error: function () {
             cbErr && cbErr();
         }
     });
