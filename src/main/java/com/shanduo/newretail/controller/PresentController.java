@@ -1,5 +1,19 @@
 package com.shanduo.newretail.controller;
 
+import java.math.BigDecimal;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+
 import com.alibaba.fastjson.JSONObject;
 import com.shanduo.newretail.consts.DefaultConsts;
 import com.shanduo.newretail.consts.ErrorConsts;
@@ -10,19 +24,13 @@ import com.shanduo.newretail.service.BaseService;
 import com.shanduo.newretail.service.PresentService;
 import com.shanduo.newretail.service.SellerService;
 import com.shanduo.newretail.service.UserService;
-import com.shanduo.newretail.util.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
-
-import javax.servlet.http.HttpServletRequest;
-import java.math.BigDecimal;
-import java.util.HashMap;
-import java.util.Map;
+import com.shanduo.newretail.util.ClientCustomSSL;
+import com.shanduo.newretail.util.GetRSA;
+import com.shanduo.newretail.util.IpUtils;
+import com.shanduo.newretail.util.ResultUtils;
+import com.shanduo.newretail.util.StringUtils;
+import com.shanduo.newretail.util.UUIDGenerator;
+import com.shanduo.newretail.util.WxPayUtils;
 
 /**
  * 提现接口层
@@ -93,19 +101,19 @@ public class PresentController {
 		}
 		ToUser user = userService.selectUser(userId);
 		if(!user.getName().equals(name)) {
+			log.warn("name is error waith: userName:{} and name:{}",user.getName(),name);
 			return ResultUtils.error(ErrorConsts.CODE_10003, "提现人与用户名不一致");
 		}
 		if("2".equals(typeId)) {
+			if(StringUtils.isNull(cardNumber)) {
+				return ResultUtils.error(ErrorConsts.CODE_10002, "银行卡号为空");
+			}
+			if(StringUtils.isNull(bankName)) {
+				return ResultUtils.error(ErrorConsts.CODE_10002, "银行id为空");
+			}
 //			if(StringUtils.isNull(openingBank)) {
-//				return ResultUtils.error(ErrorConsts.CODE_10002, "参数错误");
+//				return ResultUtils.error(ErrorConsts.CODE_10002, "银行id为空");
 //			}
-//			if(StringUtils.isNull(bankName)) {
-//				return ResultUtils.error(ErrorConsts.CODE_10002, "参数错误");
-//			}
-//			if(StringUtils.isNull(cardNumber)) {
-//				return ResultUtils.error(ErrorConsts.CODE_10002, "参数错误");
-//			}
-			return ResultUtils.error(ErrorConsts.CODE_10003, "银行卡提现维护中");
 		}
 		try {
 			presentService.savePresent(userId, money, typeId, name, openingBank, bankName, cardNumber);
@@ -147,12 +155,8 @@ public class PresentController {
 		if("1".equals(presentRecord.getTypeid())) {
 			return transfers(request, presentRecord);
 		}
-//		int i = presentService.updateSucceed(presentId);
-//		if(i < 1) {
-//			return ResultUtils.error(ErrorConsts.CODE_10004, "提现失败");
-//		}
-//		return ResultUtils.success("提现成功");
-		return ResultUtils.error(ErrorConsts.CODE_10003, "银行卡提现维护中");
+		return payBank(presentRecord);
+//		return ResultUtils.error(ErrorConsts.CODE_10003, "银行卡提现维护中");
 	}
 	
 	/**
@@ -182,6 +186,34 @@ public class PresentController {
 		PresentRecord presentRecord = presentService.getPresentRecord(presentId, "1");
 		if(presentRecord == null) {
 			return ResultUtils.error(ErrorConsts.CODE_10003, "已处理");
+		}
+		//银行卡提现查询是否已经向微信申请,只有没有申请才可以拒绝
+		if("2".equals(presentRecord.getTypeid())) {
+			Map<String, Object> resultMap = queryBank(presentRecord);
+			String returnCode = resultMap.get("return_code").toString();
+			if("FAIL".equals(returnCode)) {
+				log.error(resultMap.toString());
+				return ResultUtils.error(ErrorConsts.CODE_10004, resultMap.get("return_msg").toString());
+			}
+			String resultCode = resultMap.get("result_code").toString();
+			if("FAIL".equals(resultCode)) {
+				String errCode = resultMap.get("err_code").toString();
+				if(!"ORDERNOTEXIST".equals(errCode)) {
+					log.error(resultMap.toString());
+					return ResultUtils.error(ErrorConsts.CODE_10004, resultMap.get("err_code_des").toString());
+				}
+			}
+			String status = resultMap.get("status").toString();
+			if("PROCESSING".equals(status)) {
+				return ResultUtils.error(ErrorConsts.CODE_10003, "微信处理中,拒绝操作");
+			}
+			if("SUCCESS".equals(status)) {
+				int i = presentService.updateSucceed(presentId);
+				if(i < 1) {
+					return ResultUtils.error(ErrorConsts.CODE_10004, "拒绝失败");
+				}
+				return ResultUtils.success("微信已经处理完毕改为提现成功");
+			}
 		}
 		try {
 			presentService.updateReject(presentId);
@@ -229,7 +261,7 @@ public class PresentController {
 		}
 		Integer pages = Integer.valueOf(page);
 		Integer pageSizes = Integer.valueOf(pageSize);
-		Map<String, Object> resultMap = new HashMap<>(3);
+		Map<String, Object> resultMap = new HashMap<>(4);
 		try {
 			resultMap = presentService.listPresent(state, pages, pageSizes);
 		} catch (Exception e) {
@@ -271,7 +303,7 @@ public class PresentController {
 		}
 		Integer pages = Integer.valueOf(page);
 		Integer pageSizes = Integer.valueOf(pageSize);
-		Map<String, Object> resultMap = new HashMap<>(3);
+		Map<String, Object> resultMap = new HashMap<>(4);
 		try {
 			resultMap = presentService.listPresents(userId, pages, pageSizes);
 		} catch (Exception e) {
@@ -306,8 +338,8 @@ public class PresentController {
 		paramsMap.put("nonce_str", UUIDGenerator.getUUID());
 		paramsMap.put("partner_trade_no", presentId);
 		paramsMap.put("openid", user.getOpenId());
-		paramsMap.put("check_name", "FORCE_CHECK");
-		paramsMap.put("re_user_name", presentRecord.getUserName());
+		paramsMap.put("check_name", "NO_CHECK");
+//		paramsMap.put("re_user_name", presentRecord.getUserName());
 		paramsMap.put("amount", moneys.toString());
 		paramsMap.put("desc", "用户提现");
 		paramsMap.put("spbill_create_ip", IpUtils.getIpAddress(request));
@@ -380,5 +412,116 @@ public class PresentController {
 			log.error(resultMap.toString());
 			return ResultUtils.error(ErrorConsts.CODE_10003, errCodeDes);
 		}
+	}
+	
+	/**
+	 * 企业付款到银行卡查询
+	 * @Title: queryBank
+	 * @Description: TODO
+	 * @param @param presentRecord
+	 * @param @return
+	 * @return Map<String,Object>
+	 * @throws
+	 */
+	private Map<String, Object> queryBank(PresentRecord presentRecord){
+		Map<String, String> paramsMap = new HashMap<>(4);
+	    paramsMap.put("mch_id", WxPayConsts.MCH_ID);
+	    paramsMap.put("partner_trade_no", presentRecord.getId());
+	    paramsMap.put("nonce_str", UUIDGenerator.getUUID());
+		//把数组所有元素，按照“参数=参数值”的模式用“&”字符拼接成字符串
+		String paramsString = WxPayUtils.createLinkString(paramsMap);
+		//MD5运算生成签名
+		String sign = WxPayUtils.sign(paramsString, WxPayConsts.KEY, "utf-8").toUpperCase();
+		//签名
+		paramsMap.put("sign", sign);
+		String paramsXml = WxPayUtils.map2Xmlstring(paramsMap);
+		String result = null ;
+		try {
+			result = ClientCustomSSL.doRefund(WxPayConsts.QUERY_BANK_URL, paramsXml);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return WxPayUtils.Str2Map(result);
+	}
+	
+	/**
+	 * 企业支付到银行卡
+	 * @Title: payBank
+	 * @Description: TODO
+	 * @param @param presentRecord
+	 * @param @return
+	 * @return JSONObject
+	 * @throws
+	 */
+	private JSONObject payBank(PresentRecord presentRecord) {
+		Map<String, Object> resultMap = queryBank(presentRecord);
+		String returnCode = resultMap.get("return_code").toString();
+		if("FAIL".equals(returnCode)) {
+			log.error(resultMap.toString());
+			return ResultUtils.error(ErrorConsts.CODE_10004, resultMap.get("return_msg").toString());
+		}
+		String resultCode = resultMap.get("result_code").toString();
+		if("SUCCESS".equals(resultCode)) {
+			String status = resultMap.get("status").toString();
+			if("PROCESSING".equals(status)) {
+				return ResultUtils.error(ErrorConsts.CODE_10003, "微信处理中,T+1天后再来处理");
+			}
+			if("SUCCESS".equals(status)) {
+				int i = presentService.updateSucceed(presentRecord.getId());
+				if(i < 1) {
+					return ResultUtils.error(ErrorConsts.CODE_10004, "同意失败");
+				}
+			}
+		}else {
+			String errCode = resultMap.get("err_code").toString();
+			if(!"ORDERNOTEXIST".equals(errCode)) {
+				log.error(resultMap.toString());
+				return ResultUtils.error(ErrorConsts.CODE_10004, resultMap.get("err_code_des").toString());
+			}
+			//申请微信支付到银行卡
+			BigDecimal amount = presentRecord.getAmountCash();
+			amount = amount.multiply(new BigDecimal("100"));
+			//订单总金额
+			Integer money = amount.intValue();
+		    Map<String, String> paramsMap = new HashMap<>(9);
+		    paramsMap.put("mch_id", WxPayConsts.MCH_ID);
+		    paramsMap.put("partner_trade_no", presentRecord.getId());
+		    paramsMap.put("nonce_str", UUIDGenerator.getUUID());
+		    try {
+				paramsMap.put("enc_bank_no", GetRSA.getRSA(presentRecord.getCardNumber(), WxPayConsts.publicKeyPKCS8));
+				paramsMap.put("enc_true_name", GetRSA.getRSA(presentRecord.getUserName(), WxPayConsts.publicKeyPKCS8));
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		    paramsMap.put("bank_code", presentRecord.getBankName());
+		    paramsMap.put("amount", money.toString());
+		    paramsMap.put("desc", "用户提现");
+			//把数组所有元素，按照“参数=参数值”的模式用“&”字符拼接成字符串
+			String paramsString = WxPayUtils.createLinkString(paramsMap);
+			//MD5运算生成签名
+			String sign = WxPayUtils.sign(paramsString, WxPayConsts.KEY, "utf-8").toUpperCase();
+			//签名
+			paramsMap.put("sign", sign);
+			String paramsXml = WxPayUtils.map2Xmlstring(paramsMap);
+			String result = null;
+			try {
+				result = ClientCustomSSL.doRefund(WxPayConsts.PAY_BANK_URL, paramsXml);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			resultMap = WxPayUtils.Str2Map(result);
+			returnCode = resultMap.get("return_code").toString();
+			if("FAIL".equals(returnCode)) {
+				log.error(resultMap.toString());
+				return ResultUtils.error(ErrorConsts.CODE_10004, resultMap.get("return_msg").toString());
+			}
+			resultCode = resultMap.get("result_code").toString();
+			if("FAIL".equals(resultCode)) {
+				log.error(resultMap.toString());
+				return ResultUtils.error(ErrorConsts.CODE_10004, resultMap.get("err_code_des").toString());
+			}
+			return ResultUtils.success("微信受理成功,T+1天后再来处理");
+		}
+		return ResultUtils.success("同意成功");
 	}
 }

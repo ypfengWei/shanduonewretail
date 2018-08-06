@@ -197,6 +197,12 @@
     order by gmt_create desc
     limit #{1},#{2}
   </select>
+  <select id="snmStateMoney" resultType="java.lang.Double">
+    select 
+    ifnull(sum(amount_cash),0)
+    from present_record
+    where state = #{0}
+  </select>
   <select id="countUserPresentRecord" parameterType="java.lang.String" resultType="java.lang.Integer">
     select 
     count(id)
@@ -211,5 +217,12 @@
     where user_id = #{0}
     order by gmt_create desc
     limit #{1},#{2}
+  </select>
+  <select id="snmUserMoney" resultType="java.lang.Double">
+    select 
+    ifnull(sum(amount_cash),0)
+    from present_record
+    where user_id = #{0}
+    and state = '2'
   </select>
 </mapper>

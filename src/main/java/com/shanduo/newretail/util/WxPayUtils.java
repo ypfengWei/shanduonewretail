@@ -197,8 +197,8 @@ public class WxPayUtils {
         return map;
     }
 
-    @SuppressWarnings("unchecked")
-    public static Map Dom2Map(Element e){
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+	public static Map Dom2Map(Element e){
         Map map = new HashMap();
         List list = e.elements();
         if(list.size() > 0){

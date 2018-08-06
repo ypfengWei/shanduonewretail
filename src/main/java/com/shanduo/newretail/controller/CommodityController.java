@@ -280,7 +280,9 @@ public class CommodityController {
 			return new ErrorBean(ErrorConsts.CODE_10001,"token失效");
 		}
 		try {
-			picture = WxFileUtils.downloadImage(accessTokenService.selectAccessToken(WxPayConsts.APPID).getAccessToken(),picture);
+			if (picture.lastIndexOf(".") == -1) {
+				picture = WxFileUtils.downloadImage(accessTokenService.selectAccessToken(WxPayConsts.APPID).getAccessToken(),picture);
+	        }
 			int count = commodityService.insertCommodity(name, picture, price, stock, categoryId,userId);
 			if(count<1){
 				return new ErrorBean(ErrorConsts.CODE_10004,"上传失败");

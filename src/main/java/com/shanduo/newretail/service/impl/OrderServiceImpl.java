@@ -151,10 +151,10 @@ public class OrderServiceImpl implements OrderService {
 		    //向买家推送支付成功通知
 		    if(state == 1) {
 		    	Map<String,TemplateData> param = new HashMap<>(4);
-	            param.put("first",new TemplateData("你已支付成功","#4395ff"));
+	            param.put("first",new TemplateData("尊敬的用户:你已支付成功","#4395ff"));
 	            param.put("keyword1",new TemplateData(order.getTotalPrice().toString(),"#4395ff"));
 	            param.put("keyword2",new TemplateData(order.getId(),"#4395ff"));
-	            param.put("remark",new TemplateData("商家会尽快派单","#4395ff"));
+	            param.put("remark",new TemplateData("小闪温馨提醒您:如下单超过10分钟没有及时处理,请拨打店铺客服电话沟通","#4395ff"));
 	            WX_TemplateMsgUtil.sendWechatMsgToUser(accessToken, openId,regTempId, "", "#000000", packJsonmsg(param));
 		    }
 		    ToUser user = userService.selectUser(order.getSellerId());

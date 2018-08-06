@@ -16,9 +16,9 @@ public class PresentRecord {
 
     private String userName;//提现人姓名
 
-    private String openingBank;//开户行名称
+    private String openingBank;//
 
-    private String bankName;//所在卡银行名称
+    private String bankName;//银行ID
 
     private String cardNumber;//银行卡号
 

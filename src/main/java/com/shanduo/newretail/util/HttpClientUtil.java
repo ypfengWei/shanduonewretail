@@ -118,7 +118,8 @@ public class HttpClientUtil {
      * @param queryString
      * @return
      */
-    public static Map queryString2Map(String queryString) {
+    @SuppressWarnings("rawtypes")
+	public static Map queryString2Map(String queryString) {
         if (null == queryString || "".equals(queryString)) {
             return null;
         }

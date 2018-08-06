@@ -90,10 +90,14 @@ public class PresentServiceImpl implements PresentService {
 		Page page = new Page(totalRecord, pageSize, pageNum);
 		pageNum = (page.getPageNum() - 1) * page.getPageSize();
 		List<PresentRecord> listPresentRecord = presentRecordMapper.listPresentRecord(state, pageNum, page.getPageSize());
-		Map<String, Object> resultMap = new HashMap<String, Object>(3);
+		Map<String, Object> resultMap = new HashMap<String, Object>(4);
 		resultMap.put("page", page.getPageNum());
 		resultMap.put("totalPage", page.getTotalPage());
 		resultMap.put("data", listPresentRecord);
+		if(pageNum == 1) {
+			Double countMeny = presentRecordMapper.snmStateMoney(state);
+			resultMap.put("countMoney", countMeny);
+		}
 		return resultMap;
 	}
 
@@ -103,10 +107,14 @@ public class PresentServiceImpl implements PresentService {
 		Page page = new Page(totalRecord, pageSize, pageNum);
 		pageNum = (page.getPageNum() - 1) * page.getPageSize();
 		List<PresentRecord> listPresentRecord = presentRecordMapper.listUserPresentRecord(sellerId, pageNum, page.getPageSize());
-		Map<String, Object> resultMap = new HashMap<String, Object>(3);
+		Map<String, Object> resultMap = new HashMap<String, Object>(4);
 		resultMap.put("page", page.getPageNum());
 		resultMap.put("totalPage", page.getTotalPage());
 		resultMap.put("data", listPresentRecord);
+		if(pageNum == 1) {
+			Double countMeny = presentRecordMapper.snmUserMoney(sellerId);
+			resultMap.put("countMoney", countMeny);
+		}
 		return resultMap;
 	}
 
