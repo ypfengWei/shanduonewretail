@@ -29,12 +29,11 @@ public class FileController {
 	
 	
 	/**
-	 *  文件上传
+	 * 文件上传
 	 * @param request
 	 * @param file
 	 * @return
 	 */
-	 
     @RequestMapping(value="upload",method=RequestMethod.POST)
     @ResponseBody
     public ResultBean upload(HttpServletRequest request,@RequestParam("file") MultipartFile file){

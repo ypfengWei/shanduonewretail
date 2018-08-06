@@ -1,22 +1,11 @@
 package com.shanduo.newretail.util;
 
-  
-import java.io.BufferedReader;  
-import java.io.BufferedWriter;  
-import java.io.FileReader;  
-import java.io.FileWriter;  
-import java.io.IOException;  
 import java.security.InvalidKeyException;  
 import java.security.KeyFactory;  
-import java.security.KeyPair;  
-import java.security.KeyPairGenerator;  
 import java.security.NoSuchAlgorithmException;  
-import java.security.SecureRandom;  
   
-import java.security.interfaces.RSAPrivateKey;  
 import java.security.interfaces.RSAPublicKey;  
 import java.security.spec.InvalidKeySpecException;  
-import java.security.spec.PKCS8EncodedKeySpec;  
 import java.security.spec.X509EncodedKeySpec;  
   
 import javax.crypto.BadPaddingException;  
@@ -27,8 +16,8 @@ import javax.crypto.NoSuchPaddingException;
   
 public class RSAEncrypt {  
  
-    private static final char[] HEX_CHAR = { '0', '1', '2', '3', '4', '5', '6',  
-            '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f' };  
+//    private static final char[] HEX_CHAR = { '0', '1', '2', '3', '4', '5', '6',  
+//            '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f' };  
   
 
  
@@ -43,14 +32,12 @@ public class RSAEncrypt {
             throw new Exception("出错了");  
         } catch (InvalidKeySpecException e) {  
             throw new Exception("出错了");  
-        } catch (NullPointerException e) {  
+        } catch (NullPointerException e) { 
+        	e.printStackTrace();
             throw new Exception("出错了");  
         }  
     }  
-  
 
-
-  
     /** 
      * 
      *  

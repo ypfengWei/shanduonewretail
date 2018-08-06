@@ -1,5 +1,19 @@
 package com.shanduo.newretail.controller;
 
+import java.math.BigDecimal;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+
 import com.alibaba.fastjson.JSONObject;
 import com.shanduo.newretail.consts.DefaultConsts;
 import com.shanduo.newretail.consts.ErrorConsts;
@@ -10,19 +24,12 @@ import com.shanduo.newretail.service.BaseService;
 import com.shanduo.newretail.service.PresentService;
 import com.shanduo.newretail.service.SellerService;
 import com.shanduo.newretail.service.UserService;
-import com.shanduo.newretail.util.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
-
-import javax.servlet.http.HttpServletRequest;
-import java.math.BigDecimal;
-import java.util.HashMap;
-import java.util.Map;
+import com.shanduo.newretail.util.ClientCustomSSL;
+import com.shanduo.newretail.util.IpUtils;
+import com.shanduo.newretail.util.ResultUtils;
+import com.shanduo.newretail.util.StringUtils;
+import com.shanduo.newretail.util.UUIDGenerator;
+import com.shanduo.newretail.util.WxPayUtils;
 
 /**
  * 提现接口层
@@ -93,6 +100,7 @@ public class PresentController {
 		}
 		ToUser user = userService.selectUser(userId);
 		if(!user.getName().equals(name)) {
+			log.warn("name is error waith: userName:{} and name:{}",user.getName(),name);
 			return ResultUtils.error(ErrorConsts.CODE_10003, "提现人与用户名不一致");
 		}
 		if("2".equals(typeId)) {
@@ -229,7 +237,7 @@ public class PresentController {
 		}
 		Integer pages = Integer.valueOf(page);
 		Integer pageSizes = Integer.valueOf(pageSize);
-		Map<String, Object> resultMap = new HashMap<>(3);
+		Map<String, Object> resultMap = new HashMap<>(4);
 		try {
 			resultMap = presentService.listPresent(state, pages, pageSizes);
 		} catch (Exception e) {
@@ -271,7 +279,7 @@ public class PresentController {
 		}
 		Integer pages = Integer.valueOf(page);
 		Integer pageSizes = Integer.valueOf(pageSize);
-		Map<String, Object> resultMap = new HashMap<>(3);
+		Map<String, Object> resultMap = new HashMap<>(4);
 		try {
 			resultMap = presentService.listPresents(userId, pages, pageSizes);
 		} catch (Exception e) {
@@ -306,8 +314,8 @@ public class PresentController {
 		paramsMap.put("nonce_str", UUIDGenerator.getUUID());
 		paramsMap.put("partner_trade_no", presentId);
 		paramsMap.put("openid", user.getOpenId());
-		paramsMap.put("check_name", "FORCE_CHECK");
-		paramsMap.put("re_user_name", presentRecord.getUserName());
+		paramsMap.put("check_name", "NO_CHECK");
+//		paramsMap.put("re_user_name", presentRecord.getUserName());
 		paramsMap.put("amount", moneys.toString());
 		paramsMap.put("desc", "用户提现");
 		paramsMap.put("spbill_create_ip", IpUtils.getIpAddress(request));

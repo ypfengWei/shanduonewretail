@@ -23,6 +23,7 @@ import com.shanduo.newretail.consts.WxPayConsts;
  * This example demonstrates how to create secure connections with a custom SSL
  * context.
  */
+@SuppressWarnings("deprecation")
 public class ClientCustomSSL {
  
     public static String doRefund(String url,String data) throws Exception {

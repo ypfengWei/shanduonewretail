@@ -42,6 +42,18 @@ public class WxPayConsts {
     public static final String TRADETYPE = "JSAPI";
     
     /**
+     * PKCS8
+     */
+    public static final String publicKeyPKCS8 = 
+    		"MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAzTVai/Wnn7Lexa0Tk/qX\r\n" +
+			"qbrIwPilbp6MQ/ksDtQPpJMJXyXjg/mzdYDfcgDdufudJLOYOtFmp+Y/0x/OqMWv\r\n" +
+			"QGSEdE1HWjfFsWcRz87vriJTCdS1qqudoPL82H16wBYV/mOaMzTuThQjpGx/MAHt\r\n" +
+			"xWzY8ihXkO7cohNYSB6ELKWv6PpHvmAGfUbuHfbUnpww1kZQbPiIZgjNuEc5Y4i2\r\n" +
+			"nHbTjlC/Es+7tDbzgh80m6D5+bhpEWoBLU48Pz9wi459ltPpXSXseb9agJnWeie/\r\n" +
+			"tV920UBObnBgKH1BxESvHy9XcLw0XrMPzUoS4imcoc5Zq7hNq18VQ8IZN7CJqLwY\r\n" +
+			"nQIDAQAB";
+    
+    /**
      * 微信统一下单接口地址
      */
     public static final String PAY_URL = "https://api.mch.weixin.qq.com/pay/unifiedorder";
@@ -77,7 +89,7 @@ public class WxPayConsts {
     public static final String PAY_BANK_URL = "https://api.mch.weixin.qq.com/mmpaysptrans/pay_bank";
     
     /**
-     * 企业付款到银行卡接口
+     * 企业付款到银行卡查询接口
      */
     public static final String QUERY_BANK_URL = "https://api.mch.weixin.qq.com/mmpaysptrans/query_bank";
     

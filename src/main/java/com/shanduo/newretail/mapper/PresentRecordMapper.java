@@ -23,7 +23,11 @@ public interface PresentRecordMapper {
     
     List<PresentRecord> listPresentRecord(String state, Integer pageNum, Integer pageSize);
     
+    Double snmStateMoney(String state);
+    
     int countUserPresentRecord(String userId);
     
     List<PresentRecord> listUserPresentRecord(String userId, Integer pageNum, Integer pageSize);
+    
+    Double snmUserMoney(String userId); 
 }
