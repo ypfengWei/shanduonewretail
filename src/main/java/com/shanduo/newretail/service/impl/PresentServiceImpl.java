@@ -94,7 +94,7 @@ public class PresentServiceImpl implements PresentService {
 		resultMap.put("page", page.getPageNum());
 		resultMap.put("totalPage", page.getTotalPage());
 		resultMap.put("data", listPresentRecord);
-		if(pageNum == 1) {
+		if(pageNum == 0) {
 			Double countMeny = presentRecordMapper.snmStateMoney(state);
 			resultMap.put("countMoney", countMeny);
 		}
@@ -111,11 +111,16 @@ public class PresentServiceImpl implements PresentService {
 		resultMap.put("page", page.getPageNum());
 		resultMap.put("totalPage", page.getTotalPage());
 		resultMap.put("data", listPresentRecord);
-		if(pageNum == 1) {
+		if(pageNum == 0) {
 			Double countMeny = presentRecordMapper.snmUserMoney(sellerId);
 			resultMap.put("countMoney", countMeny);
 		}
 		return resultMap;
+	}
+
+	@Override
+	public Map<String, String> getPresent(String sellerId) {
+		return presentRecordMapper.getPresent(sellerId);
 	}
 
 }

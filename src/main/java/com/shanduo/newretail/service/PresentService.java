@@ -90,4 +90,16 @@ public interface PresentService {
 	 * @throws
 	 */
 	Map<String, Object> listPresents(String sellerId,Integer pageNum,Integer pageSize);
+	
+	
+	/**
+	 * 卖家查询提现过的银行卡
+	 * @Title: getPresent
+	 * @Description: TODO
+	 * @param @param sellerId
+	 * @param @return
+	 * @return Map<String, String>
+	 * @throws
+	 */
+	Map<String, String> getPresent(String sellerId);
 }
