@@ -202,17 +202,18 @@ public class PresentController {
 					log.error(resultMap.toString());
 					return ResultUtils.error(ErrorConsts.CODE_10004, resultMap.get("err_code_des").toString());
 				}
-			}
-			String status = resultMap.get("status").toString();
-			if("PROCESSING".equals(status)) {
-				return ResultUtils.error(ErrorConsts.CODE_10003, "微信处理中,拒绝操作");
-			}
-			if("SUCCESS".equals(status)) {
-				int i = presentService.updateSucceed(presentId);
-				if(i < 1) {
-					return ResultUtils.error(ErrorConsts.CODE_10004, "拒绝失败");
+			}else {
+				String status = resultMap.get("status").toString();
+				if("PROCESSING".equals(status)) {
+					return ResultUtils.error(ErrorConsts.CODE_10003, "微信处理中,拒绝操作");
 				}
-				return ResultUtils.success("微信已经处理完毕改为提现成功");
+				if("SUCCESS".equals(status)) {
+					int i = presentService.updateSucceed(presentId);
+					if(i < 1) {
+						return ResultUtils.error(ErrorConsts.CODE_10004, "拒绝失败");
+					}
+					return ResultUtils.success("微信已经处理完毕改为提现成功");
+				}
 			}
 		}
 		try {
