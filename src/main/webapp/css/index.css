@@ -78,7 +78,7 @@ div.title_header>div:last-child>img{
 
 }
 .pos_top{
-    height: 82px;
+    height: 30px;/*82px*/
 }
 .inp_div{
     background-color: #fff;
@@ -141,19 +141,22 @@ div.title_header>div:last-child>img{
     width: 50%;
 }
 .sort_ul>.sort_li>div:last-child{
-    justify-content: space-around;
+    justify-content: flex-end;
 }
 .sort_ul>.sort_li>div>span{
     font-weight: bold;
 }
 .sort_ul>.sort_li>div:first-child>img{
-    width: 100px;
+    width: 50%;
     height: 80px;
     border-radius: 10px;
 }
-.sort_ul>.sort_li>div:first-child>span{
+.sort_ul>.sort_li>div:first-child>div{
+    flex-direction: column;
+    justify-content: space-between;
+}
+.sort_ul>.sort_li>div:first-child>div>span{
     font-size: 16px;
-    height: 80px;
     margin-left: 10px;
     overflow: hidden;
 }

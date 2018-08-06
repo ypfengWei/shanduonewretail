@@ -194,7 +194,7 @@
     card_number, state, gmt_create, gmt_modified
     from present_record
     where state = #{0}
-    order by gmt_create
+    order by gmt_create desc
     limit #{1},#{2}
   </select>
   <select id="countUserPresentRecord" parameterType="java.lang.String" resultType="java.lang.Integer">

@@ -22,7 +22,6 @@ import com.shanduo.newretail.consts.ErrorConsts;
 import com.shanduo.newretail.consts.WxPayConsts;
 import com.shanduo.newretail.entity.ToOrder;
 import com.shanduo.newretail.entity.ToOrderDetails;
-import com.shanduo.newretail.entity.common.ErrorBean;
 import com.shanduo.newretail.service.BaseService;
 import com.shanduo.newretail.service.OrderService;
 import com.shanduo.newretail.service.SellerService;

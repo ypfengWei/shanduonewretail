@@ -14,6 +14,7 @@
     <!--苹果手机：如果把一个web app添加到了主屏幕中，那么从主屏幕中打开这个web app则全屏显示-->
     <link rel="stylesheet" type="text/css" href="css/putForward.css">
     <script src="js/jquery-3.3.1.js"></script>
+    <script src="js/utils.js"></script>
     <title></title>
 </head>
 <body>
@@ -33,10 +34,10 @@
                 <img src="img/Bankcard.png">
                 <span>银行卡</span>
             </div>
-            <!--                <div>
-                                <img src="img/WeChat.png">
-                                <span>微信</span>
-                            </div>-->
+            <div @click="gotoWeChatView">
+                <img src="img/WeChat.png">
+                <span>微信</span>
+            </div>
         </div>
         <div class="dis_flex div_Record">
             <span>提现记录</span>
@@ -45,10 +46,11 @@
         <div>
             <span v-if="record.length==0">没有记录</span>
             <div v-else class="dis_flex div_bankCard" v-for="item in record">
-                <span>银行卡提现</span>
+                <span v-if="item.typeid==1">微信提现</span>
+                <span v-else>银行卡提现</span>
                 <div class="dis_flex">
-                    <span class="">+15.3</span>
-                    <span>2018/7/19&nbsp;15:48</span>
+                    <span class="">+{{item.amountCash}}</span>
+                    <span>{{item.gmt_modified}}</span>
                 </div>
             </div>
         </div>
@@ -65,6 +67,8 @@
         }, methods: {
             gotoBankCardView() {
                 location.href = 'bankCard.html';
+            },gotoWeChatView(){
+                location.href = 'WeChat.html';
             }
         }
     });
@@ -75,7 +79,11 @@
             pageSize: pageSize
         }, function (res) {
             if (res.success && res.data.length > 0) {
-                vm.record = vm.record.concat(res.data);
+                let data=res.data;
+                $.each(data,function (i, item) {
+                    data[i].gmt_modified=getLocalTime(item.gmtModified);
+                });
+                vm.record = vm.record.concat(data);
                 totalPage = res.totalPage;
             }
         });

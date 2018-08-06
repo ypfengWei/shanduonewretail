@@ -13,8 +13,8 @@
         <slf4j.version>1.6.1</slf4j.version>
         <mysql.version>5.1.31</mysql.version>
         <mybatis.version>3.1.1</mybatis.version>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <gson.version>2.2.3</gson.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
     <dependencies>
         <dependency>

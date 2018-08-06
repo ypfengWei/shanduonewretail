@@ -34,57 +34,46 @@
         <div class="dis_flex">
             <div class="input_information">
                 <label for="name">姓名：</label>
-                <input type="text" id="name" v-model="info.name">
-            </div>
-            <div class="input_information">
-                <label for="bank">银行名称：</label>
-                <input type="text" id="bank" v-model="info.bankName">
-            </div>
-            <div class="input_information">
-                <label for="cardNumber">卡号：</label>
-                <input type="text" id="cardNumber" v-model="info.cardNumber">
-            </div>
-            <div class="input_information">
-                <label for="openAccountAddress">开户行名称：</label>
-                <input type="text" id="openAccountAddress" v-model="info.openingBank">
+                <input type="text" id="name" v-model="name">
             </div>
             <div class="input_information">
                 <label for="withdrawalAmount">提款金额：</label>
-                <input type="number" id="withdrawalAmount" :placeholder="hint" v-model="info.money">
+                <input type="number" :placeholder="hint" id="withdrawalAmount" v-model="money">
             </div>
             <div class="putForward" @click="savepresent">
                 <span>立即提现</span>
             </div>
         </div>
-        <span>——&nbsp;&nbsp;&nbsp;到账时间三个工作日内&nbsp;&nbsp;&nbsp;——</span>
+        <span>——&nbsp;&nbsp;&nbsp;到账时间两个工作日内&nbsp;&nbsp;&nbsp;——</span>
     </div>
 </div>
 </body>
 <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 <script>
-    let localStore = JSON.parse(localStorage.localStore)
+    let localStore = JSON.parse(localStorage.localStore);
     let vm = new Vue({
         el: '#vueData',
         data: {
-            info: {
-                token: localStore.token,
-                money: 0,
-                name: '',
-                typeId: 2,
-                openingBank: '',
-                bankName: '',
-                cardNumber: '',
-                hint:0
-            }
+            money: 0,
+            name: '',
+            hint: 0
         }, methods: {
             savepresent() {
-                if(regInput()){
+                if (regInput()) {
                     $.ajax({
                         url: '/shanduonewretail/jpresent/savepresent',
-                        data: vm.info,
+                        data: {
+                            token: localStore.token,
+                            name: vm.name,
+                            money: vm.money,
+                            typeId: 1
+                        },
                         success: function (res) {
                             if (res.success) {
-                                toast('提现申请已受理')
+                                toast('提现申请已受理');
+                                setTimeout(function () {
+                                    history.back();
+                                }, 2000);
                             } else {
                                 toast(res.errCodeDes);
                             }
@@ -94,6 +83,26 @@
             }
         }
     });
+
+    function regInput() {
+        if (!checkInput(vm.name)) {
+            toast('请输入名称');
+            return false;
+        }
+        if (!/^([\u4e00-\u9fa5]+)$/.test(vm.name)) {
+            toast('请使用中文名');
+            return false;
+        }
+        if (!/(^[1-9]([0-9]+)?(\.[0-9]{1,2})?$)|(^(0)$)|(^[0-9]\.[0-9]([0-9])?$)/.test(vm.money)) {
+            toast('请输入正整数金额');
+            return false;
+        }
+        if ((parseInt(vm.money * 100) - parseInt(vm.hint * 100)) > 0) {
+            toast('提现金额超出可用额度');
+            return false;
+        }
+        return true;
+    }
 
     $(function () {
         loadStoreDetail({
@@ -105,45 +114,5 @@
             }
         });
     });
-
-    function regInput() {
-        if (!checkInput(vm.info.name)) {
-            toast('请输入姓名');
-            return false;
-        }
-        if (!/^([\u4e00-\u9fa5]+)$/.test(vm.info.name)) {
-            toast('请使用中文名');
-            return false;
-        }
-        if (!checkInput(vm.info.bankName)) {
-            toast('请输入银行名称');
-            return false;
-        }
-        if (!checkInput(vm.info.cardNumber)) {
-            toast('请输入银行卡号');
-            return false;
-        }
-        if (vm.info.cardNumber.length < 16 || vm.info.cardNumber.length > 19) {
-            toast("银行卡号长度必须在16到19之间");
-            return false;
-        }
-        if (!/^\d*$/.exec(vm.info.cardNumber)) {
-            toast("银行卡号必须全为数字");
-            return false;
-        }
-        if (!checkInput(vm.info.openingBank)) {
-            toast('请输入开户行名称');
-            return false;
-        }
-        if (!/(^[1-9]([0-9]+)?(\.[0-9]{1,2})?$)|(^(0)$)|(^[0-9]\.[0-9]([0-9])?$)/.test(vm.info.money)) {
-            toast('请输入正整数金额');
-            return false;
-        }
-        if ((parseInt(vm.info.money * 100) - parseInt(vm.hint * 100)) > 0) {
-            toast('提现金额超出可用额度');
-            return false;
-        }
-        return true;
-    }
 </script>
 </html>

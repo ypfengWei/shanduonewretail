@@ -164,7 +164,7 @@ public class OrderServiceImpl implements OrderService {
 		    	//向卖家推送下单通知
 		    	if(state == 1) {
 		    		Map<String,TemplateData> params = new HashMap<>(4);
-		    		params.put("first",new TemplateData("你有新的待处理订单订单","#4395ff"));
+		    		params.put("first",new TemplateData("你有新的待处理订单","#4395ff"));
 		    		params.put("keyword1",new TemplateData(order.getTotalPrice().toString(),"#4395ff"));
 		    		params.put("keyword2",new TemplateData(order.getId(),"#4395ff"));
 		    		params.put("remark",new TemplateData("请尽快处理","#4395ff"));
