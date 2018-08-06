@@ -121,6 +121,7 @@
                 page: pageIndex,
                 pageSize: pageSize
             }, success: function (res) {
+                console.log(res);
                 if (res.success && res.data.length > 0) {
                     let data = res.data;
                     $.each(data, function (i, item) {
