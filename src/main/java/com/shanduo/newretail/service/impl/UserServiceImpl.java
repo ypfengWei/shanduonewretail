@@ -11,9 +11,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.shanduo.newretail.consts.DefaultConsts;
+import com.shanduo.newretail.entity.AppUpgrade;
 import com.shanduo.newretail.entity.ToUser;
 import com.shanduo.newretail.entity.service.TokenInfo;
 import com.shanduo.newretail.entity.service.UserInfo;
+import com.shanduo.newretail.mapper.AppUpgradeMapper;
 import com.shanduo.newretail.mapper.ToUserMapper;
 import com.shanduo.newretail.mapper.UserSellerMapper;
 import com.shanduo.newretail.mapper.UserTokenMapper;
@@ -45,6 +47,8 @@ public class UserServiceImpl implements UserService {
 	private SellerService sellerService;
 	@Autowired
 	private UserSellerMapper userSellerMapper;
+	@Autowired
+	private AppUpgradeMapper appUpgradeMapper;
 	
 	@Override
 	@Transactional(rollbackFor = Exception.class)
@@ -192,6 +196,12 @@ public class UserServiceImpl implements UserService {
 	public int updateopenId(String openId, String phone) {
 		
 		return userMapper.updateopenId(openId, phone);
+	}
+
+	@Override
+	public AppUpgrade selectApp(Integer appType) {
+		
+		return appUpgradeMapper.selectApp(appType);
 	}
 
 }

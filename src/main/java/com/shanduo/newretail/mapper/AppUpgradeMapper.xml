@@ -103,4 +103,11 @@
       gmt_modified = #{gmtModified,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=INTEGER}
   </update>
+  
+  <select id="selectApp" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from app_upgrade
+    where app_type = #{appType,jdbcType=INTEGER}
+  </select>
 </mapper>
