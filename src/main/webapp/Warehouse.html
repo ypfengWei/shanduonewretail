@@ -23,7 +23,7 @@
     <title>商品选择</title>
 </head>
 <body>
-<div id="vueData">
+<div id="vueData" class="mescroll">
     <div class="body">
         <article id="menu">
             <div class="swiper-container">
@@ -45,7 +45,7 @@
                         <!--类别1-->
                         <div class="swiper-slide tab-pane fade in active" id="One1">
                             <div class="content">
-                                <div id="mescroll" class="right mescroll">
+                                <div class="right">
                                     <ul>
                                         <!--类别商品-->
                                         <li v-if="commodityArray.length==0"><span>没有商品</span></li>
@@ -125,7 +125,7 @@
         },
         mounted: function () {
             let that = this;
-            that.mescroll = new MeScroll("mescroll", {
+            that.mescroll = new MeScroll("vueData", {
                 up: {
                     callback: that.upCallback,
                     auto: false

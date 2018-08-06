@@ -150,6 +150,7 @@
                 lat = res.lat;
                 lon = res.lng;
                 converterAddress(lat, lon, function (res) {
+                    console.log(res);
                     vm.address = res.detail.addressComponents.district;
                 });
                 getClassify(lat, lon, function (res) {

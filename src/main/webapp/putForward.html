@@ -13,6 +13,7 @@
     <meta name="apple-touch-fullscreen" content="yes"/>
     <!--苹果手机：如果把一个web app添加到了主屏幕中，那么从主屏幕中打开这个web app则全屏显示-->
     <link rel="stylesheet" type="text/css" href="css/putForward.css">
+    <link rel="stylesheet" type="text/css" href="css/mescroll.min.css">
     <script src="js/jquery-3.3.1.js"></script>
     <script src="js/utils.js"></script>
     <title></title>
@@ -41,15 +42,20 @@
         </div>
         <div class="dis_flex div_Record">
             <span>提现记录</span>
-            <span>提现总额:0.00</span>
+            <!--<span>提现总额:0.00</span>-->
         </div>
-        <div>
+        <div id="mescroll" class="mescroll">
             <span v-if="record.length==0">没有记录</span>
             <div v-else class="dis_flex div_bankCard" v-for="item in record">
-                <span v-if="item.typeid==1">微信提现</span>
-                <span v-else>银行卡提现</span>
                 <div class="dis_flex">
-                    <span class="">+{{item.amountCash}}</span>
+                    <span v-if="item.typeid==1" class="col_hei">微信提现</span>
+                    <span v-else class="col_hei">银行卡提现</span>
+                    <span v-if="item.state==1" class="err_ok">审核中</span>
+                    <span v-else-if="item.state==2" class="err_in">已到账</span>
+                    <span v-else class="err_off">被拒绝</span>
+                </div>
+                <div class="dis_flex">
+                    <span>金额:{{item.amountCash}}</span>
                     <span>{{item.gmt_modified}}</span>
                 </div>
             </div>
@@ -58,35 +64,84 @@
 </div>
 </body>
 <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script src="js/mescroll.min.js"></script>
 <script>
     let localStore = JSON.parse(localStorage.localStore), pageIndex = 1, pageSize = 20, totalPage = 0;
     let vm = new Vue({
         el: '#vueData',
         data: {
-            record: []
+            record: [],
+            mescroll: null
+        }, mounted: function () {
+            let that = this;
+            that.mescroll = new MeScroll("mescroll", { //请至少在vue的mounted生命周期初始化mescroll,以确保您配置的id能够被找到
+                up: {
+                    callback: that.upCallback, //
+                    auto: false,
+                    noMoreSize: 20
+                }, down: {
+                    callback: that.downCallback,
+                    auto: false
+                }
+            });
         }, methods: {
+            upCallback() {
+                if (totalPage > pageIndex) {
+                    loadData(function () {
+                        vm.mescroll.endByPage(pageSize, totalPage);
+                    }, function () {
+                        vm.mescroll.endErr();
+                    });
+                } else {
+                    vm.mescroll.endByPage(pageSize, totalPage);
+                }
+            }, downCallback() {
+                emptyData();
+                loadData(function () {
+                    vm.mescroll.endByPage(pageSize, totalPage);
+                }, function () {
+                    vm.mescroll.endErr();
+                });
+            },
             gotoBankCardView() {
                 location.href = 'bankCard.html';
-            },gotoWeChatView(){
+            }, gotoWeChatView() {
                 location.href = 'WeChat.html';
             }
         }
     });
     $(function () {
-        $.get('/shanduonewretail/jpresent/presentrecord', {
-            token: localStore.token,
-            page: pageIndex,
-            pageSize: pageSize
-        }, function (res) {
-            if (res.success && res.data.length > 0) {
-                let data=res.data;
-                $.each(data,function (i, item) {
-                    data[i].gmt_modified=getLocalTime(item.gmtModified);
-                });
-                vm.record = vm.record.concat(data);
-                totalPage = res.totalPage;
+        loadData();
+    });
+
+    function loadData(cbOk, cbErr) {
+        $.ajax({
+            url: '/shanduonewretail/jpresent/presentrecord', data: {
+                token: localStore.token,
+                page: pageIndex,
+                pageSize: pageSize
+            }, success: function (res) {
+                if (res.success && res.data.length > 0) {
+                    let data = res.data;
+                    $.each(data, function (i, item) {
+                        data[i].gmt_modified = getLocalTime(item.gmtModified);
+                    });
+                    vm.record = vm.record.concat(data);
+                    totalPage = res.totalPage;
+                }
+                cbOk && cbOk();
+            }, error: function () {
+                cbErr && cbErr();
             }
         });
-    });
+    }
+
+    function emptyData() {
+        let ary = vm.record;
+        ary.splice(0, ary.length);
+        vm.record = ary;
+        totalPage = 0;
+        pageIndex = 1;
+    }
 </script>
 </html>

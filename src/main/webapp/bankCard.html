@@ -38,15 +38,13 @@
             </div>
             <div class="input_information">
                 <label for="bank">银行名称：</label>
-                <input type="text" id="bank" v-model="info.bankName">
+                <select id="bank" @change="selBank">
+                    <option v-for="item in bankArray" :value="item.bankId">{{item.bankName}}</option>
+                </select>
             </div>
             <div class="input_information">
                 <label for="cardNumber">卡号：</label>
                 <input type="text" id="cardNumber" v-model="info.cardNumber">
-            </div>
-            <div class="input_information">
-                <label for="openAccountAddress">开户行名称：</label>
-                <input type="text" id="openAccountAddress" v-model="info.openingBank">
             </div>
             <div class="input_information">
                 <label for="withdrawalAmount">提款金额：</label>
@@ -62,7 +60,7 @@
 </body>
 <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 <script>
-    let localStore = JSON.parse(localStorage.localStore)
+    let localStore = JSON.parse(localStorage.localStore);
     let vm = new Vue({
         el: '#vueData',
         data: {
@@ -71,26 +69,49 @@
                 money: 0,
                 name: '',
                 typeId: 2,
-                openingBank: '',
                 bankName: '',
-                cardNumber: '',
-                hint:0
-            }
+                cardNumber: ''
+            },
+            bankArray: [
+                {bankId: 1001, bankName: '招商银行'},
+                {bankId: 1002, bankName: '工商银行'},
+                {bankId: 1003, bankName: '建设银行'},
+                {bankId: 1004, bankName: '浦发银行'},
+                {bankId: 1005, bankName: '农业银行'},
+                {bankId: 1006, bankName: '民生银行'},
+                {bankId: 1009, bankName: '兴业银行'},
+                {bankId: 1010, bankName: '平安银行'},
+                {bankId: 1020, bankName: '交通银行'},
+                {bankId: 1021, bankName: '中信银行'},
+                {bankId: 1022, bankName: '光大银行'},
+                {bankId: 1025, bankName: '华夏银行'},
+                {bankId: 1026, bankName: '中国银行'},
+                {bankId: 1027, bankName: '广发银行'},
+                {bankId: 1032, bankName: '北京银行'},
+                {bankId: 1056, bankName: '宁波银行'},
+                {bankId: 1066, bankName: '邮储银行'},
+            ],
+            hint: 0
         }, methods: {
             savepresent() {
-                if(regInput()){
+                if (regInput()) {
                     $.ajax({
                         url: '/shanduonewretail/jpresent/savepresent',
                         data: vm.info,
                         success: function (res) {
                             if (res.success) {
-                                toast('提现申请已受理')
+                                toast('提现申请已受理');
+                                setTimeout(function () {
+                                    history.back();
+                                }, 2000);
                             } else {
                                 toast(res.errCodeDes);
                             }
                         }
                     });
                 }
+            }, selBank() {
+                vm.info.bankName = event.target.value;
             }
         }
     });
@@ -129,10 +150,6 @@
         }
         if (!/^\d*$/.exec(vm.info.cardNumber)) {
             toast("银行卡号必须全为数字");
-            return false;
-        }
-        if (!checkInput(vm.info.openingBank)) {
-            toast('请输入开户行名称');
             return false;
         }
         if (!/(^[1-9]([0-9]+)?(\.[0-9]{1,2})?$)|(^(0)$)|(^[0-9]\.[0-9]([0-9])?$)/.test(vm.info.money)) {

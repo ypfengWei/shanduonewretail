@@ -39,59 +39,61 @@
                 <li>已审核</li>
             </ul>
         </div>
-        <div v-if="currentTab==0" class="body_dd">
-            <div class="dis_flex" v-if="ds.length==0">没有记录</div>
-            <div v-else class="dis_flex" v-for="(item,index) in ds">
-                <div class="input_information">
-                    <span>申请人姓名：</span>
-                    <span>{{item.userName}}</span>
-                </div>
-                <div v-if="item.bankName" class="input_information">
-                    <span>银行：</span>
-                    <span>{{item.bankName}}</span>
-                </div>
-                <div v-if="item.cardNumber" class="input_information">
-                    <span>卡号：</span>
-                    <span>{{item.cardNumber}}</span>
-                </div>
-                <div v-if="item.openingBank" class="input_information">
-                    <span>开户地址：</span>
-                    <span>{{item.openingBank}}</span>
-                </div>
-                <div class="input_information">
-                    <span>提款金额：</span>
-                    <span>{{item.amountCash}}</span>
-                </div>
-                <div class="putForward">
-                    <span @click="auditPass(index)">审核通过</span>
-                </div>
-                <div class="putForward">
-                    <span @click="auditRefused(index)">拒绝通过</span>
+        <div id="mescroll" class="mescroll">
+            <div v-if="currentTab==0" class="body_dd">
+                <div class="dis_flex" v-if="ds.length==0">没有记录</div>
+                <div v-else class="dis_flex" v-for="(item,index) in ds">
+                    <div class="input_information">
+                        <span>申请人姓名：</span>
+                        <span>{{item.userName}}</span>
+                    </div>
+                    <div v-if="item.bankName" class="input_information">
+                        <span>银行：</span>
+                        <span>{{item.bankName}}</span>
+                    </div>
+                    <div v-if="item.cardNumber" class="input_information">
+                        <span>卡号：</span>
+                        <span>{{item.cardNumber}}</span>
+                    </div>
+                    <div v-if="item.openingBank" class="input_information">
+                        <span>开户地址：</span>
+                        <span>{{item.openingBank}}</span>
+                    </div>
+                    <div class="input_information">
+                        <span>提款金额：</span>
+                        <span>{{item.amountCash}}</span>
+                    </div>
+                    <div class="putForward">
+                        <span @click="auditPass(index)">审核通过</span>
+                    </div>
+                    <div class="putForward">
+                        <span @click="auditRefused(index)">拒绝通过</span>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div v-else-if="currentTab==1" class="body_dd">
-            <div class="dis_flex" v-if="ds.length==0">没有记录</div>
-            <div v-else class="dis_flex" v-for="item in ds">
-                <div class="input_information">
-                    <span>申请人姓名：</span>
-                    <span>{{item.userName}}</span>
-                </div>
-                <div v-if="item.bankName" class="input_information">
-                    <span>银行：</span>
-                    <span>{{item.bankName}}</span>
-                </div>
-                <div v-if="item.cardNumber" class="input_information">
-                    <span>卡号：</span>
-                    <span>{{item.cardNumber}}</span>
-                </div>
-                <div v-if="item.openingBank" class="input_information">
-                    <span>开户地址：</span>
-                    <span>{{item.openingBank}}</span>
-                </div>
-                <div class="input_information">
-                    <span>提款金额：</span>
-                    <span>{{item.amountCash}}</span>
+            <div v-else-if="currentTab==1" class="body_dd">
+                <div class="dis_flex" v-if="ds.length==0">没有记录</div>
+                <div v-else class="dis_flex" v-for="item in ds">
+                    <div class="input_information">
+                        <span>申请人姓名：</span>
+                        <span>{{item.userName}}</span>
+                    </div>
+                    <div v-if="item.bankName" class="input_information">
+                        <span>银行：</span>
+                        <span>{{item.bankName}}</span>
+                    </div>
+                    <div v-if="item.cardNumber" class="input_information">
+                        <span>卡号：</span>
+                        <span>{{item.cardNumber}}</span>
+                    </div>
+                    <div v-if="item.openingBank" class="input_information">
+                        <span>开户地址：</span>
+                        <span>{{item.openingBank}}</span>
+                    </div>
+                    <div class="input_information">
+                        <span>提款金额：</span>
+                        <span>{{item.amountCash}}</span>
+                    </div>
                 </div>
             </div>
         </div>
@@ -105,8 +107,10 @@
         el: '#vueData',
         data: {
             currentTab: 0,
-            ds: []
+            ds: [],
+            mescroll: null
         }, mounted: function () {
+            let that = this;
             $('.body_dt>ul>li').click(function () {
                 let selectIndex = $(event.currentTarget).index();
                 if (vm.currentTab === selectIndex) {
@@ -117,7 +121,36 @@
                 emptyData();
                 loadToDoPro();
             });
+
+            that.mescroll = new MeScroll("mescroll", {
+                up: {
+                    callback: that.upCallback,
+                    auto: false,
+                    noMoreSize: 20
+                }, down: {
+                    callback: that.downCallback,
+                    auto: false
+                }
+            });
         }, methods: {
+            upCallback() {
+                if (totalPage > pageIndex) {
+                    loadToDoPro(function () {
+                        vm.mescroll.endByPage(pageCount, totalPage);
+                    }, function () {
+                        vm.mescroll.endErr();
+                    });
+                } else {
+                    vm.mescroll.endByPage(pageCount, totalPage);
+                }
+            }, downCallback() {
+                emptyData();
+                loadToDoPro(function () {
+                    vm.mescroll.endByPage(pageCount, totalPage);
+                }, function () {
+                    vm.mescroll.endErr();
+                });
+            },
             goBack() {
                 history.back();
             }, auditPass(index) {
@@ -126,7 +159,6 @@
                     url: '/shanduonewretail/jpresent/presentsucceed',
                     data: {token: localStore.token, presentId: id},
                     success: function (res) {
-                        console.log(res);
                         if (res.success) {
                             let ary = vm.ds;
                             ary.splice(index, 1);
@@ -160,6 +192,14 @@
         loadToDoPro();
     });
 
+    function emptyData() {
+        let ary = vm.ds;
+        ary.splice(0, ary.length);
+        vm.ds = ary;
+        totalPage = 0;
+        pageIndex = 1;
+    }
+
     function loadToDoPro(cbOk, cbErr) {
         if (localStore.jurisdiction == 1) {
             $.ajax({
@@ -170,7 +210,6 @@
                     page: pageIndex,
                     pageSize: pageCount
                 }, success: function (res) {
-                    console.log(res)
                     if (res.success) {
                         vm.ds = vm.ds.concat(res.data);
                         totalPage = res.totalPage;
