@@ -234,4 +234,12 @@
     order by gmt_create desc
     limit #{pageNum},#{pageSize}
   </select>
+  <select id="listPending" resultType="java.lang.String">
+    select 
+    seller_id
+    from to_order
+    where is_deleted = '0'
+	and state = '2'
+	group by seller_id
+  </select>
 </mapper>
