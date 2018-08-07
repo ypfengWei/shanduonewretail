@@ -31,6 +31,7 @@ public class WxPayConsts {
      */
     public static final String PKCS12_PATH = "/www/apiclient_cert.p12";
     //"E:\\证书\\apiclient_cert.p12";
+    //"/www/apiclient_cert.p12";
     
     /**
      * 签名方式,固定值

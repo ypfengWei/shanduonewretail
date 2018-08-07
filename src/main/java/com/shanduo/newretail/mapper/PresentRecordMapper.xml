@@ -225,4 +225,13 @@
     where user_id = #{0}
     and state = '2'
   </select>
+  <select id="getPresent" parameterType="java.lang.String" resultType="map">
+   select 
+   user_name, opening_bank, bank_name, card_number
+   from present_record
+   where user_id = #{userId,jdbcType=VARCHAR}
+   and typeId = '2'
+   order by gmt_create desc
+   limit 1
+  </select>
 </mapper>

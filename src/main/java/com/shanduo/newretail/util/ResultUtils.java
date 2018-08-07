@@ -32,6 +32,7 @@ public class ResultUtils {
 		if(object instanceof TokenInfo){
 			TokenInfo token = (TokenInfo) object;
             jsonObject.put("token", token.getToken());
+            jsonObject.put("userId", token.getUserId());
             jsonObject.put("name", token.getName());
             jsonObject.put("phone", token.getPhone());
             jsonObject.put("jurisdiction", token.getJurisdiction());

@@ -202,17 +202,18 @@ public class PresentController {
 					log.error(resultMap.toString());
 					return ResultUtils.error(ErrorConsts.CODE_10004, resultMap.get("err_code_des").toString());
 				}
-			}
-			String status = resultMap.get("status").toString();
-			if("PROCESSING".equals(status)) {
-				return ResultUtils.error(ErrorConsts.CODE_10003, "微信处理中,拒绝操作");
-			}
-			if("SUCCESS".equals(status)) {
-				int i = presentService.updateSucceed(presentId);
-				if(i < 1) {
-					return ResultUtils.error(ErrorConsts.CODE_10004, "拒绝失败");
+			}else {
+				String status = resultMap.get("status").toString();
+				if("PROCESSING".equals(status)) {
+					return ResultUtils.error(ErrorConsts.CODE_10003, "微信处理中,拒绝操作");
 				}
-				return ResultUtils.success("微信已经处理完毕改为提现成功");
+				if("SUCCESS".equals(status)) {
+					int i = presentService.updateSucceed(presentId);
+					if(i < 1) {
+						return ResultUtils.error(ErrorConsts.CODE_10004, "拒绝失败");
+					}
+					return ResultUtils.success("微信已经处理完毕改为提现成功");
+				}
 			}
 		}
 		try {
@@ -311,6 +312,36 @@ public class PresentController {
 			return ResultUtils.error(ErrorConsts.CODE_10002, "查询错误");
 		}
 		return ResultUtils.success(resultMap);
+	}
+	
+	/**
+	 * 查询最近一次银行卡提现的信息
+	 * @Title: getPresent
+	 * @Description: TODO
+	 * @param @param request
+	 * @param @param token
+	 * @param @return
+	 * @return JSONObject
+	 * @throws
+	 */
+	@RequestMapping(value = "getpresent",method={RequestMethod.POST,RequestMethod.GET})
+	@ResponseBody
+	public JSONObject getPresent(HttpServletRequest request, String token) {
+		String userId = baseService.checkUserToken(token);
+		if(userId == null) {
+			return ResultUtils.error(ErrorConsts.CODE_10001, "请重新登录");
+		}
+		if(baseService.checkUserRole(userId, DefaultConsts.ROLE_MERCHANT)) {
+			return ResultUtils.error(ErrorConsts.CODE_10003, ErrorConsts.USER_LIMITED_AUTHORITY);
+		}
+		Map<String, String> map = new HashMap<>(4);
+		try {
+			map = presentService.getPresent(userId);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResultUtils.error(ErrorConsts.CODE_10002, "查询错误");
+		}
+		return ResultUtils.success(map);
 	}
 	
 	/**
