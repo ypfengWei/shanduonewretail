@@ -5,12 +5,13 @@
     <id column="id" jdbcType="INTEGER" property="id" />
     <result column="app_type" jdbcType="INTEGER" property="appType" />
     <result column="app_URL" jdbcType="VARCHAR" property="appUrl" />
+    <result column="update_content" jdbcType="VARCHAR" property="updateContent" />
     <result column="version_number" jdbcType="VARCHAR" property="versionNumber" />
     <result column="gmt_create" jdbcType="TIMESTAMP" property="gmtCreate" />
     <result column="gmt_modified" jdbcType="TIMESTAMP" property="gmtModified" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, app_type, app_URL, version_number, gmt_create, gmt_modified
+    id, app_type, app_URL, update_content,version_number, gmt_create, gmt_modified
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
@@ -23,10 +24,10 @@
     where id = #{id,jdbcType=INTEGER}
   </delete>
   <insert id="insert" parameterType="com.shanduo.newretail.entity.AppUpgrade">
-    insert into app_upgrade (id, app_type, app_URL, 
+    insert into app_upgrade (id, app_type, app_URL, update_content,
       version_number, gmt_create, gmt_modified
       )
-    values (#{id,jdbcType=INTEGER}, #{appType,jdbcType=INTEGER}, #{appUrl,jdbcType=VARCHAR}, 
+    values (#{id,jdbcType=INTEGER}, #{appType,jdbcType=INTEGER}, #{appUrl,jdbcType=VARCHAR}, #{updateContent,jdbcType=VARCHAR}, 
       #{versionNumber,jdbcType=VARCHAR}, #{gmtCreate,jdbcType=TIMESTAMP}, #{gmtModified,jdbcType=TIMESTAMP}
       )
   </insert>
@@ -41,6 +42,9 @@
       </if>
       <if test="appUrl != null">
         app_URL,
+      </if>
+      <if test="updateContent != null">
+        update_content,
       </if>
       <if test="versionNumber != null">
         version_number,
@@ -62,6 +66,9 @@
       <if test="appUrl != null">
         #{appUrl,jdbcType=VARCHAR},
       </if>
+      <if test="updateContent != null">
+        #{updateContent,jdbcType=VARCHAR},
+      </if>
       <if test="versionNumber != null">
         #{versionNumber,jdbcType=VARCHAR},
       </if>
@@ -82,6 +89,9 @@
       <if test="appUrl != null">
         app_URL = #{appUrl,jdbcType=VARCHAR},
       </if>
+      <if test="updateContent != null">
+        update_content = #{updateContent,jdbcType=VARCHAR},
+      </if>
       <if test="versionNumber != null">
         version_number = #{versionNumber,jdbcType=VARCHAR},
       </if>
@@ -98,6 +108,7 @@
     update app_upgrade
     set app_type = #{appType,jdbcType=INTEGER},
       app_URL = #{appUrl,jdbcType=VARCHAR},
+      update_content = #{updateContent,jdbcType=VARCHAR},
       version_number = #{versionNumber,jdbcType=VARCHAR},
       gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
       gmt_modified = #{gmtModified,jdbcType=TIMESTAMP}

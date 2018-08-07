@@ -153,4 +153,14 @@ public interface OrderService {
 	 * @throws
 	 */
 	Double sumSellerMoney(String sellerId, String categoryId, String startDate, String endDate);
+	
+	/**
+	 * 查询所有未处理的订单
+	 * @Title: listPending
+	 * @Description: TODO
+	 * @param @return
+	 * @return List<String>
+	 * @throws
+	 */
+	List<String> listPending();
 }

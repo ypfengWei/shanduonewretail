@@ -33,6 +33,7 @@ import com.shanduo.newretail.service.CommodityService;
 import com.shanduo.newretail.service.OrderService;
 import com.shanduo.newretail.service.SellerService;
 import com.shanduo.newretail.service.UserService;
+import com.shanduo.newretail.util.IOSXGHighUtils;
 import com.shanduo.newretail.util.OrderIdUtils;
 import com.shanduo.newretail.util.Page;
 import com.shanduo.newretail.util.UUIDGenerator;
@@ -171,6 +172,9 @@ public class OrderServiceImpl implements OrderService {
 		    		WX_TemplateMsgUtil.sendWechatMsgToUser(accessToken, openId,regTempId, "https://yapinkeji.com/shanduonewretail/orderList.html", "#000000", packJsonmsg(params));
 		    	}
 		    }
+		    //ios推送
+		    IOSXGHighUtils.getInstance().pushSingleAccount(order.getSellerId());
+		    //安卓推送
 		}
 		return i;
 	}
@@ -294,6 +298,11 @@ public class OrderServiceImpl implements OrderService {
 	@Override
 	public Double sumSellerMoney(String sellerId, String categoryId, String startDate, String endDate) {
 		return orderDetailsMapper.sumSellerMoney(sellerId, categoryId, startDate, endDate);
+	}
+
+	@Override
+	public List<String> listPending() {
+		return orderMapper.listPending();
 	}
 
 }

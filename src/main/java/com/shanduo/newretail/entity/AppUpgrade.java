@@ -10,6 +10,8 @@ public class AppUpgrade {
     private String appUrl;
 
     private String versionNumber;
+    
+    private String updateContent;
 
     private Date gmtCreate;
 
@@ -39,7 +41,15 @@ public class AppUpgrade {
         this.appUrl = appUrl == null ? null : appUrl.trim();
     }
 
-    public String getVersionNumber() {
+    public String getUpdateContent() {
+		return updateContent;
+	}
+
+	public void setUpdateContent(String updateContent) {
+		this.updateContent = updateContent;
+	}
+
+	public String getVersionNumber() {
         return versionNumber;
     }
 
