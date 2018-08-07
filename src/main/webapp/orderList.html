@@ -364,7 +364,11 @@
                 });
             },
             goBack() {
-                history.back();
+                if (document.referrer === '' || document.referrer.indexOf('shanduonewretail') === -1) {
+                    location.href = 'Administration.html';
+                } else {
+                    history.back();
+                }
             }, exctueMethod(key, url, orderId) {
                 layer.open({
                     content: "执行这个操作？"

@@ -42,7 +42,7 @@
         </div>
         <div class="dis_flex div_Record">
             <span>提现记录</span>
-            <!--<span>提现总额:0.00</span>-->
+            <span>提现总额:{{countMoney}}</span>
         </div>
         <div id="mescroll" class="mescroll">
             <span v-if="record.length==0">没有记录</span>
@@ -71,7 +71,8 @@
         el: '#vueData',
         data: {
             record: [],
-            mescroll: null
+            mescroll: null,
+            countMoney:0
         }, mounted: function () {
             let that = this;
             that.mescroll = new MeScroll("mescroll", { //请至少在vue的mounted生命周期初始化mescroll,以确保您配置的id能够被找到
@@ -121,8 +122,10 @@
                 page: pageIndex,
                 pageSize: pageSize
             }, success: function (res) {
-                console.log(res);
                 if (res.success && res.data.length > 0) {
+                    if(pageIndex===1){
+                        vm.countMoney=res.countMoney;
+                    }
                     let data = res.data;
                     $.each(data, function (i, item) {
                         data[i].gmt_modified = getLocalTime(item.gmtModified);

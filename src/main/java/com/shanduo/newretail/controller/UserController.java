@@ -200,7 +200,18 @@ public class UserController {
         }
         return ResultUtils.success(userService.selectUser(id));
     }
-	
+	/**
+	 * 查询版本升级
+	 * @param request
+	 * @param appType
+	 * @return
+	 */
+    @RequestMapping(value = "selectapp",method={RequestMethod.POST,RequestMethod.GET})
+    @ResponseBody
+    public JSONObject selectAPP(HttpServletRequest request, Integer appType) {
+       
+        return ResultUtils.success(userService.selectApp(appType));
+    }
 	/**
 	 * 修改手机号
 	 * @Title: updatePhone

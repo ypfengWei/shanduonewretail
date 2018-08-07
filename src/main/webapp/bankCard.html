@@ -38,8 +38,9 @@
             </div>
             <div class="input_information">
                 <label for="bank">银行名称：</label>
-                <select id="bank" @change="selBank">
-                    <option v-for="item in bankArray" :value="item.bankId">{{item.bankName}}</option>
+                <select v-model="bankIndex" id="bank" @change="selBank">
+                    <option value="-1">请选择</option>
+                    <option v-for="(item,index) in bankArray" :value="index">{{item.bankName}}</option>
                 </select>
             </div>
             <div class="input_information">
@@ -70,26 +71,28 @@
                 name: '',
                 typeId: 2,
                 bankName: '',
+                openingBank: '',
                 cardNumber: ''
             },
+            bankIndex: -1,
             bankArray: [
-                {bankId: 1001, bankName: '招商银行'},
-                {bankId: 1002, bankName: '工商银行'},
-                {bankId: 1003, bankName: '建设银行'},
-                {bankId: 1004, bankName: '浦发银行'},
-                {bankId: 1005, bankName: '农业银行'},
-                {bankId: 1006, bankName: '民生银行'},
-                {bankId: 1009, bankName: '兴业银行'},
-                {bankId: 1010, bankName: '平安银行'},
-                {bankId: 1020, bankName: '交通银行'},
-                {bankId: 1021, bankName: '中信银行'},
-                {bankId: 1022, bankName: '光大银行'},
-                {bankId: 1025, bankName: '华夏银行'},
-                {bankId: 1026, bankName: '中国银行'},
-                {bankId: 1027, bankName: '广发银行'},
-                {bankId: 1032, bankName: '北京银行'},
-                {bankId: 1056, bankName: '宁波银行'},
-                {bankId: 1066, bankName: '邮储银行'},
+                {bankId: '1001', bankName: '招商银行'},
+                {bankId: '1002', bankName: '工商银行'},
+                {bankId: '1003', bankName: '建设银行'},
+                {bankId: '1004', bankName: '浦发银行'},
+                {bankId: '1005', bankName: '农业银行'},
+                {bankId: '1006', bankName: '民生银行'},
+                {bankId: '1009', bankName: '兴业银行'},
+                {bankId: '1010', bankName: '平安银行'},
+                {bankId: '1020', bankName: '交通银行'},
+                {bankId: '1021', bankName: '中信银行'},
+                {bankId: '1022', bankName: '光大银行'},
+                {bankId: '1025', bankName: '华夏银行'},
+                {bankId: '1026', bankName: '中国银行'},
+                {bankId: '1027', bankName: '广发银行'},
+                {bankId: '1032', bankName: '北京银行'},
+                {bankId: '1056', bankName: '宁波银行'},
+                {bankId: '1066', bankName: '邮储银行'},
             ],
             hint: 0
         }, methods: {
@@ -111,7 +114,12 @@
                     });
                 }
             }, selBank() {
-                vm.info.bankName = event.target.value;
+                vm.bankIndex = event.target.value;
+                if (vm.bankIndex > -1) {
+                    let bankInfo = vm.bankArray[vm.bankIndex];
+                    vm.info.bankName = bankInfo.bankId;
+                    vm.info.openingBank = bankInfo.bankName;
+                }
             }
         }
     });
@@ -137,7 +145,7 @@
             return false;
         }
         if (!checkInput(vm.info.bankName)) {
-            toast('请输入银行名称');
+            toast('请选择银行');
             return false;
         }
         if (!checkInput(vm.info.cardNumber)) {

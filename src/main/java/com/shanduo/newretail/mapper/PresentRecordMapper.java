@@ -1,8 +1,9 @@
 package com.shanduo.newretail.mapper;
 
-import java.util.List;
-
 import com.shanduo.newretail.entity.PresentRecord;
+
+import java.util.List;
+import java.util.Map;
 
 public interface PresentRecordMapper {
     int deleteByPrimaryKey(String id);
@@ -29,5 +30,7 @@ public interface PresentRecordMapper {
     
     List<PresentRecord> listUserPresentRecord(String userId, Integer pageNum, Integer pageSize);
     
-    Double snmUserMoney(String userId); 
+    Double snmUserMoney(String userId);
+    
+    Map<String, String> getPresent(String userId);
 }

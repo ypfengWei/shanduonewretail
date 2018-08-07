@@ -14,4 +14,6 @@ public interface AppUpgradeMapper {
     int updateByPrimaryKeySelective(AppUpgrade record);
 
     int updateByPrimaryKey(AppUpgrade record);
+    
+    AppUpgrade selectApp(Integer appType);
 }

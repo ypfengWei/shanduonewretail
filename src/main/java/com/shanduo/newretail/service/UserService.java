@@ -3,6 +3,7 @@ package com.shanduo.newretail.service;
 import java.util.List;
 import java.util.Map;
 
+import com.shanduo.newretail.entity.AppUpgrade;
 import com.shanduo.newretail.entity.ToUser;
 import com.shanduo.newretail.entity.service.TokenInfo;
 
@@ -112,6 +113,8 @@ public interface UserService {
 	ToUser selectUser(String id);
 	
 	int updateopenId(String openId, String phone);
+	
+	AppUpgrade selectApp(Integer appType);
 	
 	/**
 	 * 查询下级
