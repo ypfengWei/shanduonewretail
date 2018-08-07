@@ -388,6 +388,12 @@
             <artifactId>fastjson</artifactId>
             <version>1.2.2</version>
         </dependency>
+        <!-- 腾讯信鸽推送jar -->
+		<dependency>
+			<groupId>com.tencent.xinge</groupId>
+			<artifactId>Xg-Push-SDK-JAVA</artifactId>
+			<version>1.1.8</version>
+		</dependency>
     </dependencies>
     <build>
         <finalName>shanduonewretail</finalName>
