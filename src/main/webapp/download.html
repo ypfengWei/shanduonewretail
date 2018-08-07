@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en" style="font-size:15px;">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"/>
+    <meta content="telephone=no,email=no" name="format-detection">
+    <!--禁止自动识别电话号码和邮箱-->
+    <meta content="yes" name="apple-mobile-web-app-capable">
+    <!--苹果手机：会删除默认的工具栏和菜单栏，网站开启对web app程序的支持-->
+    <meta name="apple-mobile-web-app-status-bar-style" content="black"/>
+    <!--苹果手机：在web app应用下状态条（屏幕顶部条）的颜色,默认值为default（白色），可以定为black（黑色）和black-translucent（灰色半透明）。-->
+    <meta name="apple-touch-fullscreen" content="yes"/>
+    <!--苹果手机：如果把一个web app添加到了主屏幕中，那么从主屏幕中打开这个web app则全屏显示-->
+    <link rel="apple-touch-icon" href=""/>
+    <!--苹果手机：将应用添加到手机主屏幕，会有一个icon可以直接进入-->
+    <title>Title</title>
+    <style>
+        body {
+            background-color: #eee;
+        }
+
+        header {
+            background-color: #fff;
+            padding: 10px;
+            color: #ff5b2b;
+            border-radius: 10px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            width: 100%;
+        }
+
+        .header > img {
+            width: 100px;
+        }
+
+        .header > div {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            margin-left: 10px;
+        }
+
+        .body {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .body > span {
+            text-align: center;
+            color: #999;
+            margin-top: 10px;
+        }
+
+        .da_font {
+            font-size: 30px;
+        }
+
+        .body > div {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #fff;
+            height: 85px;
+            width: 100%;
+            margin-top: 10px;
+            border-radius: 10px;
+        }
+
+        .body > div:nth-child(2) {
+            color: #A2C437;
+        }
+
+        .body > div > img {
+            width: 60px;
+        }
+
+        .body > div > div {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            margin-left: 10px;
+        }
+
+        /*核心css*/
+        .wxtip {
+            background: rgba(0, 0, 0, 0.8);
+            text-align: center;
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 998;
+            display: none;
+        }
+
+        .wxtip-icon {
+            width: 52px;
+            height: 67px;
+            background: url(img/weixin-tip.png) no-repeat;
+            display: block;
+            position: absolute;
+            right: 30px;
+            top: 20px;
+        }
+
+        .wxtip-txt {
+            padding-top: 107px;
+            color: #fff;
+            font-size: 16px;
+            line-height: 1.5;
+        }
+    </style>
+    <script src="js/jquery-3.3.1.js"></script>
+</head>
+<body>
+<header>
+    <div class="header">
+        <img src="img/rectangle_2.png" alt="闪多">
+        <div>
+            <span class="da_font">闪多新零售</span>
+            <span>线上超市，新零售突袭</span>
+        </div>
+    </div>
+    <p>一元起送，无配送费，20分钟内送达！</p>
+    <p>把超市放进手机里，随点随送。专业团队配送，服务跟速度给您不一样的感受！更真的产品、原来的价格，还在等什么！！</p>
+</header>
+<div class="body">
+    <div>
+        <img src="img/ios.png" alt="苹果下载">
+        <div>
+            <span>iPhone版</span>
+            <span>适用于ios10.0以上版本</span>
+        </div>
+    </div>
+    <div>
+        <img src="img/apk.png" alt="安卓下载">
+        <div>
+            <span>Android版</span>
+            <span>适用于Android版本</span>
+        </div>
+    </div>
+    <span>——&nbsp;&nbsp;&nbsp;点击下载&nbsp;&nbsp;&nbsp;——</span>
+</div>
+<div class="wxtip" id="JweixinTip">
+    <span class="wxtip-icon"></span>
+    <p class="wxtip-txt">点击右上角<br/>选择在浏览器中打开</p>
+</div>
+</body>
+<script>
+    $(function () {
+        $('.body>div').click(function () {
+            console.log(2)
+            let u = navigator.userAgent;
+            if (/MicroMessenger/i.test(u)) {
+                $('#JweixinTip').css('display', 'block');
+                $('#JweixinTip').click(function () {
+                    $(this).css('display', 'none');
+                })
+            } else {
+                if (u.indexOf('Android') > -1 || u.indexOf('Linux') > -1) {
+                    location.href = '/package/app-release.apk';
+                } else if (u.indexOf('iPhone') > -1) {
+                    location.href = 'itms-services://?action=download-manifest&url=https://yapinkeji.com/package/YPO2OShop.plist';
+                }
+            }
+        });
+    });
+</script>
+</html>
