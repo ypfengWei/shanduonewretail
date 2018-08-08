@@ -27,7 +27,7 @@ public class OrderTiming {
 	@Autowired
 	private OrderService orderService;
 	
-	@Scheduled(cron = "0 0/2 * * * ?")
+	@Scheduled(cron = "0 0/1 * * * ?")
 	public void delTiming() {
 		List<String> list = orderService.listPending();
 		for (int i = 0; i < list.size(); i++) {
