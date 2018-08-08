@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 
 import com.shanduo.newretail.service.OrderService;
 import com.shanduo.newretail.util.IOSXGHighUtils;
+import com.shanduo.newretail.util.XGHighUtils;
 
 /**
  * 每日定时工具类
@@ -28,12 +29,13 @@ public class OrderTiming {
 	@Scheduled(cron = "0 0/1 * * * ?")
 	public void delTiming() {
 		List<String> list = orderService.listPending();
-		for (int i = 0; i < list.size(); i++) {
-			//ios推送
-		    IOSXGHighUtils.getInstance().pushSingleAccount(list.get(i));
-		    //安卓推送
-		    
+		if(null == list || list.isEmpty() || list.size() == 0) {
+			return;
 		}
+		//ios批量推送
+		IOSXGHighUtils.getInstance().pushAccountListIOS(list);
+		//安卓推送
+		XGHighUtils.getInstance().pushAccountList(list);
 //		log.info("推送 {} 家店铺接单",list.size());
 	}
 	

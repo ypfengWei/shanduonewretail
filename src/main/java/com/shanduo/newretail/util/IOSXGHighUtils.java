@@ -1,5 +1,6 @@
 package com.shanduo.newretail.util;
 
+import java.util.List;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -34,6 +35,7 @@ public class IOSXGHighUtils {
 	}
 	
 	 /**
+	 * @throws JSONException 
      * 根据类型生成Message
      * @Title: getMessage
      * @Description: TODO
@@ -48,16 +50,48 @@ public class IOSXGHighUtils {
     	mess.setExpireTime(86400);
     	//表示一个允许推送的时间闭区间(起始小时，起始分钟，截止小时，截止分钟)
     	mess.addAcceptTime(new TimeInterval(0, 0, 23, 59));
-        mess.setAlert("你有新的订单");
-        mess.setBadge(1);
-        mess.setSound("s_new_order.wav");
+        JSONObject obj = new JSONObject();
+        JSONObject aps = new JSONObject();
+        try {
+			aps.put("alert", "你有新的订单");
+			aps.put("badge", 1);
+			aps.put("mutable-content", 1);
+			obj.put("aps", aps);
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+        mess.setRaw(obj.toString());
         return mess;
     }
     
+    /**
+     * ios单个账户推送
+     * @Title: pushSingleAccount
+     * @Description: TODO
+     * @param @param account
+     * @param @return
+     * @return String
+     * @throws
+     */
     public String pushSingleAccount(String account) {
     	MessageIOS message = getMessageIos();
         JSONObject resultJson = xinge.pushSingleAccount(0, account, message , XingeApp.IOSENV_PROD);
 		return isError(resultJson);
+    }
+    
+    /**
+     * IOS多个账号推送
+     * @Title: demoPushAccountListIOS
+     * @Description: TODO
+     * @param @param accountList
+     * @param @return
+     * @return JSONObject
+     * @throws
+     */
+    public String pushAccountListIOS(List<String> accountList) {
+    	MessageIOS message = getMessageIos();
+        JSONObject resultJson = xinge.pushAccountList(0, accountList, message, XingeApp.IOSENV_PROD);
+        return isError(resultJson);
     }
     
     /**
