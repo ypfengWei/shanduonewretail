@@ -45,10 +45,7 @@ public class BaseServiceImpl implements BaseService {
 		if(user == null) {
 			return true;
 		}
-		if(user.getJurisdiction().equals(role)) {
-			return false;
-		}
-		return true;
+		return !user.getJurisdiction().equals(role);
 	}
 
 }
