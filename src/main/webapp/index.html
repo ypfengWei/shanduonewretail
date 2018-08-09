@@ -150,7 +150,6 @@
                 lat = res.lat;
                 lon = res.lng;
                 converterAddress(lat, lon, function (res) {
-                    console.log(res);
                     vm.address = res.detail.addressComponents.district;
                 });
                 getClassify(lat, lon, function (res) {
@@ -162,7 +161,7 @@
             }, function () {
 
             }, [{timeout: 9000}]);
-        }else{
+        } else {
             getClassify(lat, lon, function (res) {
                 vm.category = vm.category.concat(res.result);
                 getClassifyBySellerType(lat, lon, vm.category[0].seller_type, function (res) {

@@ -32,7 +32,7 @@ body * {
 
 body {
     height: 100%;
-    position: fixed;
+    overflow: hidden;
 }
 
 /*共有*/
@@ -98,7 +98,7 @@ body {
     width: 100%;
     top: 100px;
     left: 0;
-    height:400px;
+    height:462px;
     overflow-y:scroll;
 }
 
@@ -170,7 +170,7 @@ body {
 .right ul {
     list-style: none;
     overflow-y: scroll;
-    height: 400px;
+    height: 462px;
 }
 
 .class-title {
@@ -547,7 +547,7 @@ div.title_header > div:last-child > img {
 
 /*底部购物车*/
 footer {
-    height: 60px;
+    /*height: 60px;*/
     width: 100%;
 }
 
