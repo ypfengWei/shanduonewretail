@@ -65,13 +65,13 @@
                                 <!--类别名1切换-->
                                 <li v-for="(item,index) in classify"
                                     :class="index==0?'swiper-container-ul-li active':'swiper-container-ul-li'">
-                                    <a href="#" data-toggle="tab"
+                                    <a href="#" data-toggle="tab" class="swiper-slide"
                                        @click.prevent="changer(item.id)">{{item.category_name}}</a>
                                 </li>
                             </ul>
                         </div>
                     </div>
-                    <div class="swiper-wrapper tab-content">
+                    <div class="swiper-wrapper">
                         <!--类别1-->
                         <div class="swiper-slide tab-pane fade in active" id="One1">
                             <div class="content">

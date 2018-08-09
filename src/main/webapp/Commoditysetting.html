@@ -137,9 +137,9 @@
         },
         mounted: function () {
             let that = this;
-            that.mescroll = new MeScroll("vueData", { //请至少在vue的mounted生命周期初始化mescroll,以确保您配置的id能够被找到
+            that.mescroll = new MeScroll("vueData", {
                 up: {
-                    callback: that.upCallback, //
+                    callback: that.upCallback,
                     auto: false,
                     noMoreSize: 20
                 }, down: {
