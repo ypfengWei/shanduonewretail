@@ -37,6 +37,7 @@ import com.shanduo.newretail.util.IOSXGHighUtils;
 import com.shanduo.newretail.util.OrderIdUtils;
 import com.shanduo.newretail.util.Page;
 import com.shanduo.newretail.util.UUIDGenerator;
+import com.shanduo.newretail.util.XGHighUtils;
 import com.shanduo.newretail.wx.TemplateData;
 import com.shanduo.newretail.wx.WX_TemplateMsgUtil;
 import com.shanduo.newretail.wx.WX_UserUtil;
@@ -155,7 +156,7 @@ public class OrderServiceImpl implements OrderService {
 	            param.put("first",new TemplateData("尊敬的用户:你已支付成功","#4395ff"));
 	            param.put("keyword1",new TemplateData(order.getTotalPrice().toString(),"#4395ff"));
 	            param.put("keyword2",new TemplateData(order.getId(),"#4395ff"));
-	            param.put("remark",new TemplateData("小闪温馨提醒您:如下单超过10分钟没有及时处理,请拨打店铺客服电话沟通","#4395ff"));
+	            param.put("remark",new TemplateData("小闪温馨提醒您:如下单超过15分钟没有及时处理,请拨打店铺客服电话沟通","#4395ff"));
 	            WX_TemplateMsgUtil.sendWechatMsgToUser(accessToken, openId,regTempId, "", "#000000", packJsonmsg(param));
 		    }
 		    ToUser user = userService.selectUser(order.getSellerId());
@@ -175,6 +176,7 @@ public class OrderServiceImpl implements OrderService {
 		    //ios推送
 		    IOSXGHighUtils.getInstance().pushSingleAccount(order.getSellerId());
 		    //安卓推送
+		    XGHighUtils.getInstance().pushSingleAccount(order.getSellerId());
 		}
 		return i;
 	}
