@@ -39,9 +39,6 @@ public class XGHighUtils {
      * 根据类型生成Message
      * @Title: getMessage
      * @Description: TODO
-     * @param @param title 标题
-     * @param @param content 通知内容
-     * @param @param typeId 类型:0.透传消息;1.打开vip页面;2.打开钱包页面;3.打开活动详情页面;4.打开我报名的活动页面;5.打开我的消息页码
      * @param @return
      * @return Message
      * @throws

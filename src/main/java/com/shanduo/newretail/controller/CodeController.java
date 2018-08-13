@@ -36,6 +36,7 @@ import com.alibaba.fastjson.JSONObject;
 @Controller
 @RequestMapping(value = "code")
 public class CodeController {
+	
 
 	private static final Logger log = LoggerFactory.getLogger(CodeController.class);
 	

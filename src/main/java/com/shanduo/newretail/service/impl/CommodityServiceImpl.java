@@ -154,6 +154,9 @@ public class CommodityServiceImpl implements CommodityService {
 		if(2==sellerType){
 			map=categoryMapper.selectCommodityType(9999, 99999);
 		}
+		if(3==sellerType) {
+			map=categoryMapper.selectCommodityType(999999, 9999999);
+		}
 		return map;
 	}
 

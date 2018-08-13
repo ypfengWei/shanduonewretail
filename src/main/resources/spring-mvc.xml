@@ -46,13 +46,12 @@
     <context:component-scan base-package="com.shanduo.newretail.timing"/>
 
     <!-- 拦截器拦截路径 -->
-    <mvc:interceptors>
+    <!-- <mvc:interceptors>
         <mvc:interceptor>
-            <!-- 上传图片接口拦截 -->
             <mvc:mapping path="/file/**"/>
             <bean class="com.shanduo.newretail.interceptor.TokenInterceptor"/>
         </mvc:interceptor>
-    </mvc:interceptors>
+    </mvc:interceptors> -->
 
     <!-- 定义文件上传解析器 -->
     <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">

@@ -154,7 +154,7 @@ public class SellerController {
         if ("1".equals(typeId)) {
             if (StringUtils.isNull(token)) {
                 Log.warn("token为空");
-                return new ErrorBean(ErrorConsts.CODE_10002, "token为空");
+                return new ErrorBean(ErrorConsts.CODE_10001, "token为空");
             }
             id = baseService.checkUserToken(token);
             if (null == id) {
@@ -190,7 +190,7 @@ public class SellerController {
     public ResultBean updateSellerDetails(HttpServletRequest request, String token) {
         if (StringUtils.isNull(token)) {
             Log.warn("token为空");
-            return new ErrorBean(ErrorConsts.CODE_10002, "token为空");
+            return new ErrorBean(ErrorConsts.CODE_10001, "token为空");
         }
         String id = baseService.checkUserToken(token);
         if (null == id) {
@@ -238,7 +238,7 @@ public class SellerController {
     public ResultBean updateBusinessSign(HttpServletRequest request, String token, String businessSign) {
         if (StringUtils.isNull(token)) {
             Log.warn("token为空");
-            return new ErrorBean(ErrorConsts.CODE_10002, "token为空");
+            return new ErrorBean(ErrorConsts.CODE_10001, "token为空");
         }
         String id = baseService.checkUserToken(token);
         if (null == id) {
@@ -291,7 +291,7 @@ public class SellerController {
     public ResultBean selectSalesmanSubordinate(HttpServletRequest request, String token,String startDate, String endDate, String page, String pageSize) {
         if (StringUtils.isNull(token)) {
             Log.warn("token为空");
-            return new ErrorBean(ErrorConsts.CODE_10002, "token为空");
+            return new ErrorBean(ErrorConsts.CODE_10001, "token为空");
         }
         if(StringUtils.isNull(page) || !page.matches("^\\d*$")) {
 			Log.warn("page is error waith page:{}", page);
@@ -351,7 +351,7 @@ public class SellerController {
       public ResultBean selectRegionSubordinate(HttpServletRequest request, String token,String startDate, String endDate, String page, String pageSize) {
           if (StringUtils.isNull(token)) {
               Log.warn("token为空");
-              return new ErrorBean(ErrorConsts.CODE_10002, "token为空");
+              return new ErrorBean(ErrorConsts.CODE_10001, "token为空");
           }
           if(StringUtils.isNull(page) || !page.matches("^\\d*$")) {
   			Log.warn("page is error waith page:{}", page);
@@ -398,7 +398,7 @@ public class SellerController {
         public ResultBean selectManageSubordinate(HttpServletRequest request, String token,String startDate, String endDate, String page, String pageSize) {
             if (StringUtils.isNull(token)) {
                 Log.warn("token为空");
-                return new ErrorBean(ErrorConsts.CODE_10002, "token为空");
+                return new ErrorBean(ErrorConsts.CODE_10001, "token为空");
             }
             if(StringUtils.isNull(page) || !page.matches("^\\d*$")) {
     			Log.warn("page is error waith page:{}", page);

@@ -65,7 +65,7 @@ public class CommodityController {
 		if("2".equals(typeId)){
 			if(StringUtils.isNull(id)) {
 				Log.warn("token为空");
-				return new ErrorBean(ErrorConsts.CODE_10002,"token为空");
+				return new ErrorBean(ErrorConsts.CODE_10001,"token为空");
 			}
 			id = baseService.checkUserToken(id);
 			if(null==id){
@@ -114,7 +114,7 @@ public class CommodityController {
 		if("2".equals(typeId)){
 			if(StringUtils.isNull(id)) {
 				Log.warn("token为空");
-				return new ErrorBean(ErrorConsts.CODE_10002,"token为空");
+				return new ErrorBean(ErrorConsts.CODE_10001,"token为空");
 			}
 			id = baseService.checkUserToken(id);
 			if(null==id){
@@ -161,7 +161,7 @@ public class CommodityController {
 		
 		if(StringUtils.isNull(token)) {
 			Log.warn("token为空");
-			return new ErrorBean(ErrorConsts.CODE_10002,"token为空");
+			return new ErrorBean(ErrorConsts.CODE_10001,"token为空");
 		}
 		String userId = baseService.checkUserToken(token);
 		if(null==userId){
@@ -216,7 +216,7 @@ public class CommodityController {
 		}
 		if(StringUtils.isNull(token)) {
 			Log.warn("token为空");
-			return new ErrorBean(ErrorConsts.CODE_10002,"token为空");
+			return new ErrorBean(ErrorConsts.CODE_10001,"token为空");
 		}
 		String id = baseService.checkUserToken(token);
 		if(null==id){
@@ -252,7 +252,7 @@ public class CommodityController {
 	public ResultBean insertCommodity(HttpServletRequest request, String token,String name,String picture,String price,String stock,String categoryId) {
 		if(StringUtils.isNull(token)) {
 			Log.warn("token为空");
-			return new ErrorBean(ErrorConsts.CODE_10002,"token为空");
+			return new ErrorBean(ErrorConsts.CODE_10001,"token为空");
 		}
 		if(StringUtils.isNull(name) ) {
 			Log.warn("name为空");
@@ -304,7 +304,7 @@ public class CommodityController {
 	public ResultBean insertWarehouseCommodity(HttpServletRequest request, String token) {
 		if(StringUtils.isNull(token)) {
 			Log.warn("token为空");
-			return new ErrorBean(ErrorConsts.CODE_10002,"token为空");
+			return new ErrorBean(ErrorConsts.CODE_10001,"token为空");
 		}
 		String userId = baseService.checkUserToken(token);
 		if(null==userId){
@@ -348,7 +348,7 @@ public class CommodityController {
 			String commodityId) {
 		if(StringUtils.isNull(token)) {
 			Log.warn("token为空");
-			return new ErrorBean(ErrorConsts.CODE_10002,"token为空");
+			return new ErrorBean(ErrorConsts.CODE_10001,"token为空");
 		}
 		if(StringUtils.isNull(name) ) {
 			Log.warn("name为空");
@@ -402,7 +402,7 @@ public class CommodityController {
 	public ResultBean deleteCommodity(HttpServletRequest request, String token,String commodityId) {
 		if(StringUtils.isNull(token)) {
 			Log.warn("token为空");
-			return new ErrorBean(ErrorConsts.CODE_10002,"token为空");
+			return new ErrorBean(ErrorConsts.CODE_10001,"token为空");
 		}
 		if(StringUtils.isNull(commodityId)) {
 			Log.warn("commodityId为空");
@@ -436,7 +436,7 @@ public class CommodityController {
 	public ResultBean selectCommodityAllType(HttpServletRequest request, String token) {
 		if(StringUtils.isNull(token)) {
 			Log.warn("token为空");
-			return new ErrorBean(ErrorConsts.CODE_10002,"token为空");
+			return new ErrorBean(ErrorConsts.CODE_10001,"token为空");
 		}
 		String id = baseService.checkUserToken(token);
 		if(null==id){
