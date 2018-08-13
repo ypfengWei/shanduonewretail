@@ -23,7 +23,7 @@
     <title>店铺</title>
 </head>
 <body>
-<div id="vueData">
+<div id="vueData" class="mescroll">
     <header class="shop">
         <div class="title_header dis_flex">
             <div @click="goBack">
@@ -61,7 +61,7 @@
                     <div>
                         <div class="swiper-container-div">
                             <!--类别名-->
-                            <ul class="swiper-container-ul" id="OneTab" :style="{height: winHeight+'px'}">
+                            <ul class="swiper-container-ul" id="OneTab" >
                                 <!--类别名1切换-->
                                 <li v-for="(item,index) in classify"
                                     :class="index==0?'swiper-container-ul-li active':'swiper-container-ul-li'">
@@ -71,12 +71,12 @@
                             </ul>
                         </div>
                     </div>
-                    <div class="swiper-wrapper">
+                    <div class="swiper-wrapper tab-content">
                         <!--类别1-->
                         <div class="swiper-slide tab-pane fade in active" id="One1">
                             <div class="content">
                                 <div class="right">
-                                    <ul id="mescroll" :style="{height: winHeight+'px'}" class="mescroll">
+                                    <ul>
                                         <!--类别商品-->
                                         <li v-for="(commodity,index) in commodityArray">
                                             <div>
@@ -206,19 +206,16 @@
             currentTime: null,
             startDate: null,
             endDate: null,
-            hint: '去结算',
-            winHeight: null
+            hint: '去结算'
         },
         mounted: function () {
             let that = this;
-            //获取屏幕分辨率高度
-            that.winHeight = window.screen.height - 205;
             if (localStorage.localCart) {
                 that.localCart = JSON.parse(localStorage.localCart);
             } else {
                 that.localCart = [];
             }
-            that.mescroll = new MeScroll("mescroll", {
+            that.mescroll = new MeScroll("vueData", {
                 up: {
                     callback: that.upCallback,
                     auto: false,

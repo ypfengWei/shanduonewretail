@@ -133,11 +133,17 @@
                 timestamp: result.timestamp,
                 nonceStr: result.noncestr,
                 signature: result.signature,
-                jsApiList: ['hideMenuItems']
+                jsApiList: ['hideMenuItems','getLocation']
             });
             wx.ready(function () {
                 wx.hideMenuItems({
                     menuList: ['menuItem:copyUrl', 'menuItem:share:qq', 'menuItem:share:QZone', 'menuItem:openWithQQBrowser', 'menuItem:openWithSafari', 'menuItem:share:email', 'menuItem:readMode']
+                });
+                wx.getLocation({
+                    success: function (res) {
+                        lat = res.latitude; // 纬度，浮点数，范围为90 ~ -90
+                        lon = res.longitude; // 经度，浮点数，范围为180 ~ -180。
+                    }
                 });
             });
         });
@@ -159,8 +165,8 @@
                     });
                 });
             }, function () {
-
-            }, [{timeout: 9000}]);
+                toast('定位错误')
+            }, {timeout: 5000});
         } else {
             getClassify(lat, lon, function (res) {
                 vm.category = vm.category.concat(res.result);

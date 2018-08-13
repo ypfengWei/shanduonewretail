@@ -14,7 +14,7 @@
     <!--苹果手机：如果把一个web app添加到了主屏幕中，那么从主屏幕中打开这个web app则全屏显示-->
     <link rel="apple-touch-icon" href=""/>
     <!--苹果手机：将应用添加到手机主屏幕，会有一个icon可以直接进入-->
-    <title>Title</title>
+    <title>闪多app下载</title>
     <style>
         body {
             background-color: #eee;
@@ -164,7 +164,7 @@
             } else {
                 if (u.indexOf('Android') > -1 || u.indexOf('Linux') > -1) {
                     location.href = '/package/app-release.apk';
-                } else if (u.indexOf('iPhone') > -1) {
+                } else if (u.indexOf('iPhone') > -1 || u.indexOf('iPad') > -1) {
                     location.href = 'itms-services://?action=download-manifest&url=https://yapinkeji.com/package/YPO2OShop.plist';
                 }
             }
